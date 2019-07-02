@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
+<interface>
+  <requires lib="gtk+" version="3.0"/>
+  <object class="GtkWindow" id="animate_window">
+    <property name="can_focus">False</property>
+    <property name="resizable">False</property>
+    <property name="window_position">center</property>
+    <property name="icon">icon_3.png</property>
+    <property name="urgency_hint">True</property>
+    <property name="deletable">False</property>
+    <signal name="destroy" handler="on_animate_trajectory_window_destroy" swapped="no"/>
+    <signal name="destroy-event" handler="on_animate_trajectory_window_destroy" swapped="no"/>
+    <child>
+      <object class="GtkAlignment" id="alignment1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="top_padding">5</property>
+        <property name="bottom_padding">5</property>
+        <property name="left_padding">5</property>
+        <property name="right_padding">5</property>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkImage" id="image45">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">icon_player_forward2.png</property>
+  </object>
+  <object class="GtkImage" id="image46">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">icon_player_forward.png</property>
+  </object>
+  <object class="GtkImage" id="image47">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">icon_player_play.png</property>
+  </object>
+  <object class="GtkImage" id="image48">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">icon_player_forward.png</property>
+  </object>
+  <object class="GtkImage" id="image49">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixbuf">icon_player_backward2.png</property>
+  </object>
+</interface>
