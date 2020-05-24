@@ -44,7 +44,7 @@ from OpenGL import GL
 from OpenGL.GL import shaders
 
 
-class GLMenu2:
+class GLMenu:
     """ Class doc """
     def __init__ (self, glWidget):
         """ Class initialiser """
@@ -126,7 +126,7 @@ class GLMenu2:
             
 
 
-class GLMenu:
+class GLMenu2:
     """ Class doc """
     def __init__ (self, glWidget):
         """ Class initialiser """
@@ -312,6 +312,8 @@ class GtkGLWidget(Gtk.GLArea):
                        | Gdk.EventMask.KEY_PRESS_MASK | Gdk.EventMask.KEY_RELEASE_MASK )
         
         self.vm_widget = vismol_widget.VisMolWidget(self, vismolSession, np.float32(width), np.float32(height))
+        self.vismolSession = vismolSession
+        
         #self.glMenu = GLMenu(self)
     
     def build_glmenu (self, menu_items = None):
@@ -385,17 +387,53 @@ class GtkGLWidget(Gtk.GLArea):
     
     def key_pressed(self, widget, event):
         """ The mouse_button function serves, as the names states, to catch
-            events in the keyboard, e.g. letter 'l' pressed, 'backslash'
-            pressed. Note that there is a difference between 'A' and 'a'.
-            Here I use a specific handler for each key pressed after
-            discarding the CONTROL, ALT and SHIFT keys pressed (usefull
-            for customized actions) and maintained, i.e. it's the same as
-            using Ctrl+Z to undo an action.
+        events in the keyboard, e.g. letter 'l' pressed, 'backslash'
+        pressed. Note that there is a difference between 'A' and 'a'.
+        Here I use a specific handler for each key pressed after
+        discarding the CONTROL, ALT and SHIFT keys pressed (usefull
+        for customized actions) and maintained, i.e. it's the same as
+        using Ctrl+Z to undo an action.
         """
         k_name = Gdk.keyval_name(event.keyval)
-        #print(k_name)
+
+        print(k_name)
+
         self.vm_widget.key_pressed(k_name)
-    
+
+        if k_name == 'l':
+            filename = self.vismolSession.main_session.filechooser.open()
+            self.vismolSession.load(filename)
+            #self.main_treeview.refresh_gtk_main_treeview()
+            visObj = self.vismolSession.vismol_objects[-1]
+            self.vismolSession.glwidget.vm_widget.center_on_coordinates(visObj, visObj.mass_center)
+
+        if k_name == 'r':
+            #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
+            visObj = self.vismolSession.vismol_objects[0]
+            visObj.ribbons_actived =  True
+
+        if k_name == 's':
+            #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
+            visObj = self.vismolSession.vismol_objects[0]
+            visObj.spheres_actived =  True
+
+        if k_name == 't':
+            #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
+            visObj = self.vismolSession.vismol_objects[0]
+            visObj.sticks_actived =  True
+
+        if k_name == 'period':
+            #self.vismolSession.get_frame()
+            frame = self.vismolSession.get_frame()+1
+            self.vismolSession.set_frame(frame)
+            print (frame)
+        if k_name == 'comma':
+            frame = self.vismolSession.get_frame()-1
+            self.vismolSession.set_frame(frame)
+            print (frame)	
+            
+        
+        
     def key_released(self, widget, event):
         """ Used to indicates a key has been released.
         """

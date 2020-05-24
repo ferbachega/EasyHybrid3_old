@@ -53,7 +53,7 @@ class GTKGUI ( ):
         self.window.connect("delete-event",    Gtk.main_quit)
         self.window.show_all()
 
-        self.vismolSession.load('/home/fernando/programs/EasyHybrid/easyhybrid/Coords/pdbs/cyclohexan.pdb')
-        visObj = self.vismolSession.vismol_objects[-1]
-        self.vismolSession.glwidget.vm_widget.center_on_coordinates(visObj, visObj.mass_center)
+        #self.vismolSession.load('/home/fernando/programs/EasyHybrid3/Coords/pdbs/step5_assembly.pdb')
+        #visObj = self.vismolSession.vismol_objects[-1]
+        #self.vismolSession.glwidget.vm_widget.center_on_coordinates(visObj, visObj.mass_center)
         Gtk.main()
