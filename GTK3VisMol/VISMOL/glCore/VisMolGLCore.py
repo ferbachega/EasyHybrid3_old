@@ -196,6 +196,9 @@ class VisMolGLCore():
                 self.picking = True
                 self.button = 1
                 self.queue_draw()
+                #print (self.vismolSession.selections[self.vismolSession.current_selection].selected_objects)
+                #for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
+                #    print (vobject.name, self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[vobject], 'selection_function_viewing button1' )
             if middle:
                 if self.atom_picked is not None:
                     self.button = 2
@@ -994,17 +997,70 @@ class VisMolGLCore():
 	##GL.glDisable(GL.GL_BLEND)
 	#GL.glDisable(GL.GL_DEPTH_TEST)
     
-    def set_draw_lines_indexes ( self, visObj = None, show = True):
+    def set_draw_lines_indexes ( self, visObj = None, show = True, input_indexes = []):
         """ Function doc """
-        
-        
+
         print (visObj.index_bonds)
-        ind_vbo = visObj.line_buffers [0]
+        ind_vbo = visObj.line_buffers[0]
         
-        indexes = visObj.index_bonds
+        index_bonds = visObj.index_bonds
         
-        indexes.pop(0)
-        indexes.pop(0)
+        index_bonds_pairs = []
+        
+        n = 0
+        pair = []
+        for item in index_bonds:
+            
+            pair.append(item)
+            n+=1
+            
+            if n == 2:
+                index_bonds_pairs.append(pair)
+                n = 0
+                pair = []
+                
+        print (index_bonds_pairs)
+        
+        
+        for i in input_indexes:
+            for pair in index_bonds_pairs:
+                if i in pair:
+                    #index_bonds_pairs
+                    
+                    position = index_bonds_pairs.index(pair)
+                    #
+                    index_bonds_pairs[position] = []
+        
+        print (index_bonds_pairs)
+        
+        indexes = []
+        for pair in index_bonds_pairs:
+            for atom in pair:
+                indexes.append(atom)
+            
+        print (indexes)
+
+
+        #for index_i in input_indexes:
+        #    for index_j in index_bonds:
+        #        if index_i == index_j:
+        #            index_in_index_bonds = index_bonds.index(index_i)
+        #            print ("atom",index_i, 'position',index_in_index_bonds) 
+                
+                #if (index_in_index_bonds%2) == 0:
+                #    #eh par
+                #    #print (index-1, )
+                #    #print (index_bonds[index_in_index_bonds], index_bonds[index_in_index_bonds+1])
+                #    print (index_in_index_bonds, index_in_index_bonds+1)
+                #    #index_bonds.pop(index_in_index_bonds)
+                #    #index_bonds.pop(index_in_index_bonds-1)
+                #else:
+                #    #eh par
+                #    #print (index_bonds[index_in_index_bonds-1], index_bonds[index_in_index_bonds])
+                #    print (index_in_index_bonds-1, index_in_index_bonds)
+                #    #index_bonds.pop(index_in_index_bonds)
+                #    #index_bonds.pop(index_in_index_bonds+1)
+    
         indexes = np.array(indexes,dtype=np.uint32)
             
 

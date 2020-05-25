@@ -436,17 +436,30 @@ class GtkGLAreaWidget(Gtk.GLArea):
         
         if k_name == 'w':
             #self.vismolSession.glwidget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  indexes = False)
-            self.vm_widget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  input_indexes = [1,2,3])
-
+            
+            for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
+                print (vobject.name, self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[vobject], 'selection_function_viewing button1' )
+                lista = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[vobject]                
+                self.vm_widget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  input_indexes = lista)
+    
         if k_name == 'a':
             #self.vismolSession.glwidget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  indexes = False)
-            self.vm_widget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  input_indexes = [ 0,  1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 ], show = False)
-        
+            self.vm_widget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  input_indexes = [ 0], show = False)
+            for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
+                print (vobject.name, self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[vobject], 'selection_function_viewing button1' )
+                lista = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[vobject]                
+                self.vm_widget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  input_indexes = lista, show = False)
+       
         if k_name == 'z':
             #self.vismolSession.glwidget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  indexes = False)
-            self.vm_widget.set_draw_lines_indexes (visObj = self.vismolSession.vismol_objects[0],  show = False)
-
-
+            
+			
+            for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
+                print (vobject.name, self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[vobject], 'selection_function_viewing button1' )
+                
+                lista = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[vobject]
+                
+                self.vm_widget.set_draw_lines_indexes (visObj = self.vismolSession.vismol_objects[0],  show = False, input_indexes = lista)
 
 
 

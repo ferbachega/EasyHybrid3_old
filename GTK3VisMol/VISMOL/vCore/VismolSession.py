@@ -425,3 +425,36 @@ class VisMolSession (ShowHideVisMol):
             self.selections[self.current_selection].selection_function_viewing(selected)
 
        
+
+    def start_viewer (self):
+        """ Function doc """
+        import gi, sys
+        gi.require_version('Gtk', '3.0')
+        from gi.repository import Gtk, Gdk
+        #----------------------------------------------------------------------------#
+        # - - - - - - - - -  GTK STUFFS  - - - - - - - - -               
+        self.window = Gtk.Window(title="VisMol window")                  
+        #filechooser = FileChooser()                                     
+                                         
+        self.container = Gtk.Box (orientation = Gtk.Orientation.VERTICAL)
+        # - - - - - - - - - - - -  - - - - - - - - - - - -               
+                                       
+        #---------------------------------------------------------------------------  
+        #self.vismolSession  =  VisMolSession(glwidget = True, backend = 'gtk3')       
+        self.container.pack_start(self.glwidget, True, True, 0)         
+                                         
+        self.window.connect("key-press-event"  , self.glwidget.key_pressed)  
+        self.window.connect("key-release-event", self.glwidget.key_released) 
+        self.window.add(self.container)                                                    
+        #--------------------------------------------------------------------------- #
+                                         
+        #--------------------------------------------------------------------------- #
+        self.window.connect("delete-event",    Gtk.main_quit)                             #
+        self.window.show_all()                                                            #
+        #----------------------------------------------------------------------------#
+        #x = threading.Thread(target = Gtk.main(), args=(1,))
+        #x.start()
+
+        Gtk.main()
+        
+        return None

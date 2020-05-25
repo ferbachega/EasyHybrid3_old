@@ -36,36 +36,27 @@ def main():
     #----------------------------------------------------------------------------#
     # - - - - - - - - -  GTK STUFFS  - - - - - - - - -                           #
     window = Gtk.Window(title="VisMol window")                                   #
-    #filechooser = FileChooser()                                                 #
-										 #
     container = Gtk.Box (orientation = Gtk.Orientation.VERTICAL)                 #
-    # - - - - - - - - - - - -  - - - - - - - - - - - -                           #
-										 #  
-										 #
     #--------------------------------------------------------------------------- #
     vismolSession  =  VisMolSession(glwidget = True, backend = 'gtk3')           #
     container.pack_start(vismolSession.glwidget, True, True, 0)                  #
-										 #
     window.connect("key-press-event"  , vismolSession.glwidget.key_pressed)      #
     window.connect("key-release-event", vismolSession.glwidget.key_released)     #
     window.add(container)                                                        #
-										 #
     #--------------------------------------------------------------------------- #
-										 #
+
     #--------------------------------------------------------------------------- #
     window.connect("delete-event",    Gtk.main_quit)                             #
     window.show_all()                                                            #
     #----------------------------------------------------------------------------#
     
     
-    
+    #---------------------------------------------------------------------------
     args =  sys.argv
     print  (args)
     filein = args[-1]
     #---------------------------------------------------------------------------
     vismolSession.load(filein)
-    #visObj = vismolSession.vismol_objects[-1]
-    #vismolSession.glwidget.vm_widget.center_on_coordinates(visObj, visObj.mass_center)
     #---------------------------------------------------------------------------
     
     

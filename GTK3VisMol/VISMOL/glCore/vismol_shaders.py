@@ -823,7 +823,10 @@ void main(){
 }
 """
 
-vertex_shader_dots = """
+
+
+
+vertex_shader_dots_backup = """
 #version 330
 
 uniform mat4 model_mat;
@@ -856,7 +859,7 @@ void main(){
     gl_PointSize = vert_dot_size + 2*(vert_ext_linewidth + 1.5*vert_int_antialias);
 }
 """
-fragment_shader_dots = """
+fragment_shader_dots_backup = """
 #version 330
 
 uniform vec4 fog_color;
@@ -916,6 +919,43 @@ void main(){
     }
 }
 """
+
+
+
+vertex_shader_dots = """
+#version 330
+
+uniform mat4 model_mat;
+uniform mat4 view_mat;
+uniform mat4 proj_mat;
+uniform float vert_ext_linewidth;
+
+in vec3  vert_coord;
+in vec3  vert_color;
+varying float frag_ext_linewidth;
+out vec3 index_color;
+
+void main(){
+    gl_Position  = proj_mat * view_mat * model_mat * vec4(vert_coord, 1.0);
+    gl_PointSize = 15;
+    index_color = vert_color;
+}
+"""
+fragment_shader_dots = """
+#version 330
+
+in vec3 index_color;
+
+void main(){
+    gl_FragColor = vec4(index_color,1);
+}
+
+"""
+
+
+
+
+
 
 vertex_shader_freetype =  """
 #version 330
