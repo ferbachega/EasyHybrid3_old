@@ -127,6 +127,15 @@ class VismolObject:
         self.index_bonds_rep    = []
         self.index_bonds_pairs  = []
         
+        
+        #-----------------------#
+        #         Bonds         #
+        #-----------------------#
+        self.index_dots         = []
+        self.index_dots_rep     = []
+        
+        
+        
         #-----------------------#
         #       Nonbonded       #
         #-----------------------#
@@ -176,7 +185,7 @@ class VismolObject:
         self.dots_surface_actived = False
         
         """   T E X T   """
-        self.text_activated = True
+        self.text_activated = False
         
         """   S E L E C T I O N   """
         self._sel_lines_actived = False
@@ -243,11 +252,14 @@ class VismolObject:
     def generate_dot_indexes(self):
         """ Function doc
         """
-        self.dot_indexes = []
-        for i in range(int(len(self.atoms))):
-            self.dot_indexes.append(i)
+        #self.dot_indexes = []
+        self.dot_indexes =range(0, len(self.atoms))
+        
+        #for i in range(int(len(self.atoms))):
+        #    self.dot_indexes.append(i)
         self.dot_indexes = np.array(self.dot_indexes, dtype=np.uint32)
-    
+		
+		
     def _generate_atomtree_structure (self):
         """ Function doc """
         
@@ -427,7 +439,7 @@ class VismolObject:
             #-------------------------------------------------------
             # (3)                  VdW list
             #-------------------------------------------------------
-            self.vdw_dot_sizes.append(atom.vdw_rad)
+            self.vdw_dot_sizes.append(atom.vdw_rad*3)
             self.cov_dot_sizes.append(atom.cov_rad)
 
         self.color_indexes = np.array(self.color_indexes, dtype=np.float32)

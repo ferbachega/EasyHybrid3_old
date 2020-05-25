@@ -25,7 +25,7 @@
 import gi, sys
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
-import os
+#import os
 
 from VISMOL.vCore.VismolSession  import VisMolSession
 from GTKGUI  import gtkgui
@@ -34,7 +34,7 @@ from GTKGUI  import gtkgui
 def main():
     
     vismolSession  =  VisMolSession(glwidget = True, backend = 'gtk3')
-    vismolSession.insert_glmenu()
+    #vismolSession.insert_glmenu()
     
     gui            = gtkgui.GTKGUI(vismolSession)
     return 0

@@ -2,8 +2,8 @@ import gi, sys
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
-from VISMOL.gtkWidgets.main_treeview import GtkMainTreeView
-from GTKGUI.gtkWidgets import FileChooser
+from GTKGUI.gtkWidgets.main_treeview import GtkMainTreeView
+from GTKGUI.gtkWidgets.main_treeview import FileChooser
 
 class GTKGUI ( ):
     """ Class doc """

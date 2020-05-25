@@ -308,8 +308,10 @@ def _make_gl_dots(program, vismol_object = None, bckgrnd_color= [0.0,0.0,0.0,1.0
     #indexes = vismol_object.non_bonded_atoms
     #for i in range(dot_qtty):
         #indexes.append(i)
-    indexes = np.array(vismol_object.dot_indexes,dtype=np.uint32)
     
+    #indexes = [0,1,2,3]
+    indexes = np.array(vismol_object.dot_indexes,dtype=np.uint32)
+    #indexes = np.array(indexes,dtype=np.uint32)
     #try:
     #    indexes = np.array(indexes,dtype=np.uint32)
     #except:
@@ -320,7 +322,8 @@ def _make_gl_dots(program, vismol_object = None, bckgrnd_color= [0.0,0.0,0.0,1.0
     
     ind_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.nbytes, indexes, GL.GL_DYNAMIC_DRAW)
     
     coord_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)

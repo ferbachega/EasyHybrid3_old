@@ -42,7 +42,7 @@ from VISMOL.vCore.VismolSelections  import VisMolViewingSelection as vSele
 
 import VISMOL.glCore.shapes as shapes
 
-from VISMOL.gtkWidgets.main_treeview import GtkMainTreeView, FileChooser
+#from VISMOL.gtkWidgets.main_treeview import GtkMainTreeView, FileChooser
 
 
 import os
@@ -62,8 +62,10 @@ class ShowHideVisMol:
     def _show_dots (self, Vobjects = []):
         """ Function doc """
         for Vobject in Vobjects:
-            Vobject.flat_sphere_representation.actived = True
-            Vobject.flat_sphere_representation.update()
+            Vobject.dots_actived = True
+            
+            
+            #Vobject.dots_actived.update()
             
     def _hide_ribbons (self, Vobjects ):
         """ Function doc """
@@ -143,7 +145,7 @@ class ShowHideVisMol:
         
         self.glwidget.updateGL()
 
-    def show (self, _type = 'lines', Vobjects =  []):
+    def show (self, _type = 'lines', Vobjects =  [], indexes = [] ):
         """ Function doc """
         if _type == 'dots':
             self._show_dots (Vobjects )
@@ -160,7 +162,7 @@ class ShowHideVisMol:
         if _type == 'spheres':
             self._show_spheres(Vobjects ) 
     
-        self.glwidget.updateGL()
+        #self.glwidget.updateGL()
 
 
 class VisMolSession (ShowHideVisMol):
@@ -201,8 +203,9 @@ class VisMolSession (ShowHideVisMol):
         self.backend = backend
         if glwidget:
             if backend == 'gtk3':
-                from VISMOL.glWidget import gtk3 as VisMolGLWidget
-                self.glwidget   = VisMolGLWidget.GtkGLWidget(self)
+                #from VISMOL.glWidget import gtk3 as VisMolGLWidget
+                from VISMOL.glWidget import VisMolGLWidget
+                self.glwidget   = VisMolGLWidget.GtkGLAreaWidget(self)
             
             if backend == 'qt4':
                 self.glwidget   = VisMolGLWidget.QtGLWidget(self)
@@ -236,7 +239,7 @@ class VisMolSession (ShowHideVisMol):
         #---------------------------------------------------------------
         self.picking_selections =  vPick()
         
-    
+        self.insert_glmenu()
     
     #def get_gtk_main_treeview (self):
     #    """ Function doc """
@@ -282,7 +285,7 @@ class VisMolSession (ShowHideVisMol):
         
         print (entry)
 
-    def load (self, infile, widget = None):
+    def load (self, infile, widget = None, autocenter = True):
         """ Function doc """
         #Vobject_id = len(self.vismol_objects)
 
@@ -302,8 +305,10 @@ class VisMolSession (ShowHideVisMol):
        
         #if self.backend == 'gtk3':
         #    self.refresh_gtk(widget)
-            
-        
+        #visObj = vismolSession.vismol_objects[-1]
+        if autocenter:
+            self.glwidget.vm_widget.center_on_coordinates(self.vismol_objects[-1], self.vismol_objects[-1].mass_center)
+
         
         
 
