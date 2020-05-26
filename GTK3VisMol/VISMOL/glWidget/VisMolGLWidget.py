@@ -410,29 +410,63 @@ class GtkGLAreaWidget(Gtk.GLArea):
         if k_name == 'r':
             #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
             visObj = self.vismolSession.vismol_objects[0]
-            visObj.ribbons_actived =  True
+            #visObj.ribbons_actived =  True
+            if visObj.ribbons_actived:
+                visObj.ribbons_actived =  False
+            else:
+                visObj.ribbons_actived =  True
+
 
         if k_name == 's':
             #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
             visObj = self.vismolSession.vismol_objects[0]
-            visObj.spheres_actived =  True
+            
+            if visObj.spheres_actived:
+                visObj.spheres_actived =  False
+            else:
+                visObj.spheres_actived =  True
             #self.vismolSession.show (_type = 'lines', Vobjects =  [])
+
+
+
+        if k_name == 'f':
+            #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
+            visObj = self.vismolSession.vismol_objects[0]
+            
+            if visObj.spheres_ON_THE_FLY_actived:
+                visObj.spheres_ON_THE_FLY_actived =  False
+            else:
+                visObj.spheres_ON_THE_FLY_actived =  True
+            #self.vismolSession.show (_type = 'lines', Vobjects =  [])
+
+
+
 
         if k_name == 't':
             #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
             visObj = self.vismolSession.vismol_objects[0]
-            visObj.sticks_actived =  True
+            if visObj.sticks_actived:
+                visObj.sticks_actived =  False
+            else:
+                visObj.sticks_actived =  True
 
         if k_name == 'd':
             self.vismolSession.show(_type = 'dots', Vobjects =  [self.vismolSession.vismol_objects[-1]])
             #visObj = self.vismolSession.vismol_objects[0]
             #visObj.dots_actived =  True
         
+        if k_name == 'v':
+            #self.vismolSession.show(_type = 'dots', Vobjects =  [self.vismolSession.vismol_objects[-1]])
+            visObj = self.vismolSession.vismol_objects[0]
+            if visObj.dots_surface_actived:
+                visObj.dots_surface_actived =  False
+            else:
+                visObj.dots_surface_actived =  True
         
         
         if k_name == 'q':
             #self.vismolSession.glwidget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  indexes = False)
-            self.vm_widget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  input_indexes = [0,1])#[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22, 23])
+            self.vm_widget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  input_indexes = [1,2])#[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22, 23])
         
         if k_name == 'w':
             #self.vismolSession.glwidget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  indexes = False)

@@ -30,5 +30,6 @@ vismolSession  =  VisMolSession(glwidget = True, backend = 'gtk3')
 vismolSession.start_viewer() 
 vismolSession.load('/home/fernando/DMT_H2O.pdb')
 #viewer = SW.VismolGTK3Session()
+
 #viewer.run()
 

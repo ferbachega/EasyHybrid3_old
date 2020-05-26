@@ -180,7 +180,7 @@ class VismolObject:
         
         """   S P H E R E S   """
         self.spheres_actived = False
-        
+        #self.spheres_ON_THE_FLY_actived = False
         """   D O T S  S U R F A C E   """
         self.dots_surface_actived = False
         
@@ -206,6 +206,7 @@ class VismolObject:
         self.sticks_vao   = None
         self.spheres_vao     = None
         self.dots_surface_vao = None
+        self.spheres_vao_ON_THE_FLY =None
     
         self.dot_buffers        = None
         self.lines_buffers      = None
@@ -214,7 +215,7 @@ class VismolObject:
         self.sticks_buffers  = None
         self.spheres_buffers    = None
         self.dots_surface_buffers = None
-        
+        #self.spheres_buffers_ON_THE_FLY = None
         """   S E L E C T I O N   """
         self.sel_dots_vao = None
         self.sel_lines_vao = None

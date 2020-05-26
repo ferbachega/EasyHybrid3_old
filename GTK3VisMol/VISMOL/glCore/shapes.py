@@ -320,6 +320,7 @@ def _make_gl_sticks(program, vismol_object = None):
 def _make_gl_dots_surface(program, vismol_object = None):
     """ Function doc
     """
+    
     colors = vismol_object.colors
     coords = vismol_object.frames[0]
     indexes = np.array(vismol_object.dot_indexes,dtype=np.uint32)
@@ -354,6 +355,42 @@ def _make_gl_dots_surface(program, vismol_object = None):
     vismol_object.dots_surface_vao = vao
     vismol_object.dots_surface_buffers = (ind_vbo, coord_vbo, col_vbo)
     return True
+    '''
+    colors  = vismol_object.colors
+    coords  = vismol_object.frames[0]
+    indexes = np.array(vismol_object.dot_indexes,dtype=np.uint32)
+
+    vao = GL.glGenVertexArrays(1)
+    GL.glBindVertexArray(vao)
+
+    ind_vbo = GL.glGenBuffers(1)
+    GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+
+    coord_vbo = GL.glGenBuffers(1)
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, coords.itemsize*int(len(coords)), coords, GL.GL_STATIC_DRAW)
+    att_position = GL.glGetAttribLocation(program, 'vert_coord')
+    GL.glEnableVertexAttribArray(att_position)
+    GL.glVertexAttribPointer(att_position, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*coords.itemsize, ctypes.c_void_p(0))
+
+    col_vbo = GL.glGenBuffers(1)
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, col_vbo)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, colors.itemsize*int(len(colors)), colors, GL.GL_STATIC_DRAW)
+    att_colors = GL.glGetAttribLocation(program, 'vert_color')
+    GL.glEnableVertexAttribArray(att_colors)
+    GL.glVertexAttribPointer(att_colors, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*colors.itemsize, ctypes.c_void_p(0))
+
+    GL.glBindVertexArray(0)
+    GL.glDisableVertexAttribArray(att_position)
+    GL.glDisableVertexAttribArray(att_colors)
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
+    GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0)
+
+    vismol_object.dots_surface_vao = vao
+    vismol_object.dots_surface_buffers = (ind_vbo, coord_vbo, col_vbo)
+    return True
+    '''
 
 def _make_gl_dots_backup(program, vismol_object = None, bckgrnd_color= [0.0,0.0,0.0,1.0]):
     """ Function doc
@@ -785,6 +822,43 @@ def change_vbo_colors  (col_vbo = None, colors = [], program = None):
     GL.glEnableVertexAttribArray(att_colors)
     GL.glVertexAttribPointer(att_colors, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*colors.itemsize, ctypes.c_void_p(0))
 
+def _make_gl_spheres_ON_THE_FLY (program, vismol_object = None): # unused
+    """ Function doc
+    """
+    colors  = vismol_object.colors
+    coords  = vismol_object.frames[0]
+    indexes = np.array(vismol_object.dot_indexes,dtype=np.uint32)
+    
+    vao = GL.glGenVertexArrays(1)
+    GL.glBindVertexArray(vao)
+    
+    ind_vbo = GL.glGenBuffers(1)
+    GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    
+    coord_vbo = GL.glGenBuffers(1)
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, coords.itemsize*int(len(coords)), coords, GL.GL_STATIC_DRAW)
+    att_position = GL.glGetAttribLocation(program, 'vert_coord')
+    GL.glEnableVertexAttribArray(att_position)
+    GL.glVertexAttribPointer(att_position, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*coords.itemsize, ctypes.c_void_p(0))
+    
+    col_vbo = GL.glGenBuffers(1)
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, col_vbo)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, colors.itemsize*int(len(colors)), colors, GL.GL_STATIC_DRAW)
+    att_colors = GL.glGetAttribLocation(program, 'vert_color')
+    GL.glEnableVertexAttribArray(att_colors)
+    GL.glVertexAttribPointer(att_colors, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*colors.itemsize, ctypes.c_void_p(0))
+    
+    GL.glBindVertexArray(0)
+    GL.glDisableVertexAttribArray(att_position)
+    GL.glDisableVertexAttribArray(att_colors)
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
+    GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0)
+    
+    vismol_object.spheres_vao_ON_THE_FLY      = vao
+    vismol_object.spheres_buffers_ON_THE_FLY  = (ind_vbo, coord_vbo, col_vbo)
+    return True
 
 
 

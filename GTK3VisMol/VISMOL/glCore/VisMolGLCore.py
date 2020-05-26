@@ -438,6 +438,12 @@ class VisMolGLCore():
                     else:
                         self._draw_spheres(visObj = visObj, indexes = False)
                 
+                #if visObj.spheres_ON_THE_FLY_actived:
+                #    if visObj.spheres_vao_ON_THE_FLY  is None:
+                #        shapes._make_gl_spheres_ON_THE_FLY(self.sel_spheres_program_ON_THE_FLY,  vismol_object = visObj)
+                #    else:
+                #        self._draw_spheres_ON_THE_FLY(visObj = visObj, indexes = False)              
+                
                 if visObj.text_activated:
                     if visObj.vm_font.vao is None:
                         visObj.vm_font.make_freetype_font()
@@ -521,7 +527,7 @@ class VisMolGLCore():
         #self.sel_ribbons_program = self.load_shaders(vm_shader.sel_vertex_shader_sticks, vm_shader.sel_fragment_shader_sticks, vm_shader.sel_geometry_shader_sticks)
         self.sel_sticks_program = self.load_shaders(vm_shader.sel_vertex_shader_sticks, vm_shader.sel_fragment_shader_sticks, vm_shader.sel_geometry_shader_sticks)
         self.sel_spheres_program = self.load_shaders(vm_shader.sel_vertex_shader_spheres, vm_shader.sel_fragment_shader_spheres)
-        
+        #self.sel_spheres_program_ON_THE_FLY = self.load_shaders(vm_shader.vertex_shader_spheres_ON_THE_FLY, vm_shader.fragment_shader_spheres_ON_THE_FLY, vm_shader.fragment_shader_spheres_ON_THE_FLY)
     
     def load_shaders(self, vertex, fragment, geometry=None):
         """ Here the shaders are loaded and compiled to an OpenGL program. By default
@@ -880,15 +886,46 @@ class VisMolGLCore():
         GL.glUseProgram(0)
         GL.glDisable(GL.GL_DEPTH_TEST)
     
+    
+    def _draw_spheres_ON_THE_FLY(self, visObj = None,  indexes = False):# unused  - not working
+        """ Function doc
+        """
+        GL.glEnable(GL.GL_DEPTH_TEST)
+        GL.glUseProgram(self.spheres_program_ON_THE_FLY)
+        self.load_matrices(self.spheres_program_ON_THE_FLY, visObj.model_mat)
+        self.load_fog(self.spheres_program_ON_THE_FLY)
+        self.load_lights(self.spheres_program_ON_THE_FLY)
+        if visObj.spheres_vao_ON_THE_FLY is not None:
+            GL.glBindVertexArray(visObj.spheres_vao_ON_THE_FLY)
+            if self.modified_view:
+                pass
+            else:
+                GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.spheres_buffers_ON_THE_FLY[1])
+                GL.glBufferData(GL.GL_ARRAY_BUFFER, visObj.frames[self.frame].itemsize*int(len(visObj.frames[self.frame])), 
+                                                    visObj.frames[self.frame], GL.GL_STATIC_DRAW)
+                if  indexes:
+                    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.spheres_buffers_ON_THE_FLY[2])
+                    GL.glBufferData(GL.GL_ARRAY_BUFFER, visObj.color_indexes.itemsize*int(len(visObj.color_indexes)), visObj.color_indexes, GL.GL_STATIC_DRAW)
+                GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
+        GL.glBindVertexArray(0)
+        GL.glUseProgram(0)
+        GL.glDisable(GL.GL_DEPTH_TEST)
+    
+    
+    
+    
+    
+    
     def _draw_dots_surface(self, visObj = None,  indexes = False):
         """ Function doc
         """
+        #'''
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glUseProgram(self.dots_surface_program)
         self.load_matrices(self.dots_surface_program, visObj.model_mat)
         self.load_fog(self.dots_surface_program)
         #self.load_lights(self.dots_surface_program)
-        GL.glPointSize(5)
+        GL.glPointSize(1)
         if visObj.dots_surface_vao is not None:
             GL.glBindVertexArray(visObj.dots_surface_vao)
             if self.modified_view:
@@ -901,11 +938,18 @@ class VisMolGLCore():
                     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.dots_surface_buffers[2])
                     GL.glBufferData(GL.GL_ARRAY_BUFFER, visObj.color_indexes.itemsize*int(len(visObj.color_indexes)), visObj.color_indexes, GL.GL_STATIC_DRAW)
                 GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
+                #GL.glDrawElements(GL.GL_LINES, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
         GL.glPointSize(1)
         GL.glBindVertexArray(0)
         GL.glUseProgram(0)
         GL.glDisable(GL.GL_DEPTH_TEST)
-    
+	#'''
+
+		
+		
+		
+		
+		
     def _draw_picking_dots(self, visObj = None,  indexes = False):
         """ Function doc
         """
@@ -1186,6 +1230,7 @@ class VisMolGLCore():
                                 visObj.frames[self.frame], 
                                 GL.GL_STATIC_DRAW)              
                 GL.glDrawElements(GL.GL_LINES, int(len(visObj.index_bonds)*2), GL.GL_UNSIGNED_INT, None)
+                #GL.glDrawElements(GL.GL_LINE_STRIP, int(len(visObj.index_bonds)*2), GL.GL_UNSIGNED_INT, None)
         GL.glBindVertexArray(0)
         GL.glUseProgram(0)
         GL.glDisable(GL.GL_DEPTH_TEST)
