@@ -318,10 +318,21 @@ class GtkGLAreaWidget(Gtk.GLArea):
     
     def build_glmenu (self, menu_items = None):
         """ Function doc """
-        if menu_items:
-            print('building a new glMenu, diferent from default')
-        else:
-            self.glMenu = GLMenu2(self)
+        self.glMenu = Gtk.Menu()
+        for label in menu_items:
+            mitem = Gtk.MenuItem(label)
+            mitem.connect('activate', menu_items[label])
+            self.glMenu.append(mitem)
+        self.glMenu.show_all()
+     
+        
+        #return menu        
+        
+        
+        #if menu_items:
+        #    print('building a new glMenu, diferent from default')
+        #else:
+        #    self.glMenu = GLMenu2(self)
             ##main_menu_bar = Gtk.MenuBar()
             ##self.gl_menu = self.glMenu.builder.get_object('menu1')
             ## Drop down menu

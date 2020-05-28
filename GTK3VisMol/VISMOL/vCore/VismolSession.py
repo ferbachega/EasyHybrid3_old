@@ -229,6 +229,7 @@ class VisMolSession (ShowHideVisMol):
         #  VIEWING SELECTIONS
         #---------------------------------------------------------------
         selection = vSele()
+        #selection._selection_mode ='chain' # 'atom'
         self.selections = {
                           'sel01' : selection
                           }
@@ -239,22 +240,30 @@ class VisMolSession (ShowHideVisMol):
         #---------------------------------------------------------------
         self.picking_selections =  vPick()
         
-        self.insert_glmenu()
     
-    #def get_gtk_main_treeview (self):
-    #    """ Function doc """
-    #    self.main_treeview = GtkMainTreeView(vismolSession = self) 
-    #    self.main_treeview.treeView
-    #    return self.main_session.vismolSession.main_treeview.treeView
+        def f1 ( ):
+            """ Function doc """
+            print('f1')
+            
+            
+        def f2 (_):
+            """ Function doc """
+            print('f2')
+            
+        def f3 (_):
+            """ Function doc """
+            print('f3')
+            
+            
+
+        functions = {
+                'f1': f1,
+                'f2': f2,
+                'f3': f3,
+        }
+        self.insert_glmenu(functions)
 
 
-    #def refresh_gtk (self, 
-    #                 maintreeview = True
-    #                 ):
-    #    """ Function doc """
-    #    if maintreeview:
-    #        #self.main_treeview.refresh_gtk_main_treeview()
-    #        self.main_session.vismolSession.main_treeview.treeView.refresh_gtk_main_treeview()
     def insert_glmenu (self, menu_items = None):
 	    """ Function doc """
 	    self.glwidget.build_glmenu(menu_items = menu_items)

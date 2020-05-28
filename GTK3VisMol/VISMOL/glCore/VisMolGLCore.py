@@ -167,6 +167,10 @@ class VisMolGLCore():
             self.picking = True
             self.queue_draw()
         if right:
+            self.picking_x = mouse_x
+            self.picking_y = mouse_y
+            self.picking = True
+            self.queue_draw()
             pass
         return True
     
@@ -206,7 +210,26 @@ class VisMolGLCore():
                     self.atom_picked = None
             if right:
                 self.button = 3
-                self.parent_widget.glMenu.open_gl_menu(event = event)
+                # Checks if there is anything in the selection list
+                # If {} means that there are no selection points on the screen
+                if self.vismolSession.selections[self.vismolSession.current_selection].selected_objects == {}:
+                    
+                    print('selection is not activated')
+                    # There is no selection (blue dots) but an atom was identified in the click with the right button
+                    if self.atom_picked is not None:
+
+                        # Getting the information about the atom that was identified in the click
+                        print(self.atom_picked.chain,self.atom_picked.resn, self.atom_picked.resi, self.atom_picked.name, self.atom_picked.index)
+                        self.atom_picked = None
+                    else:
+                        # When no atom is identified in the click (user clicked on a point in the background)
+                        print ('self.atom_picked is None')
+                        print ('selection is not activated')
+                else:
+                    print('selection is  activated')
+                #self.parent_widget.glMenu.#open_gl_menu(event = event)
+                
+                self.parent_widget.glMenu.popup(None, None, None, None, 0, 0)  
         return True
     
     def mouse_motion(self, mouse_x, mouse_y):
@@ -390,6 +413,8 @@ class VisMolGLCore():
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
         
         for visObj in self.vismolSession.vismol_objects:
+            #print ('passei aqui1')
+
             if visObj.actived:
                 
                 if visObj.lines_actived:
@@ -451,14 +476,19 @@ class VisMolGLCore():
                     else:
                         self._draw_freetype(visObj = visObj)
                 
+              
+        #indexes2 = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects
+        #print (indexes2)
+          
                 
         # Selection 
         #-------------------------------------------------------------------------------
+        #'''
         for visObj in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
             if visObj.selection_dots_vao is None:
                 shapes._make_gl_selection_dots(self.picking_dots_program, vismol_object = visObj)
-            
-            
+            indexes = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]
+            #print ('passei aqui2')
             #GL.glPointSize(400/(abs(self.dist_cam_zrp))/2)
             GL.glPointSize(15)
             #GL.glEnable(GL.GL_DEPTH_TEST)
@@ -466,8 +496,7 @@ class VisMolGLCore():
             GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
             self.load_matrices(self.picking_dots_program, visObj.model_mat)
             
-            indexes = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]
-            
+
             #self._draw_picking_dots(visObj = visObj, indexes = False)
             GL.glBindVertexArray(visObj.selection_dots_vao)
             
@@ -488,7 +517,7 @@ class VisMolGLCore():
             GL.glPointSize(1)
             GL.glUseProgram(0)
             GL.glDisable(GL.GL_DEPTH_TEST)
-        
+        #'''
         if self.show_selection_box and self.shift:
             if self.selection_box.vao is None:
                 self.selection_box._make_gl_selection_box()
@@ -608,13 +637,15 @@ class VisMolGLCore():
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
         for visObj in self.vismolSession.vismol_objects:
             if visObj.actived:
+                
+                #'''
                 if visObj.lines_actived:
                     if visObj.sel_lines_vao is None:
                         shapes._make_sel_gl_lines(self.sel_lines_program, vismol_object = visObj)
                         self._draw_sel_lines(visObj = visObj)
                     else:
                         self._draw_sel_lines(visObj = visObj)
-                
+                #'''
                 if visObj.dots_actived:
                     if visObj.sel_dots_vao is None:
                         shapes._make_sel_gl_dots (self.sel_dots_program, vismol_object = visObj)
@@ -652,6 +683,8 @@ class VisMolGLCore():
                 if visObj.spheres_actived:
                     if visObj.sphere_rep is not None:
                         self._draw_sel_spheres(visObj = visObj, indexes = False)
+                '''
+                '''
         GL.glPixelStorei(GL.GL_PACK_ALIGNMENT, 1)
         pos = [self.picking_x, self.height - self.picking_y]
         data = GL.glReadPixels(pos[0], (pos[1]), 1, 1, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE)
@@ -1274,7 +1307,7 @@ class VisMolGLCore():
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glUseProgram(self.sel_lines_program)
         #GL.glLineWidth(80/abs(self.dist_cam_zrp))
-        GL.glLineWidth(5)
+        GL.glLineWidth(20)
         self.load_matrices(self.sel_lines_program, visObj.model_mat)
         if visObj.sel_lines_vao is not None:
             GL.glBindVertexArray(visObj.sel_lines_vao)

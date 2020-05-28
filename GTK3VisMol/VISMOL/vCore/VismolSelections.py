@@ -85,6 +85,9 @@ class VisMolViewingSelection:
         self.selected_atoms = []
         self.selected_frames= []
 	
+    def get_selection_info (self):
+	    """ Function doc """
+		
     
     def selecting_by_atom (self, selected):
         """ Function doc """
