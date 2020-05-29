@@ -455,11 +455,11 @@ class GtkGLAreaWidget(Gtk.GLArea):
 
         if k_name == 't':
             #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
-            visObj = self.vismolSession.vismol_objects[0]
-            if visObj.sticks_actived:
-                visObj.sticks_actived =  False
-            else:
-                visObj.sticks_actived =  True
+            for visObj in self.vismolSession.vismol_objects:
+                if visObj.sticks_actived:
+                    visObj.sticks_actived =  False
+                else:
+                    visObj.sticks_actived =  True
 
         if k_name == 'd':
             self.vismolSession.show(_type = 'dots', Vobjects =  [self.vismolSession.vismol_objects[-1]])
@@ -503,8 +503,10 @@ class GtkGLAreaWidget(Gtk.GLArea):
                 print (vobject.name, self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[vobject], 'selection_function_viewing button1' )
                 
                 lista = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[vobject]
-                
-                self.vm_widget.set_draw_lines_indexes (visObj = self.vismolSession.vismol_objects[0],  show = False, input_indexes = lista)
+                print ('\n\n\n olha a lista aqui',lista, vobject.name, '\n\n\n\n')
+                #for vobject in lista:
+                #self.vm_widget.set_draw_lines_indexes (visObj = self.vismolSession.vismol_objects[0],  show = False, input_indexes = lista)
+                self.vm_widget.set_draw_lines_indexes (visObj = vobject,  show = False, input_indexes = lista)
 
 
 

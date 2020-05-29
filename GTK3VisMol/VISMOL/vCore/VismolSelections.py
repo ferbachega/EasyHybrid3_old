@@ -75,18 +75,31 @@ class VisMolViewingSelection:
         self.actived = True
         
         self._selection_mode    = 'residue'
-        self.selected_objects          = {}
-        self.viewing_selections = []
-        self.viewing_selections_coords = []
-        
-        self.selected_residues  = []
-        
-        """ Class initialiser """
-        self.selected_atoms = []
-        self.selected_frames= []
+        self.selected_objects          = {} #dic of VisMol objects (obj)
+        self.viewing_selections        = [] #List of atoms objects (obj)
+        self.viewing_selections_coords = [] #coordinate (floats) x y z
 	
     def get_selection_info (self):
-	    """ Function doc """
+        """ Function doc """
+        #print('self._selection_mode          ',self._selection_mode           )
+        #print('self.selected_objects         ',self.selected_objects          )
+        #
+        #print('self.viewing_selections       ',self.viewing_selections        )
+        print('Selection defiend with  ',len(self.viewing_selections), 'atom(s)')
+        #print('self.viewing_selections_coords',self.viewing_selections_coords )
+        
+        '''
+        for atom in self.viewing_selections:
+            print(atom.name,                             # nome
+                  atom.resi,                             # residue index
+                  atom.Vobject.residues[atom.resi].resn, # residue name  taken from residues dic
+                  atom.residue)                          # residue obj
+        '''
+            
+        #print(atom.name, atom.resi, atom.Vobject.residues) 
+        #print('self.selected_residues        ',self.selected_residues         )
+        #print('self.selected_atoms           ',self.selected_atoms            )
+        #print('self.selected_frames          ',self.selected_frames           )
 		
     
     def selecting_by_atom (self, selected):
@@ -192,7 +205,7 @@ class VisMolViewingSelection:
         
         #print  (self.viewing_selections_coords)      
         #for vobject in     self.selected_objects:
-            print(vobject.name,self.selected_objects[vobject], 'selection_function_viewing' )
-            
+            #print(vobject.name,self.selected_objects[vobject], 'selection_function_viewing' )
+            print('Selection defiend with  ',len(self.viewing_selections), 'atom(s)')
         
             

@@ -32,48 +32,50 @@ from VISMOL.vCore.VismolSession  import VisMolSession
 from GTKGUI  import gtkgui
 
 class VismolGTK3Session():
-	""" Class doc """
-	
-	def __init__ (self, filein ):
-	    """ Class initialiser """
-	    #----------------------------------------------------------------------------#
-	    # - - - - - - - - -  GTK STUFFS  - - - - - - - - -               
-	    self.window = Gtk.Window(title="VisMol window")                  
-	    #filechooser = FileChooser()                                     
-									     
-	    self.container = Gtk.Box (orientation = Gtk.Orientation.VERTICAL)
-	    # - - - - - - - - - - - -  - - - - - - - - - - - -               
-									     
-									     
-	    #---------------------------------------------------------------------------  
-	    self.vismolSession  =  VisMolSession(glwidget = True, backend = 'gtk3')       
-	    self.container.pack_start(self.vismolSession.glwidget, True, True, 0)         
-									     
-	    self.window.connect("key-press-event"  , self.vismolSession.glwidget.key_pressed)  
-	    self.window.connect("key-release-event", self.vismolSession.glwidget.key_released) 
-	    self.window.add(self.container)                                                    
-	    #--------------------------------------------------------------------------- #
-									     
-	    #--------------------------------------------------------------------------- #
-	    self.window.connect("delete-event",    Gtk.main_quit)                             #
-	    self.window.show_all()                                                            #
-	    #----------------------------------------------------------------------------#
+    """ Class doc """
+        
+    def __init__ (self, filein ):
+        """ Class initialiser """
+        #----------------------------------------------------------------------------#
+        # - - - - - - - - -  GTK STUFFS  - - - - - - - - -               
+        self.window = Gtk.Window(title="VisMol window")                  
+        #filechooser = FileChooser()                                     
+                                         
+        self.container = Gtk.Box (orientation = Gtk.Orientation.VERTICAL)
+        # - - - - - - - - - - - -  - - - - - - - - - - - -               
+                                         
+                                         
+        #---------------------------------------------------------------------------  
+        self.vismolSession  =  VisMolSession(glwidget = True, backend = 'gtk3')       
+        self.container.pack_start(self.vismolSession.glwidget, True, True, 0)         
+                                         
+        self.window.connect("key-press-event"  , self.vismolSession.glwidget.key_pressed)  
+        self.window.connect("key-release-event", self.vismolSession.glwidget.key_released) 
+        self.window.add(self.container)                                                    
+        #--------------------------------------------------------------------------- #
+                                         
+        #--------------------------------------------------------------------------- #
+        self.window.connect("delete-event",    Gtk.main_quit)                             #
+        self.window.show_all()                                                            #
+        #----------------------------------------------------------------------------#
 
 
 
-	    #args =  sys.argv
-	    #print  (args)
-	    #filein = args[-1]
-	    
-	    #---------------------------------------------------------------------------
-	    self.vismolSession.load(filein)
-	    #visObj = vismolSession.vismol_objects[-1]
-	    #vismolSession.glwidget.vm_widget.center_on_coordinates(visObj, visObj.mass_center)
-	    #---------------------------------------------------------------------------
+        #args =  sys.argv
+        #print  (args)
+        #filein = args[-1]
+        
+        #---------------------------------------------------------------------------
+        self.vismolSession.load(filein)
+        #self.vismolSession.load('/home/fernando/DMT.pdb')
 
-	#def run(self):
-	    Gtk.main()
-	    return None
+        #visObj = vismolSession.vismol_objects[-1]
+        #vismolSession.glwidget.vm_widget.center_on_coordinates(visObj, visObj.mass_center)
+        #---------------------------------------------------------------------------
+
+        #def run(self):
+        Gtk.main()
+        return None
 
 	    
 #Gdk.threads_init()

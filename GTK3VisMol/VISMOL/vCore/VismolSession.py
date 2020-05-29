@@ -241,10 +241,9 @@ class VisMolSession (ShowHideVisMol):
         self.picking_selections =  vPick()
         
     
-        def f1 ( ):
+        def f1 (_):
             """ Function doc """
             print('f1')
-            
             
         def f2 (_):
             """ Function doc """

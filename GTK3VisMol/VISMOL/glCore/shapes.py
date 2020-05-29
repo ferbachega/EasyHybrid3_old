@@ -101,7 +101,7 @@ def _make_gl_dots(program, vismol_object = None, bckgrnd_color= [0.0,0.0,0.0,1.0
     
     coords    = vismol_object.frames[0]
     
-    #dot_sizes = vismol_object.vdw_dot_sizes
+    dot_sizes = vismol_object.vdw_dot_sizes
     
     dot_qtty      = int(len(coords)/3)
     
@@ -135,12 +135,12 @@ def _make_gl_dots(program, vismol_object = None, bckgrnd_color= [0.0,0.0,0.0,1.0
     GL.glEnableVertexAttribArray(att_colors)
     GL.glVertexAttribPointer(att_colors, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*colors.itemsize, ctypes.c_void_p(0))
     
-    #dot_vbo = GL.glGenBuffers(1)
-    #GL.glBindBuffer(GL.GL_ARRAY_BUFFER, dot_vbo)
-    #GL.glBufferData(GL.GL_ARRAY_BUFFER, dot_sizes.itemsize*len(dot_sizes), dot_sizes, GL.GL_STATIC_DRAW)
-    #att_size = GL.glGetAttribLocation(program, 'vert_dot_size')
-    #GL.glEnableVertexAttribArray(att_size)
-    #GL.glVertexAttribPointer(att_size, 1, GL.GL_FLOAT, GL.GL_FALSE, dot_sizes.itemsize, ctypes.c_void_p(0))
+    dot_vbo = GL.glGenBuffers(1)
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, dot_vbo)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, dot_sizes.itemsize*len(dot_sizes), dot_sizes, GL.GL_STATIC_DRAW)
+    att_size = GL.glGetAttribLocation(program, 'vert_dot_size')
+    GL.glEnableVertexAttribArray(att_size)
+    GL.glVertexAttribPointer(att_size, 1, GL.GL_FLOAT, GL.GL_FALSE, dot_sizes.itemsize, ctypes.c_void_p(0))
     #
     #bckgrnd_vbo = GL.glGenBuffers(1)
     #GL.glBindBuffer(GL.GL_ARRAY_BUFFER, bckgrnd_vbo)

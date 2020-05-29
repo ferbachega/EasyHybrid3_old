@@ -112,7 +112,7 @@ class VismolObject:
         #-----------------------------------------------------------------
         self.atoms2             = atoms
         self.atoms              = []
-        self.residues           = []
+        self.residues           = {}
         self.chains             = {}
         #self.chains             = []
                                 
@@ -259,7 +259,7 @@ class VismolObject:
         #for i in range(int(len(self.atoms))):
         #    self.dot_indexes.append(i)
         self.dot_indexes = np.array(self.dot_indexes, dtype=np.uint32)
-		
+	
 		
     def _generate_atomtree_structure (self):
         """ Function doc """
@@ -336,7 +336,7 @@ class VismolObject:
                 residue = Residue(name=atom.resn, index=atom.resi, chain=atom.chain)
                 atom.residue     = residue
                 residue.atoms.append(atom)
-                
+                self.residues[atom.resi] = residue
                 ch.residues.append(residue)
                 #frame.append([atom.pos[0],atom.pos[1],atom.pos[2]])
                 parser_resi  = atom.resi

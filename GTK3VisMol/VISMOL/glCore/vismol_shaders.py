@@ -968,36 +968,188 @@ void main(){
 """
 
 
+#
+#vertex_shader_dots  = """
+##version 330
+#uniform vec2 resolution;
+#uniform mat4 model_mat;
+#uniform mat4 view_mat;
+#uniform mat4 proj_mat;
+#//uniform float vert_ext_linewidth;
+#
+#//attribute vec3   center;
+#//attribute float  radius;
+#//varying   vec3   v_center;
+#//varying   float  v_radius;
+#
+#in vec3  vert_coord;
+#in vec3  vert_color;
+#in float vert_dot_size;
+#
+#//varying float frag_ext_linewidth;
+#out vec3 index_color;
+#out vec4 vert_coord2;
+#
+#void main(){
+#    
+#    //v_radius = vert_dot_size;
+#    //v_center = vert_coord;
+#    
+#    //gl_PointSize = 2.0 + ceil(2.0*radius);
+#    
+#    //gl_PointSize = 2.0 + ceil(2.0*vert_dot_size);
+#    
+#    //gl_Position = vec4(2.0*center.xy/resolution-1.0, v_center.z, 1.0);
+#    vert_coord2  = proj_mat * view_mat * model_mat * vec4(vert_coord, 1.0);
+#    
+#    //gl_Position  = proj_mat * view_mat * model_mat * vec4(2.0*center.xy/resolution-1.0, v_center.z, 1.0);
+#    //gl_PointSize = 15;
+#    
+#    index_color = vert_color;
+#}
+#"""
+#
+#fragment_shader_dots  = """
+##version 330
+#
+#in vec3 index_color;
+#in vec4 vert_coord2;
+#void main(){
+#    gl_FragColor = vec4(index_color,1);
+#    //gl_FragColor = vec4(1,1,1,1);
+#}
+#
+#"""
+#
+#
+#
 
-vertex_shader_dots  = """
+
+vertex_shader_dots = """
 #version 330
 
 uniform mat4 model_mat;
 uniform mat4 view_mat;
 uniform mat4 proj_mat;
 uniform float vert_ext_linewidth;
+uniform float vert_int_antialias;
+uniform float vert_dot_factor;
 
-in vec3  vert_coord;
-in vec3  vert_color;
+in vec3 vert_coord;
+in vec3 vert_color;
+in float vert_dot_size;
+
+attribute vec4 bckgrnd_color;
+
+varying float frag_dot_size;
 varying float frag_ext_linewidth;
-out vec3 index_color;
+varying float frag_int_antialias;
+varying vec4 frag_dot_color;
+varying vec4 frag_bckgrnd_color;
 
 void main(){
-    gl_Position  = proj_mat * view_mat * model_mat * vec4(vert_coord, 1.0);
-    gl_PointSize = 15;
-    index_color = vert_color;
+    frag_dot_size = vert_dot_size * vert_dot_factor;
+    frag_ext_linewidth = vert_ext_linewidth;
+    frag_int_antialias = vert_int_antialias;
+    frag_dot_color = vec4(vert_color, 1.0);
+    frag_bckgrnd_color = bckgrnd_color;
+    gl_Position = proj_mat * view_mat * model_mat * vec4(vert_coord, 1);
+    gl_PointSize = vert_dot_size + 2*(vert_ext_linewidth + 1.5*vert_int_antialias);
 }
 """
-fragment_shader_dots  = """
+fragment_shader_dots = """
 #version 330
 
-in vec3 index_color;
+uniform vec4 fog_color;
+uniform float fog_start;
+uniform float fog_end;
 
-void main(){
-    gl_FragColor = vec4(index_color,1);
+out vec4 final_color;
+
+varying vec4 frag_bckgrnd_color;
+varying vec4 frag_dot_color;
+varying float frag_dot_size;
+varying float frag_ext_linewidth;
+varying float frag_int_antialias;
+
+float disc(vec2 P, float size){
+     float r = length((P.xy - vec2(0.5,0.5))*size);
+     r -= frag_dot_size/2;
+     return r;
 }
 
+void main(){
+    // Calculate the distance of the object
+    float size = frag_dot_size +2*(frag_ext_linewidth + 1.5*frag_int_antialias);
+    float t = frag_ext_linewidth/2.0-frag_int_antialias;
+    
+    // gl_PointCoord is the pixel in the coordinate
+    float r = disc(gl_PointCoord, size);
+    float d = abs(r) - t;
+    
+    // This if else statement makes the circle ilusion
+    if( r > (frag_ext_linewidth/2.0+frag_int_antialias)){
+        discard;
+    }
+    else{
+        if( d < 0.0 ){
+            final_color = frag_bckgrnd_color;
+        }
+        else{
+            if (r > 0){
+                final_color = frag_bckgrnd_color;
+            }
+            else{
+                final_color = frag_dot_color;
+            }
+        }
+    }
+}
 """
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#"""
+#fragment_shader_dots  = """
+#in vec3 vert_coord;
+#varying vec3 v_center;
+#varying float v_radius;
+#
+#void main()
+#{
+#	vec2 p = (gl_FragCoord.xy - v_center.xy)/v_radius;
+#	float z = 1.0 - length(p);
+#	if (z < 0.0) discard;
+#	gl_FragDepth = 0.5*v_center.z + 0.5*(1.0 - z);
+#	vec3 color = vec3(1.0, 0.0, 0.0);
+#	vec3 normal = normalize(vec3(p.xy, z));
+#	vec3 direction = normalize(vec3(1.0, 1.0, 1.0));
+#	float diffuse = max(0.0, dot(direction, normal));
+#	float specular = pow(diffuse, 24.0);
+#	gl_FragColor = vec4(max(diffuse*color, specular*vec3(1.0)), 1.0);
+#} """
 
 
 

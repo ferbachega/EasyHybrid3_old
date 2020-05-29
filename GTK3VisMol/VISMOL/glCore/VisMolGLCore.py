@@ -66,7 +66,7 @@ class VisMolGLCore():
         self.parent_widget.set_has_depth_buffer(True)
         self.parent_widget.set_has_alpha(True)
         self.frame = 0
-        self.scroll = 0.3
+        self.scroll = 0.9
         self.right = self.width/self.height
         self.left = -self.right
         self.top = 1.0
@@ -227,6 +227,7 @@ class VisMolGLCore():
                         print ('selection is not activated')
                 else:
                     print('selection is  activated')
+                    self.vismolSession.selections[self.vismolSession.current_selection].get_selection_info()
                 #self.parent_widget.glMenu.#open_gl_menu(event = event)
                 
                 self.parent_widget.glMenu.popup(None, None, None, None, 0, 0)  
@@ -788,6 +789,7 @@ class VisMolGLCore():
         GL.glUseProgram(self.non_bonded_program)
         self.load_matrices(self.non_bonded_program, visObj.model_mat)
         self.load_fog(self.non_bonded_program)
+        GL.glLineWidth(2)
         if visObj.non_bonded_vao is not None:
             GL.glBindVertexArray(visObj.non_bonded_vao)
             if self.modified_view:
@@ -1115,35 +1117,16 @@ class VisMolGLCore():
             for atom in pair:
                 indexes.append(atom)
             
-        print (indexes)
-
-
-        #for index_i in input_indexes:
-        #    for index_j in index_bonds:
-        #        if index_i == index_j:
-        #            index_in_index_bonds = index_bonds.index(index_i)
-        #            print ("atom",index_i, 'position',index_in_index_bonds) 
-                
-                #if (index_in_index_bonds%2) == 0:
-                #    #eh par
-                #    #print (index-1, )
-                #    #print (index_bonds[index_in_index_bonds], index_bonds[index_in_index_bonds+1])
-                #    print (index_in_index_bonds, index_in_index_bonds+1)
-                #    #index_bonds.pop(index_in_index_bonds)
-                #    #index_bonds.pop(index_in_index_bonds-1)
-                #else:
-                #    #eh par
-                #    #print (index_bonds[index_in_index_bonds-1], index_bonds[index_in_index_bonds])
-                #    print (index_in_index_bonds-1, index_in_index_bonds)
-                #    #index_bonds.pop(index_in_index_bonds)
-                #    #index_bonds.pop(index_in_index_bonds+1)
-    
-        indexes = np.array(indexes,dtype=np.uint32)
+        if indexes == []:
+            #visObj.actived        = False
+            visObj.lines_actived  = False
+        else:
+            pass
+            print (indexes)
+            indexes = np.array(indexes,dtype=np.uint32)
+            GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
+            GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
             
-
-        GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
-        
     def _draw_lines(self, visObj = None):
         """ Function doc
         """
@@ -1351,6 +1334,8 @@ class VisMolGLCore():
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glUseProgram(self.sel_non_bonded_program)
         self.load_matrices(self.sel_non_bonded_program, visObj.model_mat)
+        GL.glLineWidth(10)
+
         if visObj.sel_non_bonded_vao is not None:
             GL.glBindVertexArray(visObj.sel_non_bonded_vao)
             if self.modified_view:
