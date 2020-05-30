@@ -219,7 +219,9 @@ class VisMolGLCore():
                     if self.atom_picked is not None:
 
                         # Getting the information about the atom that was identified in the click
-                        print(self.atom_picked.chain,self.atom_picked.resn, self.atom_picked.resi, self.atom_picked.name, self.atom_picked.index)
+                        print(self.atom_picked.chain,self.atom_picked.resn, self.atom_picked.resi, self.atom_picked.name, self.atom_picked.index, self.atom_picked.connected2)
+                        for bond in self.atom_picked.bonds:
+                            print (bond.atom_index_i, bond.atom_index_j)
                         self.atom_picked = None
                     else:
                         # When no atom is identified in the click (user clicked on a point in the background)
@@ -817,6 +819,9 @@ class VisMolGLCore():
         """ Function doc """
         #visObj.dot_buffers[0] = ind_vbo
         
+        
+            
+            
         indexes = visObj.index_dots_rep
 
         #print ('before index_dots', visObj.dot_indexes)
@@ -1078,7 +1083,7 @@ class VisMolGLCore():
     
     def set_draw_lines_indexes ( self, visObj = None, show = True, input_indexes = []):
         """ Function doc """
-
+        '''
         print (visObj.index_bonds)
         ind_vbo = visObj.line_buffers[0]
         
@@ -1112,6 +1117,7 @@ class VisMolGLCore():
         
         print (index_bonds_pairs)
         
+        print 
         indexes = []
         for pair in index_bonds_pairs:
             for atom in pair:
@@ -1126,7 +1132,34 @@ class VisMolGLCore():
             indexes = np.array(indexes,dtype=np.uint32)
             GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
             GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
-            
+        '''
+        ind_vbo = visObj.line_buffers[0]
+        
+        indexes = input_indexes
+        indexes = np.array(indexes,dtype=np.uint32)
+        GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
+        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+        
+        ind_vbo = visObj.sel_line_buffers[0]
+        GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
+        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+        
+    def set_draw_sticks_indexes ( self, visObj = None, show = True, input_indexes = []):
+        """ Function doc """
+
+        ind_vbo = visObj.sticks_buffers[0]
+        indexes = input_indexes
+        indexes = np.array(indexes,dtype=np.uint32)
+        GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
+        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+        
+        ind_vbo = visObj.sel_sticks_buffers[0]
+        GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
+        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+        
+        
+        
+        
     def _draw_lines(self, visObj = None):
         """ Function doc
         """

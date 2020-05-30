@@ -5,7 +5,7 @@ import numpy as np
 import VISMOL.vModel.atom_types as at 
 import VISMOL.vModel.cDistances as cdist
 from   VISMOL.vModel import VismolObject
-
+from pprint import pprint
 
 cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None):
     """ Function doc 
@@ -40,8 +40,9 @@ cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None):
     #-------------------------------------------------------------------------------------------
     atoms, bonds_full_indexes, bonds_pair_of_indexes, NB_indexes_list = cdist.generete_full_NB_and_Bonded_lists(atoms)
     #-------------------------------------------------------------------------------------------
-    
-    
+    print (bonds_pair_of_indexes, NB_indexes_list )
+    for atom in atoms:
+        pprint (atom[8])
     #-------------------------------------------------------------------------------------------
     #                         Building   V I S M O L    O B J
     #-------------------------------------------------------------------------------------------
@@ -56,6 +57,7 @@ cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None):
     vismol_object._generate_atom_unique_color_id()
     vismol_object.index_bonds       = bonds_full_indexes
     vismol_object.index_bonds_pairs = bonds_pair_of_indexes
+    vismol_object.import_bonds(bonds_pair_of_indexes)
     vismol_object.non_bonded_atoms  = NB_indexes_list
     vismol_object.generate_dot_indexes()
     #vismol_object.get_backbone_indexes()

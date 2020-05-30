@@ -76,20 +76,20 @@ class VisMolViewingSelection:
         
         self._selection_mode    = 'residue'
         self.selected_objects          = {} #dic of VisMol objects (obj)
-        self.viewing_selections        = [] #List of atoms objects (obj)
-        self.viewing_selections_coords = [] #coordinate (floats) x y z
+        self.selected_atoms        = [] #List of atoms objects (obj)
+        self.selected_atoms_coords = [] #coordinate (floats) x y z
 	
     def get_selection_info (self):
         """ Function doc """
         #print('self._selection_mode          ',self._selection_mode           )
         #print('self.selected_objects         ',self.selected_objects          )
         #
-        #print('self.viewing_selections       ',self.viewing_selections        )
-        print('Selection defiend with  ',len(self.viewing_selections), 'atom(s)')
-        #print('self.viewing_selections_coords',self.viewing_selections_coords )
+        #print('self.selected_atoms       ',self.selected_atoms        )
+        print('Selection defiend with  ',len(self.selected_atoms), 'atom(s)')
+        #print('self.selected_atoms_coords',self.selected_atoms_coords )
         
         '''
-        for atom in self.viewing_selections:
+        for atom in self.selected_atoms:
             print(atom.name,                             # nome
                   atom.resi,                             # residue index
                   atom.Vobject.residues[atom.resi].resn, # residue name  taken from residues dic
@@ -104,24 +104,24 @@ class VisMolViewingSelection:
     
     def selecting_by_atom (self, selected):
         """ Function doc """
-        if selected not in self.viewing_selections:
-            self.viewing_selections.append(selected)
+        if selected not in self.selected_atoms:
+            self.selected_atoms.append(selected)
             
         else:
-            index = self.viewing_selections.index(selected)
-            self.viewing_selections.pop(index)
+            index = self.selected_atoms.index(selected)
+            self.selected_atoms.pop(index)
     
     def selecting_by_residue (self, selected):
         """ Function doc """
         # if the selected atoms is not on the selected list
-        if selected not in self.viewing_selections:
+        if selected not in self.selected_atoms:
             
             for atom in selected.residue.atoms:
                 print (len(selected.residue.atoms), atom.name, atom.index)
                 
                 # the atom is not on the list -  add atom by atom
-                if atom not in self.viewing_selections:
-                    self.viewing_selections.append(atom)
+                if atom not in self.selected_atoms:
+                    self.selected_atoms.append(atom)
                 
                 # the atom IS on the list - do nothing 
                 else:
@@ -133,9 +133,9 @@ class VisMolViewingSelection:
             for atom in selected.residue.atoms:
                 
                 # the atom is not on the list -  add atom by atom
-                if atom in self.viewing_selections:
-                    index = self.viewing_selections.index(atom)
-                    self.viewing_selections.pop(index)                            
+                if atom in self.selected_atoms:
+                    index = self.selected_atoms.index(atom)
+                    self.selected_atoms.pop(index)                            
                 # the atom IS on the list - do nothing 
                 else:
                     pass   
@@ -143,13 +143,13 @@ class VisMolViewingSelection:
     def selecting_by_chain (self, selected):
         
         # if the selected atoms is not on the selected list
-        if selected not in self.viewing_selections:
+        if selected not in self.selected_atoms:
             # So, add all atoms  - selected residue <- selected.resi
             for residue in selected.Vobject.chains[selected.chain].residues:
                 for atom in residue.atoms:
                     # the atom is not on the list -  add atom by atom
-                    if atom not in self.viewing_selections:
-                        self.viewing_selections.append(atom)
+                    if atom not in self.selected_atoms:
+                        self.selected_atoms.append(atom)
                     
                     # the atom IS on the list - do nothing 
                     else:
@@ -161,19 +161,19 @@ class VisMolViewingSelection:
                 #for residue in chain.residues:
                 for atom in residue.atoms:
                     # the atom is not on the list -  add atom by atom
-                    if atom in self.viewing_selections:
-                        index = self.viewing_selections.index(atom)
-                        self.viewing_selections.pop(index)                            
+                    if atom in self.selected_atoms:
+                        index = self.selected_atoms.index(atom)
+                        self.selected_atoms.pop(index)                            
                     # the atom IS on the list - do nothing 
                     else:
                         pass          
 
-        print ('selected atoms: ',len(self.viewing_selections))
+        print ('selected atoms: ',len(self.selected_atoms))
 
     def selection_function_viewing (self, selected):
         
         if selected is None:
-            self.viewing_selections = []
+            self.selected_atoms = []
             self.selected_residues  = []
         
         else:
@@ -187,9 +187,9 @@ class VisMolViewingSelection:
                 self.selecting_by_chain (selected)
         
         
-        self.viewing_selections_coords = []
+        self.selected_atoms_coords = []
         self.selected_objects          = {}
-        for atom in self.viewing_selections:
+        for atom in self.selected_atoms:
             
             if atom.Vobject in self.selected_objects:
                 self.selected_objects[atom.Vobject] += [atom.index-1]
@@ -197,15 +197,15 @@ class VisMolViewingSelection:
                 self.selected_objects[atom.Vobject] = [atom.index-1]
             
             coords =  atom.coords()
-            self.viewing_selections_coords = self.viewing_selections_coords + coords
+            self.selected_atoms_coords = self.selected_atoms_coords + coords
         
         
         for vobject in self.selected_objects:
             self.selected_objects[vobject] =  np.array(self.selected_objects[vobject], dtype=np.uint32)         
         
-        #print  (self.viewing_selections_coords)      
+        #print  (self.selected_atoms_coords)      
         #for vobject in     self.selected_objects:
             #print(vobject.name,self.selected_objects[vobject], 'selection_function_viewing' )
-            print('Selection defiend with  ',len(self.viewing_selections), 'atom(s)')
+            print('Selection defiend with  ',len(self.selected_atoms), 'atom(s)')
         
             

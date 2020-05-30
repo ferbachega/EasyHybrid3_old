@@ -19,9 +19,12 @@ class Atom:
  
         if pos is None:
             pos = np.array([0.0, 0.0, 0.0])
-
+		
+        
         self.pos     = pos     # - coordinates of the first frame
-        self.index   = index   # 
+        self.index   = index   # - Remember that the "index" attribute refers to the numbering of atoms 
+                               # (it is not a zero base, it starts at 1 for the first atom)
+
         self.name    = name    #
         self.symbol  = symbol  #
         self.resi    = resi    #
@@ -48,7 +51,8 @@ class Atom:
         self.sticks         = False
         self.spheres        = False
         self.surface        = False
-        self.connected      = []
+        self.connected2     = []
+        self.bonds          = []
     
     def coords (self, frame = None):
         """ Function doc """

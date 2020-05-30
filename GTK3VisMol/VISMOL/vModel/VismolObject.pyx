@@ -33,7 +33,7 @@ import VISMOL.glCore.vismol_font as vmf
 from VISMOL.vModel.Atom       import Atom
 from VISMOL.vModel.Chain      import Chain
 from VISMOL.vModel.Residue    import Residue
-
+from VISMOL.vModel.Bond       import Bond
 
 
 
@@ -115,7 +115,7 @@ class VismolObject:
         self.residues           = {}
         self.chains             = {}
         #self.chains             = []
-                                
+        self.bonds              = []                        
         
         self.frames             = trajectory
         self.atom_unique_id_dic = {}
@@ -284,25 +284,26 @@ class VismolObject:
         
         for atom2 in self.atoms2:
             #[index, at_name, cov_rad,  at_pos], at_res_i, at_res_n, at_ch]
-            index    = atom2[0]
-            at_name  = atom2[1]
-            cov_rad  = atom2[2]
-            at_pos   = atom2[3]
-            at_res_i = atom2[4]
-            at_res_n = atom2[5]
-            at_ch    = atom2[6]
+            index       = atom2[0]
+            at_name     = atom2[1]
+            cov_rad     = atom2[2]
+            at_pos      = atom2[3]
+            at_res_i    = atom2[4]
+            at_res_n    = atom2[5]
+            at_ch       = atom2[6]
+            connections = atom2[8]
+            atom        = Atom(name      =  at_name, 
+                               index     =  index+1, 
+                               pos       =  at_pos, 
+                               resi      =  at_res_i, 
+                               resn      =  at_res_n, 
+                               chain     =  at_ch, 
+                               #atom_id  =  counter, 
+                               )
             
-            atom      = Atom(name      =  at_name, 
-                             index     =  index+1, 
-                             pos       =  at_pos, 
-                             resi      =  at_res_i, 
-                             resn      =  at_res_n, 
-                             chain     =  at_ch, 
-                             #atom_id  =  counter, 
-                             )
-            
-            atom.atom_id = self.vismol_session.atom_id_counter
-            atom.Vobject = self
+            atom.atom_id   = self.vismol_session.atom_id_counter
+            atom.Vobject   = self
+            atom.connected2 = connections
             '''
             if atom.chain == parser_chn:# and at_res_n == parser_resn:
                 atom.residue = ch.residues[-1]
@@ -502,7 +503,40 @@ class VismolObject:
         self.ribbons_Calpha_pairs_rep   = bonds_pairs
         self.ribbons_Calpha_indexes_rep = bonds_indexes
         
+    
+    def import_bonds (self, bonds_list = [] ):
+        """ Function doc """
+        
+        for raw_bond in bonds_list:
+            index_i = raw_bond[0]
+            index_j = raw_bond[1]
 
+            bond  =  Bond(atom_i       = self.atoms[index_i], 
+                          atom_index_i = self.atoms[index_i].index-1,
+                          atom_j       = self.atoms[index_j],
+                          atom_index_j = self.atoms[index_j].index-1,
+                          )
+            
+            '''
+            print ('creating bond:', self.atoms[index_i].name,
+                                     self.atoms[index_i].index, bond.atom_index_i,
+                                     self.atoms[index_j].name,
+                                     self.atoms[index_j].index, bond.atom_index_j)
+            
+            '''
+            
+            self.bonds.append(bond)
+            
+            self.atoms[index_i].bonds.append(bond)
+            self.atoms[index_j].bonds.append(bond)
+        
+        #print bonds_list
+        
+        #for bond in self.bonds:
+        #    print (bond.atom_index_i, bond.atom_index_j)
+            
+    
+    
 '''
 def determine_the_paired_atomic_grid_elements_parallel(atomic_grid):
     """
