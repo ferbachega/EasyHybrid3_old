@@ -497,22 +497,14 @@ class GtkGLAreaWidget(Gtk.GLArea):
        
         if k_name == 'z':
             #self.vismolSession.glwidget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  indexes = False)
-            
+
+            # Associates selected bonds as false / true
             for atom in self.vismolSession.selections[self.vismolSession.current_selection].selected_atoms:
                 print (atom.name)
                 for bond in atom.bonds:
                     bond.line_activated = False
-            
-            
-            '''
-            # This loop was created to verify that the previous loop was in fact assigning the false condition to the selected bonds.
-            
-            for bond in self.vismolSession.vismol_objects[0].bonds:
-                #print (atom.name)
-                #for bond in atom.bonds:
-                print(bond.line_activated)# = False
-            '''
-            
+
+            # Build a list of the connections that are active -> this list will be sent to the openGL buffer
             for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
                 indices_bonds = []
                 
@@ -522,68 +514,42 @@ class GtkGLAreaWidget(Gtk.GLArea):
                         indices_bonds.append(bonds.atom_index_j)
                     else:
                         pass
-                
-                self.vm_widget.set_draw_lines_indexes (visObj = vobject,  show = False, input_indexes = indices_bonds)
-                    #print (bond.atom_index_i, bond.atom_index_j)
-            
-            #indices_bonds = 
-            #for bond in 
-            
-            '''
-            for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
-                print (vobject.name, self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[vobject], 'selection_function_viewing button1' )
-                
-                lista = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[vobject]
-                print ('\n\n\n olha a lista aqui',lista, vobject.name, '\n\n\n\n')
-                #for vobject in lista:
-                #self.vm_widget.set_draw_lines_indexes (visObj = self.vismolSession.vismol_objects[0],  show = False, input_indexes = lista)
-                self.vm_widget.set_draw_lines_indexes (visObj = vobject,  show = False, input_indexes = lista)
-            '''
+
+                # When the list is [] we simply have to disable the display of the representation type
+                if indices_bonds == []:
+                    print('indices_bonds == []')
+                    vobject.lines_actived  = False
+                else:
+                    print('indices_bonds ==', indices_bonds)
+                    self.vm_widget.set_draw_lines_indexes (visObj = vobject,  show = False, input_indexes = indices_bonds)
 
         if k_name == 'x':
             #self.vismolSession.glwidget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  indexes = False)
             
+            # Associates selected bonds as false / true
             for atom in self.vismolSession.selections[self.vismolSession.current_selection].selected_atoms:
                 print (atom.name)
                 for bond in atom.bonds:
                     bond.line_activated = False
-            
-            
-            '''
-            # This loop was created to verify that the previous loop was in fact assigning the false condition to the selected bonds.
-            
-            for bond in self.vismolSession.vismol_objects[0].bonds:
-                #print (atom.name)
-                #for bond in atom.bonds:
-                print(bond.line_activated)# = False
-            '''
-            
+
+            # Build a list of the connections that are active -> this list will be sent to the openGL buffer
             for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
                 indices_bonds = []
                 
-                for bonds in vobject.bonds:
-                    if bonds.line_activated:
-                        indices_bonds.append(bonds.atom_index_i)
-                        indices_bonds.append(bonds.atom_index_j)
+                for bond in vobject.bonds:
+                    if bond.line_activated:
+                        indices_bonds.append(bond.atom_index_i)
+                        indices_bonds.append(bond.atom_index_j)
                     else:
                         pass
                 
-                self.vm_widget.set_draw_sticks_indexes (visObj = vobject,  show = False, input_indexes = indices_bonds)
-                    #print (bond.atom_index_i, bond.atom_index_j)
-            
-            #indices_bonds = 
-            #for bond in 
-            
-            '''
-            for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
-                print (vobject.name, self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[vobject], 'selection_function_viewing button1' )
-                
-                lista = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[vobject]
-                print ('\n\n\n olha a lista aqui',lista, vobject.name, '\n\n\n\n')
-                #for vobject in lista:
-                #self.vm_widget.set_draw_lines_indexes (visObj = self.vismolSession.vismol_objects[0],  show = False, input_indexes = lista)
-                self.vm_widget.set_draw_lines_indexes (visObj = vobject,  show = False, input_indexes = lista)
-            '''
+                # When the list is [] we simply have to disable the display of the representation type
+                if indices_bonds == []:
+                    print('indices_bonds == []')
+                    vobject.sticks_actived  = False
+                else:
+                    print('indices_bonds ==', indices_bonds)
+                    self.vm_widget.set_draw_sticks_indexes (visObj = vobject,  show = False, input_indexes = indices_bonds)
 
         
 

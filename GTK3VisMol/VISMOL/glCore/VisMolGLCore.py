@@ -32,10 +32,19 @@ import VISMOL.glCore.glaxis as glaxis
 import VISMOL.glCore.glcamera as cam
 import VISMOL.glCore.operations as op
 import VISMOL.glCore.sphere_data as sph_d
-import VISMOL.glCore.vismol_shaders as vm_shader
+#import VISMOL.glCore.vismol_shaders as vm_shader
 import VISMOL.glCore.matrix_operations as mop
 import VISMOL.glCore.selection_box as sb
 import VISMOL.glCore.sphere_representation as sph_r
+
+import VISMOL.glCore.shaders.sticks             as sticksShaders
+import VISMOL.glCore.shaders.lines              as linesShaders
+import VISMOL.glCore.shaders.spheres            as spheresShaders
+import VISMOL.glCore.shaders.dots               as dotsShaders
+import VISMOL.glCore.shaders.freetype           as freetypeShaders
+import VISMOL.glCore.shaders.picked_and_picking as pickedShaders
+import VISMOL.glCore.shaders.nonbond            as nonbondShaders
+
 
 class VisMolGLCore():
     
@@ -541,26 +550,75 @@ class VisMolGLCore():
             print('OpenGL minor version: ',GL.glGetDoublev(GL.GL_MINOR_VERSION))
         except:
             print('OpenGL major version not found')
-        self.dots_program = self.load_shaders(vm_shader.vertex_shader_dots, vm_shader.fragment_shader_dots)
-        self.dots_surface_program = self.load_shaders(vm_shader.vertex_shader_dots_surface, vm_shader.fragment_shader_dots_surface, vm_shader.geometry_shader_dots_surface)
-        self.lines_program = self.load_shaders(vm_shader.vertex_shader_lines, vm_shader.fragment_shader_lines, vm_shader.geometry_shader_lines)
-        self.non_bonded_program = self.load_shaders(vm_shader.vertex_shader_non_bonded, vm_shader.fragment_shader_non_bonded, vm_shader.geometry_shader_non_bonded)
-        self.ribbons_program = self.load_shaders(vm_shader.vertex_shader_sticks, vm_shader.fragment_shader_sticks, vm_shader.geometry_shader_sticks)
-        self.sticks_program = self.load_shaders(vm_shader.vertex_shader_sticks, vm_shader.fragment_shader_sticks, vm_shader.geometry_shader_sticks)
-        self.spheres_program = self.load_shaders(vm_shader.vertex_shader_spheres, vm_shader.fragment_shader_spheres)
-        self.picked_program = self.load_shaders(vm_shader.vertex_shader_picked, vm_shader.fragment_shader_picked)
-        self.freetype_program = self.load_shaders(vm_shader.vertex_shader_freetype, vm_shader.fragment_shader_freetype, vm_shader.geometry_shader_freetype)
-        self.picking_dots_program = self.load_shaders(vm_shader.vertex_shader_picking_dots, vm_shader.fragment_shader_picking_dots)
         
-        self.sel_dots_program = self.load_shaders(vm_shader.sel_vertex_shader_dots, vm_shader.sel_fragment_shader_dots)
-        self.sel_dots_surface_program = self.load_shaders(vm_shader.sel_vertex_shader_dots_surface, vm_shader.sel_fragment_shader_dots_surface, vm_shader.sel_geometry_shader_dots_surface)
-        self.sel_lines_program = self.load_shaders(vm_shader.sel_vertex_shader_lines, vm_shader.sel_fragment_shader_lines, vm_shader.sel_geometry_shader_lines)
-        self.sel_non_bonded_program = self.load_shaders(vm_shader.sel_vertex_shader_non_bonded, vm_shader.sel_fragment_shader_non_bonded, vm_shader.sel_geometry_shader_non_bonded)
-        #self.sel_ribbons_program = self.load_shaders(vm_shader.sel_vertex_shader_sticks, vm_shader.sel_fragment_shader_sticks, vm_shader.sel_geometry_shader_sticks)
-        self.sel_sticks_program = self.load_shaders(vm_shader.sel_vertex_shader_sticks, vm_shader.sel_fragment_shader_sticks, vm_shader.sel_geometry_shader_sticks)
-        self.sel_spheres_program = self.load_shaders(vm_shader.sel_vertex_shader_spheres, vm_shader.sel_fragment_shader_spheres)
-        #self.sel_spheres_program_ON_THE_FLY = self.load_shaders(vm_shader.vertex_shader_spheres_ON_THE_FLY, vm_shader.fragment_shader_spheres_ON_THE_FLY, vm_shader.fragment_shader_spheres_ON_THE_FLY)
-    
+        
+        
+        # D O T S
+        self.dots_program = self.load_shaders(dotsShaders.vertex_shader_dots, 
+                                              dotsShaders.fragment_shader_dots)
+        self.sel_dots_program = self.load_shaders(dotsShaders.sel_vertex_shader_dots, 
+                                                  dotsShaders.sel_fragment_shader_dots)
+        
+        self.dots_surface_program = self.load_shaders(dotsShaders.vertex_shader_dots_surface, 
+                                                      dotsShaders.fragment_shader_dots_surface, 
+                                                      dotsShaders.geometry_shader_dots_surface)
+
+        self.sel_dots_surface_program = self.load_shaders(dotsShaders.sel_vertex_shader_dots_surface, 
+                                                          dotsShaders.sel_fragment_shader_dots_surface, 
+                                                          dotsShaders.sel_geometry_shader_dots_surface)
+
+        # L I N E S 
+        self.lines_program = self.load_shaders(linesShaders.vertex_shader_lines, 
+                                               linesShaders.fragment_shader_lines, 
+                                               linesShaders.geometry_shader_lines)
+        
+        self.sel_lines_program = self.load_shaders(linesShaders.sel_vertex_shader_lines, 
+                                                   linesShaders.sel_fragment_shader_lines, 
+                                                   linesShaders.sel_geometry_shader_lines)        
+        
+        # N O N  B O N D E D
+        self.non_bonded_program = self.load_shaders(nonbondShaders.vertex_shader_non_bonded, 
+                                                    nonbondShaders.fragment_shader_non_bonded, 
+                                                    nonbondShaders.geometry_shader_non_bonded)
+        
+        self.sel_non_bonded_program = self.load_shaders(nonbondShaders.sel_vertex_shader_non_bonded, 
+                                                        nonbondShaders.sel_fragment_shader_non_bonded, 
+                                                        nonbondShaders.sel_geometry_shader_non_bonded)
+
+        # R I B B O N  S
+        self.ribbons_program = self.load_shaders(sticksShaders.vertex_shader_sticks, 
+                                                 sticksShaders.fragment_shader_sticks, 
+                                                 sticksShaders.geometry_shader_sticks)
+        
+        # S T I C K S
+        self.sticks_program = self.load_shaders(sticksShaders.vertex_shader_sticks, 
+                                                sticksShaders.fragment_shader_sticks, 
+                                                sticksShaders.geometry_shader_sticks)
+        
+        self.sel_sticks_program = self.load_shaders(sticksShaders.sel_vertex_shader_sticks, 
+                                                    sticksShaders.sel_fragment_shader_sticks, 
+                                                    sticksShaders.sel_geometry_shader_sticks)
+                                                    
+        # S P H E R E S                                                    
+        self.spheres_program = self.load_shaders(spheresShaders.vertex_shader_spheres, 
+                                                 spheresShaders.fragment_shader_spheres)
+        
+        self.sel_spheres_program = self.load_shaders(spheresShaders.sel_vertex_shader_spheres, 
+                                                     spheresShaders.sel_fragment_shader_spheres)
+        
+        # P I C K 
+        self.picked_program = self.load_shaders(pickedShaders.vertex_shader_picked, 
+                                                pickedShaders.fragment_shader_picked)
+        
+        self.picking_dots_program = self.load_shaders(pickedShaders.vertex_shader_picking_dots, 
+                                                      pickedShaders.fragment_shader_picking_dots)
+                                                              
+        # F R E E  T Y P E
+        self.freetype_program = self.load_shaders(freetypeShaders.vertex_shader_freetype, 
+                                                  freetypeShaders.fragment_shader_freetype, 
+                                                  freetypeShaders.geometry_shader_freetype)
+        
+
     def load_shaders(self, vertex, fragment, geometry=None):
         """ Here the shaders are loaded and compiled to an OpenGL program. By default
             the constructor shaders will be used, if you want to change the shaders

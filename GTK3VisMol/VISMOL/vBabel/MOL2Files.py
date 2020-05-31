@@ -153,6 +153,8 @@ def load_mol2_files (infile = None, VMSession =  None, gridsize = 3):
     vismol_object._generate_atom_unique_color_id()
     vismol_object.index_bonds       = bonds_full_indexes
     vismol_object.index_bonds_pairs = bonds_pair_of_indexes
+    vismol_object.import_bonds(bonds_pair_of_indexes)
+
     vismol_object.non_bonded_atoms  = NB_indexes_list
     #-------------------------------------------------------------------------------------------
     return vismol_object
