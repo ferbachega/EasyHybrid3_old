@@ -67,7 +67,8 @@ class VismolGTK3Session():
         
         #---------------------------------------------------------------------------
         self.vismolSession.load(filein)
-        #self.vismolSession.load('/home/fernando/DMT_H2O.pdb')
+        #self.vismolSession._picking_selection_mode = False
+        self.vismolSession.load('/home/fernando/programs/EasyHybrid3/Coords/pdbs/1gab.pdb')
 
         #visObj = vismolSession.vismol_objects[-1]
         #vismolSession.glwidget.vm_widget.center_on_coordinates(visObj, visObj.mass_center)

@@ -58,7 +58,21 @@ class Atom:
         """ Function doc """
         if frame is None:
             frame  = self.Vobject.vismol_session.glwidget.vm_widget.frame
-
+            #frame  = self.Vobject.vismol_session.glwidget.vm_widget._safe_frame_exchange(self.Vobject)
+        
+        
+        
+        #if self.Vobject.vismol_session.glwidget.vm_widget.frame <  0:
+        #    self.Vobject.vismol_session.glwidget.vm_widget.frame = 0
+        #else:
+        #    pass
+        #
+        #if self.Vobject.vismol_session.glwidget.vm_widget.frame >= (len (self.Vobject.frames)-1):
+        #    frame = self.Vobject.frames[len (self.Vobject.frames)-2]
+        #else:
+        #    frame = self.Vobject.frames[self.Vobject.vismol_session.glwidget.vm_widget.frame]
+        
+        
         coords = [self.Vobject.frames[frame][(self.index-1)*3  ],
         self.Vobject.frames[frame][(self.index-1)*3+1],
         self.Vobject.frames[frame][(self.index-1)*3+2],]

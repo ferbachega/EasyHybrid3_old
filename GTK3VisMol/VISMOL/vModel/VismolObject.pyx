@@ -38,6 +38,15 @@ from VISMOL.vModel.Bond       import Bond
 
 
 
+class sticksData:
+    """ Class doc """
+    
+    def __init__ (self):
+        """ Class initialiser """
+        self.sticks_actived = False
+        self.sticks_vao   = None
+        self.sel_sticks_buffers = None
+
 
 class VismolObject:
     """ Class doc 
@@ -219,6 +228,7 @@ class VismolObject:
         """   S E L E C T I O N   """
         self.sel_dots_vao = None
         self.sel_lines_vao = None
+        self.sel_lines_vao2 = None
         self.sel_ribbons_vao = None
         self.sel_non_bonded_vao = None
         self.sel_sticks_vao = None
@@ -227,6 +237,8 @@ class VismolObject:
         
         self.sel_dot_buffers = None
         self.sel_lines_buffers = None
+        self.sel_lines_buffers2 = None
+
         self.sel_ribbons_buffers = None
         self.sel_non_bonded_buffers = None
         self.sel_sticks_buffers = None

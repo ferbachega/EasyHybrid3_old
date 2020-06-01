@@ -196,8 +196,8 @@ class VisMolViewingSelection:
             else:
                 self.selected_objects[atom.Vobject] = [atom.index-1]
             
-            coords =  atom.coords()
-            self.selected_atoms_coords = self.selected_atoms_coords + coords
+            #coords =  atom.coords()
+            #self.selected_atoms_coords = self.selected_atoms_coords + coords
         
         
         for vobject in self.selected_objects:

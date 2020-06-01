@@ -40,9 +40,9 @@ cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None):
     #-------------------------------------------------------------------------------------------
     atoms, bonds_full_indexes, bonds_pair_of_indexes, NB_indexes_list = cdist.generete_full_NB_and_Bonded_lists(atoms)
     #-------------------------------------------------------------------------------------------
-    print (bonds_pair_of_indexes, NB_indexes_list )
-    for atom in atoms:
-        pprint (atom[8])
+    #print (bonds_pair_of_indexes, NB_indexes_list )
+    #for atom in atoms:
+    #    pprint (atom[8])
     #-------------------------------------------------------------------------------------------
     #                         Building   V I S M O L    O B J
     #-------------------------------------------------------------------------------------------
