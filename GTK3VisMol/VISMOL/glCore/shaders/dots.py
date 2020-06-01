@@ -468,6 +468,100 @@ void main(){
 
 
 
+#sel_vertex_shader_dots  = """
+##version 330
+#
+#uniform mat4 model_mat;
+#uniform mat4 view_mat;
+#uniform mat4 proj_mat;
+#uniform float vert_ext_linewidth;
+#
+#in vec3  vert_coord;
+#in vec3  vert_color;
+#varying float frag_ext_linewidth;
+#out vec3 index_color;
+#
+#void main(){
+#    gl_Position  = proj_mat * view_mat * model_mat * vec4(vert_coord, 1.0);
+#    gl_PointSize = 15;
+#    index_color = vert_color;
+#}
+#"""
+#sel_fragment_shader_dots  = """
+##version 330
+#
+#in vec3 index_color;
+#
+#void main(){
+#    gl_FragColor = vec4(index_color,1);
+#}
+#
+#"""
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#sel_vertex_shader_dots2 = """
+## version 330
+#
+#uniform mat4 model_mat;
+#uniform mat4 view_mat;
+#uniform mat4 proj_mat;
+#
+#//attribute vec4 bckgrnd_color;
+#
+#in vec3 vert_coord;
+#in vec3 vert_color;
+#
+#out vec3 v_color;
+#
+#void main()
+#{
+#    gl_Position = proj_mat * view_mat * model_mat * vec4(vert_coord, 1);
+#    v_color     = vert_color; 
+#    //frag_dot_color = vec4(vert_color, 1.0);
+#    //frag_bckgrnd_color = bckgrnd_color;
+#    
+#}
+#"""
+#
+#sel_fragment_shader_dots2 = """
+# version 330
+#
+#in vec3 v_color;
+#out vec4 out_color;
+#
+#void main()
+#{
+#    out_color = vec4(v_color, 1.0);
+#}
+#"""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

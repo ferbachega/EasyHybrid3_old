@@ -217,7 +217,7 @@ class VismolObject:
         self.dots_surface_vao = None
         self.spheres_vao_ON_THE_FLY =None
     
-        self.dot_buffers        = None
+        self.dots_buffers        = None
         self.lines_buffers      = None
         self.ribbons_buffers    = None
         self.non_bonded_buffers = None
@@ -235,7 +235,7 @@ class VismolObject:
         self.sel_spheres_vao = None
         self.sel_dots_surface_vao = None
         
-        self.sel_dot_buffers = None
+        self.sel_dots_buffers = None
         self.sel_lines_buffers = None
         self.sel_lines_buffers2 = None
 

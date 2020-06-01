@@ -576,9 +576,9 @@ class VisMolGLCore():
                                                    linesShaders.sel_fragment_shader_lines, 
                                                    linesShaders.sel_geometry_shader_lines)        
         
-        self.sel_lines_program2 = self.load_shaders(linesShaders.sel_vertex_shader_lines, 
-                                                   linesShaders.sel_fragment_shader_lines, 
-                                                   linesShaders.sel_geometry_shader_lines)
+        #self.sel_lines_program2 = self.load_shaders(linesShaders.sel_vertex_shader_lines, 
+        #                                            linesShaders.sel_fragment_shader_lines, 
+        #                                            linesShaders.sel_geometry_shader_lines)
         
         # N O N  B O N D E D
         self.non_bonded_program = self.load_shaders(nonbondShaders.vertex_shader_non_bonded, 
@@ -705,28 +705,32 @@ class VisMolGLCore():
         for visObj in self.vismolSession.vismol_objects:
             if visObj.actived:
                 
+                '''
+                if visObj.sel_dots_vao is None:
+                    shapes._make_sel_gl_dots (self.sel_dots_program, vismol_object = visObj)
+                    self._draw_background_selection_dots (visObj = visObj, _type = 'dots')
+                else:
+                    self._draw_background_selection_dots(visObj = visObj, _type = 'dots')
+                #'''
+                
                 #'''
                 if visObj.lines_actived:
                     if visObj.sel_lines_vao is None:
-                        #print ('707','shapes._make_sel_gl_lines(self.sel_lines_program, vismol_object = visObj)')
-                        #shapes._make_sel_gl_lines(self.sel_lines_program, vismol_object = visObj)
-                        
-                        shapes._make_sel_gl_lines2(self.sel_lines_program2, vismol_object = visObj)
-
-                        #print ('709', visObj.sel_line_buffers2, "at 'if visObj.sel_lines_vao is None:' ")
-                        #self._draw_sel_lines(visObj = visObj)
+                        shapes._make_sel_gl_lines2(self.sel_lines_program, vismol_object = visObj)
                         self._draw_sel_lines2(visObj = visObj)
                     else:
-                        #self._draw_sel_lines(visObj = visObj)
-                        #print ('713',visObj.sel_line_buffers2, "at 'else:' ")
                         self._draw_sel_lines2(visObj = visObj)
-                #'''
+
+
                 if visObj.dots_actived:
                     if visObj.sel_dots_vao is None:
                         shapes._make_sel_gl_dots (self.sel_dots_program, vismol_object = visObj)
                         self._draw_sel_dots(visObj = visObj, indexes = False)
                     else:
                         self._draw_sel_dots(visObj = visObj, indexes = False)
+
+                        
+                        
                 #if visObj.ribbons_actived:
                     #if visObj.sel_ribbons_vao is None:
                         #shapes._make_sel_gl_ribbon_lines(self.sel_ribbons_program, vismol_object = visObj)
@@ -757,8 +761,8 @@ class VisMolGLCore():
                 if visObj.spheres_actived:
                     if visObj.sphere_rep is not None:
                         self._draw_sel_spheres(visObj = visObj, indexes = False)
-                '''
-                '''
+
+                #'''
         GL.glPixelStorei(GL.GL_PACK_ALIGNMENT, 1)
         pos = [self.picking_x, self.height - self.picking_y]
         data = GL.glReadPixels(pos[0], (pos[1]), 1, 1, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE)
@@ -1186,21 +1190,91 @@ class VisMolGLCore():
         
         indexes = input_indexes
         indexes = np.array(indexes,dtype=np.uint32)
-
+        
         ind_vbo = visObj.line_buffers[0]
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.nbytes, indexes, GL.GL_DYNAMIC_DRAW)
         
         #indexes = [1]
         #indexes = np.array(indexes,dtype=np.uint32)
         #print(visObj.sel_line_buffers2[0])
-        ind_vbo2 = visObj.sel_line_buffers2[0]
-        GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo2)
-        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, 
-                        indexes.nbytes,
-                        #indexes.itemsize*int(len(indexes)), 
-                        indexes, 
-                        GL.GL_DYNAMIC_DRAW)
+        #print ('line1208')
+        print (visObj.sel_lines_buffers2[0], indexes)
+        
+        ind_vbo = visObj.sel_lines_buffers2[0]
+
+        GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
+        
+        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.nbytes, indexes, GL.GL_DYNAMIC_DRAW)
+        
+        #GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, visObj.sel_line_buffers2[0])
+        #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, 
+        #                indexes.nbytes            ,
+        #                indexes                   , 
+        #                GL.GL_DYNAMIC_DRAW)
+        #print ('line1216')
+
+
+
+
+        #coords  = self._safe_frame_exchange(visObj)
+        #colors  = visObj.color_indexes
+        #
+        #vao = GL.glGenVertexArrays(1)
+        #GL.glBindVertexArray(vao)
+        #
+        #ind_vbo = GL.glGenBuffers(1)
+        #GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
+        #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.nbytes, indexes, GL.GL_DYNAMIC_DRAW)
+        #
+        #coord_vbo = GL.glGenBuffers(1)
+        #GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
+        #GL.glBufferData(GL.GL_ARRAY_BUFFER, coords.nbytes, coords, GL.GL_STATIC_DRAW)
+        #att_position = GL.glGetAttribLocation(self.sel_lines_program2, 'vert_coord')
+        #GL.glEnableVertexAttribArray(att_position)
+        #GL.glVertexAttribPointer(att_position, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*coords.itemsize, ctypes.c_void_p(0))
+        #
+        #col_vbo = GL.glGenBuffers(1)
+        #GL.glBindBuffer(GL.GL_ARRAY_BUFFER, col_vbo)
+        #GL.glBufferData(GL.GL_ARRAY_BUFFER, colors.nbytes, colors, GL.GL_STATIC_DRAW)
+        #att_colors = GL.glGetAttribLocation(self.sel_lines_program2, 'vert_color')
+        #GL.glEnableVertexAttribArray(att_colors)
+        #GL.glVertexAttribPointer(att_colors, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*colors.itemsize, ctypes.c_void_p(0))
+        #
+        #GL.glBindVertexArray(0)
+        #GL.glDisableVertexAttribArray(att_position)
+        #GL.glDisableVertexAttribArray(att_colors)
+        #GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
+        #GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0)
+        #
+        #visObj.sel_lines_vao2 = vao
+        #visObj.sel_line_buffers2= (ind_vbo, coord_vbo, col_vbo)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         
     def set_draw_sticks_indexes ( self, visObj = None, show = True, input_indexes = []):
@@ -1210,11 +1284,11 @@ class VisMolGLCore():
         indexes = input_indexes
         indexes = np.array(indexes,dtype=np.uint32)
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.nbytes, indexes, GL.GL_DYNAMIC_DRAW)
         
         ind_vbo = visObj.sel_sticks_buffers[0]
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.nbytes, indexes, GL.GL_DYNAMIC_DRAW)
 
          
     def _draw_lines(self, visObj = None):
@@ -1331,14 +1405,14 @@ class VisMolGLCore():
     
         
     
-    def _draw_sel_lines2(self, visObj = None):
+    def _draw_sel_lines(self, visObj = None):
         """ Function doc
         """
         GL.glEnable(GL.GL_DEPTH_TEST)
-        GL.glUseProgram(self.sel_lines_program2)
+        GL.glUseProgram(self.sel_lines_program)
         GL.glLineWidth(20)
         
-        self.load_matrices(self.sel_lines_program2, visObj.model_mat)
+        self.load_matrices(self.sel_lines_program, visObj.model_mat)
         #self.load_fog(self.sel_lines_program2)
         #self.load_antialias_params(self.lines_program)
         if visObj.sel_lines_vao2 is not None:
@@ -1355,13 +1429,10 @@ class VisMolGLCore():
                 glArea'''
                 
                 frame = self._safe_frame_exchange(visObj)
+                                                    
+                GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.sel_lines_buffers2[1])
 
-                GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.sel_line_buffers2[1])
-
-                GL.glBufferData(GL.GL_ARRAY_BUFFER, 
-                                frame.nbytes,
-                                frame, 
-                                GL.GL_STATIC_DRAW)              
+                GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.nbytes,frame, GL.GL_STATIC_DRAW)              
                 
                 GL.glDrawElements(GL.GL_LINES, int(len(visObj.index_bonds)*2), GL.GL_UNSIGNED_INT, None)
         #GL.glBindVertexArray(0)
@@ -1375,28 +1446,38 @@ class VisMolGLCore():
     
     
     
-    def _draw_sel_lines_NOT_USED(self, visObj = None):
+    def _draw_sel_lines2(self, visObj = None):
         """ Function doc
         """
-        print (type(visObj))
+        
+        #GL.glEnable(GL.GL_DEPTH_TEST)
+        #GL.glUseProgram(self.sel_lines_program)
+        #GL.glLineWidth(20)
+        #self.load_matrices(self.sel_lines_program, visObj.model_mat)
+        
+        
         GL.glEnable(GL.GL_DEPTH_TEST)
-        GL.glUseProgram(self.lines_program)
-        self.load_matrices(self.lines_program, visObj.model_mat)
-        if visObj.lines_vao is not None:
-            GL.glBindVertexArray(visObj.lines_vao)
+        GL.glUseProgram(self.sel_lines_program)
+        GL.glLineWidth(20)
+        self.load_matrices(self.sel_lines_program, visObj.model_mat)
+
+        #self.load_matrices(self.lines_program, visObj.model_mat)
+        if visObj.sel_lines_vao2 is not None:
+            GL.glBindVertexArray(visObj.sel_lines_vao2)
             if self.modified_view:
                 pass
+
             else:
                 frame = self._safe_frame_exchange(visObj)
                 
-                
-                GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.lines_buffers[1])
-                GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.itemsize*int(len(frame)), 
-                                frame, GL.GL_STATIC_DRAW)
+                GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.sel_lines_buffers2[1])
+                GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.nbytes,frame, GL.GL_STATIC_DRAW)              
+                #GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.nbytes,frame, GL.GL_STATIC_DRAW)
                 GL.glDrawElements(GL.GL_LINES, int(len(visObj.index_bonds)*2), GL.GL_UNSIGNED_INT, None)
-        GL.glBindVertexArray(0)
-        GL.glUseProgram(0)
-        GL.glDisable(GL.GL_DEPTH_TEST)
+
+        #GL.glBindVertexArray(0)
+        #GL.glUseProgram(0)
+        #GL.glDisable(GL.GL_DEPTH_TEST)
         
         
         
@@ -1436,6 +1517,36 @@ class VisMolGLCore():
         #GL.glLineWidth(1)
         #GL.glUseProgram(0)
         #GL.glDisable(GL.GL_DEPTH_TEST)
+    
+    
+    def _draw_background_selection_dots (self, visObj = None, _type = 'dots' ):
+        """ Function doc """
+#        """
+        
+        if _type == 'dots':
+            GL.glEnable(GL.GL_DEPTH_TEST)
+            GL.glUseProgram(self.sel_dots_program)
+            #GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
+            self.load_matrices(self.sel_dots_program, visObj.model_mat)
+            self.load_dot_params(self.sel_dots_program)
+            if visObj.sel_dots_vao is not None:
+                GL.glBindVertexArray(visObj.sel_dots_vao)
+                if self.modified_view:
+                    pass
+                else:
+                    frame = self._safe_frame_exchange(visObj)
+                    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.sel_dots_buffers[1])
+                    GL.glBufferData(GL.GL_ARRAY_BUFFER,
+                        frame.nbytes,
+                        frame,
+                        GL.GL_STATIC_DRAW)
+
+                    GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
+            GL.glBindVertexArray(0)
+            GL.glDisable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
+            GL.glUseProgram(0)
+            GL.glDisable(GL.GL_DEPTH_TEST)
+            #print('line 1549')
     
     def _draw_sel_dots(self, visObj = None,  indexes = False):
         """ Function doc
