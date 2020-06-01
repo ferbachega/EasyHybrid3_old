@@ -117,7 +117,7 @@ class VisMolViewingSelection:
         if selected not in self.selected_atoms:
             
             for atom in selected.residue.atoms:
-                print (len(selected.residue.atoms), atom.name, atom.index)
+                '''print (len(selected.residue.atoms), atom.name, atom.index)'''
                 
                 # the atom is not on the list -  add atom by atom
                 if atom not in self.selected_atoms:

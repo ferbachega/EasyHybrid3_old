@@ -630,7 +630,7 @@ def _make_sel_gl_lines2(program, vismol_object = None):
     
     vismol_object.sel_lines_vao2 = vao
     vismol_object.sel_line_buffers2= (ind_vbo, coord_vbo, col_vbo)
-    print ('    vismol_object.sel_line_buffers = (ind_vbo, coord_vbo, col_vbo)', vismol_object.sel_line_buffers)
+    #print ('    vismol_object.sel_line_buffers = (ind_vbo, coord_vbo, col_vbo)', vismol_object.sel_line_buffers)
     #print (vismol_object.sel_line_buffers)
     return True
 

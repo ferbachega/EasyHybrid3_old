@@ -229,8 +229,8 @@ class VisMolGLCore():
 
                         # Getting the information about the atom that was identified in the click
                         print(self.atom_picked.chain,self.atom_picked.resn, self.atom_picked.resi, self.atom_picked.name, self.atom_picked.index, self.atom_picked.connected2)
-                        for bond in self.atom_picked.bonds:
-                            print (bond.atom_index_i, bond.atom_index_j)
+                        #for bond in self.atom_picked.bonds:
+                        #    print (bond.atom_index_i, bond.atom_index_j)
                         self.atom_picked = None
                     else:
                         # When no atom is identified in the click (user clicked on a point in the background)
@@ -708,8 +708,8 @@ class VisMolGLCore():
                 #'''
                 if visObj.lines_actived:
                     if visObj.sel_lines_vao is None:
-                        print ('707','shapes._make_sel_gl_lines(self.sel_lines_program, vismol_object = visObj)')
-                        shapes._make_sel_gl_lines(self.sel_lines_program, vismol_object = visObj)
+                        #print ('707','shapes._make_sel_gl_lines(self.sel_lines_program, vismol_object = visObj)')
+                        #shapes._make_sel_gl_lines(self.sel_lines_program, vismol_object = visObj)
                         
                         shapes._make_sel_gl_lines2(self.sel_lines_program2, vismol_object = visObj)
 
@@ -895,7 +895,18 @@ class VisMolGLCore():
         
         return frame
 
-    
+    def _get_visObj_frame (self, visObj):
+        """ Function doc """
+        if self.frame <  0:
+            self.frame = 0
+        else:
+            pass
+        
+        if self.frame >= (len (visObj.frames)-1):
+            frame = len (visObj.frames)-2
+        else:
+            frame = self.frame
+        return frame
 
     def _draw_non_bonded(self, visObj = None, indexes = False):
         """ Function doc
@@ -968,6 +979,7 @@ class VisMolGLCore():
 
 
 
+        #GL.glPointSize(80/abs(self.dist_cam_zrp))
 
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glUseProgram(self.dots_program)
@@ -975,6 +987,8 @@ class VisMolGLCore():
         self.load_matrices(self.dots_program, visObj.model_mat)
         self.load_fog(self.dots_program)
         self.load_dot_params(self.dots_program)
+        
+        
         if visObj.dots_vao is not None:
             GL.glBindVertexArray(visObj.dots_vao)
             if self.modified_view:
@@ -1177,7 +1191,7 @@ class VisMolGLCore():
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
         GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
         
-        ind_vbo = visObj.sel_line_buffers[0]
+        ind_vbo = visObj.sel_line_buffers2[0]
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
         GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
 
@@ -1250,6 +1264,12 @@ class VisMolGLCore():
         """ Function doc
         """
         GL.glEnable(GL.GL_DEPTH_TEST)
+        
+        GL.glEnable(GL.GL_BLEND)
+        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+        GL.glEnable(GL.GL_LINE_SMOOTH)
+        GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
+        
         GL.glUseProgram(self.sticks_program)
         self.load_matrices(self.sticks_program, visObj.model_mat)
         self.load_fog(self.sticks_program)
@@ -1594,7 +1614,8 @@ class VisMolGLCore():
     def center_on_atom(self, atom):
         """ Function doc
         """
-        self.center_on_coordinates(atom.Vobject, atom.coords())
+        frame_index  =  self._get_visObj_frame(atom.Vobject)
+        self.center_on_coordinates(atom.Vobject, atom.coords(frame_index))
         return True
     
     def center_on_coordinates(self, vismol_object, atom_pos):
