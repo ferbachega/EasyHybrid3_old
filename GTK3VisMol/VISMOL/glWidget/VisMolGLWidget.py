@@ -500,7 +500,7 @@ class GtkGLAreaWidget(Gtk.GLArea):
 
             # Associates selected bonds as false / true
             for atom in self.vismolSession.selections[self.vismolSession.current_selection].selected_atoms:
-                print (atom.name)
+                #print (atom.name)
                 for bond in atom.bonds:
                     bond.line_activated = False
 
@@ -517,10 +517,10 @@ class GtkGLAreaWidget(Gtk.GLArea):
 
                 # When the list is [] we simply have to disable the display of the representation type
                 if indices_bonds == []:
-                    print('indices_bonds == []')
+                    #print('indices_bonds == []')
                     vobject.lines_actived  = False
                 else:
-                    print('indices_bonds ==', indices_bonds)
+                    #print('indices_bonds ==', indices_bonds)
                     self.vm_widget.set_draw_lines_indexes (visObj = vobject,  show = False, input_indexes = indices_bonds)
 
         if k_name == 'x':
@@ -545,10 +545,10 @@ class GtkGLAreaWidget(Gtk.GLArea):
                 
                 # When the list is [] we simply have to disable the display of the representation type
                 if indices_bonds == []:
-                    print('indices_bonds == []')
+                    #print('indices_bonds == []')
                     vobject.sticks_actived  = False
                 else:
-                    print('indices_bonds ==', indices_bonds)
+                    #print('indices_bonds ==', indices_bonds)
                     self.vm_widget.set_draw_sticks_indexes (visObj = vobject,  show = False, input_indexes = indices_bonds)
 
         

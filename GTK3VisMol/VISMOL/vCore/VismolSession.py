@@ -249,6 +249,7 @@ class VisMolSession (ShowHideVisMol):
             """ Function doc """
             print('f2')
             self._show_lines(visObj = self.vismol_objects[0], indexes = [0,1,2,3,4] )
+        
         def f3 (_):
             """ Function doc """
             print('f3')
