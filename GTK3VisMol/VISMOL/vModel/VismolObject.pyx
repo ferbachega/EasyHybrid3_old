@@ -225,6 +225,11 @@ class VismolObject:
         self.spheres_buffers    = None
         self.dots_surface_buffers = None
         #self.spheres_buffers_ON_THE_FLY = None
+        
+        #-----------------------------------------------------------------
+        self.new_selection_lines_vao     = None
+        self.new_selection_lines_buffers = None
+        #-----------------------------------------------------------------
         """   S E L E C T I O N   """
         self.sel_dots_vao = None
         self.sel_lines_vao = None
