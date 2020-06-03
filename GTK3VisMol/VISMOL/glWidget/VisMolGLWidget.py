@@ -551,6 +551,14 @@ class GtkGLAreaWidget(Gtk.GLArea):
                     #print('indices_bonds ==', indices_bonds)
                     self.vm_widget.set_draw_sticks_indexes (visObj = vobject,  show = False, input_indexes = indices_bonds)
 
+        if k_name == 'g':
+            visObj = self.vismolSession.vismol_objects[0]
+            if visObj.glumpy_actived:
+                visObj.glumpy_actived =  False
+            else:
+                visObj.glumpy_actived =  True
+
+
         
 
         if k_name == 'period':

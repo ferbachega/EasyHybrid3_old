@@ -44,6 +44,7 @@ import VISMOL.glCore.shaders.dots               as dotsShaders
 import VISMOL.glCore.shaders.freetype           as freetypeShaders
 import VISMOL.glCore.shaders.picked_and_picking as pickedShaders
 import VISMOL.glCore.shaders.nonbond            as nonbondShaders
+import VISMOL.glCore.shaders.glumpy             as glumpyShaders
 
 
 class VisMolGLCore():
@@ -488,6 +489,12 @@ class VisMolGLCore():
                     else:
                         self._draw_freetype(visObj = visObj)
                 
+                if visObj.glumpy_actived:
+                    if visObj.glumpy_vao is None:
+                        shapes._make_gl_glumpy(self.glumpy_program,  vismol_object = visObj)
+                    else:
+                        self._draw_glumpy(visObj = visObj, color_indexes = False)
+                
               
         #indexes2 = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects
         #print (indexes2)
@@ -632,6 +639,9 @@ class VisMolGLCore():
                                                   freetypeShaders.fragment_shader_freetype, 
                                                   freetypeShaders.geometry_shader_freetype)
         
+        # G L U M P Y
+        self.glumpy_program = self.load_shaders(glumpyShaders.vertex_shader_glumpy, 
+                                                glumpyShaders.fragment_shader_glumpy)
 
     def load_shaders(self, vertex, fragment, geometry=None):
         """ Here the shaders are loaded and compiled to an OpenGL program. By default
@@ -1656,6 +1666,39 @@ class VisMolGLCore():
         GL.glUseProgram(0)
         GL.glDisable(GL.GL_DEPTH_TEST)
     
+    def _draw_glumpy(self, visObj = None,  color_indexes = False):
+        """ Function doc"""
+        GL.glEnable(GL.GL_DEPTH_TEST)
+        GL.glUseProgram(self.glumpy_program)
+        GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
+        self.load_matrices(self.glumpy_program, visObj.model_mat)
+        self.load_fog(self.glumpy_program)
+        # self.load_dot_params(self.glumpy_program)
+        
+        if visObj.glumpy_vao is not None:
+            GL.glBindVertexArray(visObj.glumpy_vao)
+            if self.modified_view:
+                pass
+            else:
+                frame = self._safe_frame_exchange(visObj)
+                GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.glumpy_buffers[1])
+                GL.glBufferData(GL.GL_ARRAY_BUFFER,
+                    frame.nbytes,
+                    frame,
+                    GL.GL_STATIC_DRAW)
+                if  color_indexes:
+                    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.glumpy_buffers[2])
+                    GL.glBufferData(GL.GL_ARRAY_BUFFER, 
+                            visObj.color_indexes.itemsize*int(len(visObj.color_indexes)), 
+                            visObj.color_indexes, 
+                            GL.GL_STATIC_DRAW)
+
+        GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
+        GL.glBindVertexArray(0)
+        GL.glDisable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
+        GL.glUseProgram(0)
+        GL.glDisable(GL.GL_DEPTH_TEST)
+
     def _draw_gizmo_axis(self, flag):
         """ Drawing method for the gizmo axis, see the glaxis.py documentation
             for more details about this function.

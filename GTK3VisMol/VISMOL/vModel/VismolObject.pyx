@@ -196,6 +196,9 @@ class VismolObject:
         """   T E X T   """
         self.text_activated = False
         
+        """   G L U M P Y   """
+        self.glumpy_actived = False
+
         """   S E L E C T I O N   """
         self._sel_lines_actived = False
         self._sel_dots_actived = False
@@ -215,7 +218,8 @@ class VismolObject:
         self.sticks_vao   = None
         self.spheres_vao     = None
         self.dots_surface_vao = None
-        self.spheres_vao_ON_THE_FLY =None
+        self.spheres_vao_ON_THE_FLY = None
+        self.glumpy_vao = None
     
         self.dots_buffers        = None
         self.lines_buffers      = None
@@ -224,6 +228,7 @@ class VismolObject:
         self.sticks_buffers  = None
         self.spheres_buffers    = None
         self.dots_surface_buffers = None
+        self.glumpy_buffers = None
         #self.spheres_buffers_ON_THE_FLY = None
         
         #-----------------------------------------------------------------

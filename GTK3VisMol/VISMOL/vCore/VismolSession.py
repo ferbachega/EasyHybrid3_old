@@ -126,6 +126,16 @@ class ShowHideVisMol:
 
         shapes.change_vbo_indexes (ind_vbo = visObj.lines_buffers[0], indexes = visObj.index_bonds)
     
+    def _hide_glumpy (self, Vobjects ):
+        for Vobject in Vobjects:
+            Vobject.glumpy_representation.actived = False
+
+    def _show_glumpy (self, Vobjects = []):
+        """ Function doc """
+        for Vobject in Vobjects:
+            Vobject.glumpy_actived = True
+            
+            
     def hide (self, Vobjects =  [], _type = 'lines', indexes = [] ):
         """ Function doc """    
         if _type == 'dots':
