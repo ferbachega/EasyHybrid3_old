@@ -84,7 +84,7 @@ class VisMolGLCore():
         self.mouse_x = 0.0
         self.mouse_y = 0.0
         self.selection_box = sb.SelectionBox()
-        self.bckgrnd_color = [0.0,0.0,0.0,1.0] #[1.0,1.0,1.0,1.0] or [0.0,0.0,0.0,1.0]
+        self.bckgrnd_color = [0.0,0.0,0.0,1.0]#[0.5,0.5,0.5,1.0] #[0.0,0.0,0.0,1.0] #[1.0,1.0,1.0,1.0] or [0.0,0.0,0.0,1.0]
         self.light_position = np.array([-2.5,2.5,3.0],dtype=np.float32)
         self.light_color = np.array([1.0,1.0,1.0,1.0],dtype=np.float32)
         self.light_ambient_coef = 0.5
