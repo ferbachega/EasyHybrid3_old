@@ -230,6 +230,11 @@ class VismolObject:
         self.new_selection_lines_vao     = None
         self.new_selection_lines_buffers = None
         #-----------------------------------------------------------------
+        self.sphere_dot_activated= False
+        self.sphere_dots_vao     = None
+        self.sphere_dots_buffers = None
+        #-----------------------------------------------------------------
+
         """   S E L E C T I O N   """
         self.sel_dots_vao = None
         self.sel_lines_vao = None
