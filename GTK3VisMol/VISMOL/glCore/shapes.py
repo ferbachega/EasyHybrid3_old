@@ -164,6 +164,7 @@ def _make_gl_selection_dots(program, vismol_object = None):
 def _make_gl_dots(program, vismol_object = None, bckgrnd_color= [0.0,0.0,0.0,1.0]):
     """ Function doc
     """
+    #colors    = vismol_object.color_indices
     colors    = vismol_object.colors
     coords    = vismol_object.frames[0]
     dot_sizes = vismol_object.vdw_dot_sizes
@@ -176,15 +177,16 @@ def _make_gl_dots(program, vismol_object = None, bckgrnd_color= [0.0,0.0,0.0,1.0
     
 
     
-    vismol_object.dots_vao, vismol_object.dots_buffers = build_gl_VAO_and_buffers (program   = program, 
-                                                                                   VAO       = True,
-                                                                                   indices   = indices,
-                                                                                   coords    = coords, 
-                                                                                   colors    = colors, 
-                                                                                   dot_sizes = None)
+    vao, buffers = build_gl_VAO_and_buffers (program   = program, 
+                                             VAO       = True,
+                                             indices   = indices,
+                                             coords    = coords, 
+                                             colors    = colors, 
+                                             dot_sizes = None)
     
-    
-    
+    vismol_object.dots_vao = vao
+    vismol_object.dots_buffers = buffers
+        
     #vao = GL.glGenVertexArrays(1)
     #GL.glBindVertexArray(vao)
     #
@@ -409,14 +411,16 @@ def _make_gl_lines(program, vismol_object = None):
 
     print ('here@@')
     
-    vismol_object.lines_vao, vismol_object.line_buffers = build_gl_VAO_and_buffers (program   = program, 
-                                                                                    VAO       = True,
-                                                                                    indices   = indices,
-                                                                                    coords    = coords, 
-                                                                                    colors    = colors, 
-                                                                                    dot_sizes = None) 
-  
-    
+    vao, buffers = build_gl_VAO_and_buffers (program   = program, 
+                                             VAO       = True,
+                                             indices   = indices,
+                                             coords    = coords, 
+                                             colors    = colors, 
+                                             dot_sizes = None) 
+    vismol_object.lines_vao     = vao
+    vismol_object.line_buffers  = buffers
+     
+        
 def _make_new_selection_gl_lines (program, vismol_object = None):
     """ Function doc """
     indices = np.array(vismol_object.index_bonds,dtype=np.uint32)
@@ -489,7 +493,36 @@ def _make_gl_ribbon_lines(program, vismol_object = None):
     
 
 
-def _make_sel_gl_dots(program, vismol_object = None, bckgrnd_color= [1.0,1.0,1.0,1.0]):
+
+
+
+def _make_sel_gl_dots (program, vismol_object = None):
+    """ Function doc """
+    colors    = vismol_object.color_indices
+    coords    = vismol_object.frames[0]
+    dot_sizes = vismol_object.vdw_dot_sizes
+    dot_qtty  = int(len(coords)/3)
+
+    indices = []
+    for i in range(dot_qtty):
+        indices.append(i)
+    indices = np.array(indices,dtype=np.uint32)
+    
+    
+    vao, buffers = build_gl_VAO_and_buffers (program   = program, 
+                                             VAO       = True,
+                                             indices   = indices,
+                                             coords    = coords, 
+                                             colors    = colors, 
+                                             dot_sizes = None)
+    
+    vismol_object.sel_dots_vao     = vao
+    vismol_object.sel_dots_buffers = buffers
+
+
+
+
+def _make_sel_gl_dots_old(program, vismol_object = None, bckgrnd_color= [1.0,1.0,1.0,1.0]):
     """ Function doc
     """
     colors    = vismol_object.color_indices
@@ -692,7 +725,6 @@ def _make_sel_gl_dots_surface(program, vismol_object = None):
     return True
 
 
-
 def change_vbo_indices (ind_vbo = None, indices = []):
     """ Function doc """
     indices = np.array(indices,dtype=np.uint32)
@@ -707,8 +739,6 @@ def change_vbo_colors  (col_vbo = None, colors = [], program = None):
     att_colors = GL.glGetAttribLocation(program, 'vert_color')
     GL.glEnableVertexAttribArray(att_colors)
     GL.glVertexAttribPointer(att_colors, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*colors.itemsize, ctypes.c_void_p(0))
-
-
 
 
 def _make_gl_spheres_ON_THE_FLY (program, vismol_object = None): # unused
@@ -832,7 +862,7 @@ def _make_gl_picking_dots_NOT_USED(program, vismol_object = None, bckgrnd_color=
 
 '''
 '''
-def _make_gl_sphere_dots_old(program, vismol_object = None, bckgrnd_color= [0.0,0.0,0.0,1.0]):
+def _make_gl_sphere_dots(program, vismol_object = None, bckgrnd_color= [0.0,0.0,0.0,1.0]):
     """ Function doc
     """
     colors    = vismol_object.colors
@@ -905,7 +935,7 @@ def _make_gl_sphere_dots_old(program, vismol_object = None, bckgrnd_color= [0.0,
     #print ('_make_gl_sphere_dots - done')
     return True
 
-'''
+#'''
 
 
 '''

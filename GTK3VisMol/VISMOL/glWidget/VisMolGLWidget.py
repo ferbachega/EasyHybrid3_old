@@ -474,13 +474,13 @@ class GtkGLAreaWidget(Gtk.GLArea):
             else:
                 visObj.dots_surface_active =  True
 
-        if k_name == 'b':
-            for visObj in self.vismolSession.vismol_objects:
-                #visObj = self.vismolSession.vismol_objects[0]
-                if visObj.sphere_dot_active:
-                    visObj.sphere_dot_active =  False
-                else:
-                    visObj.sphere_dot_active =  True
+        #if k_name == 'b':
+        #    for visObj in self.vismolSession.vismol_objects:
+        #        #visObj = self.vismolSession.vismol_objects[0]
+        #        if visObj.sphere_dot_active:
+        #            visObj.sphere_dot_active =  False
+        #        else:
+        #            visObj.sphere_dot_active =  True
 
         if k_name == 'q':
             #self.vismolSession.glwidget._set_draw_dots_indices (visObj = self.vismolSession.vismol_objects[0],  indices = False)

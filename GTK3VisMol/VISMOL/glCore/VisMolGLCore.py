@@ -425,62 +425,65 @@ class VisMolGLCore():
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
         
         for visObj in self.vismolSession.vismol_objects:
-            #print ('passei aqui1')
+            #print ('line 428')
 
             if visObj.active:
-                
+                #                  L I N E S 
                 if visObj.lines_active:
                     if visObj.lines_vao is None:
                         shapes._make_gl_lines(self.lines_program, vismol_object = visObj)
                     else:
                         self._draw_lines(visObj = visObj)
-                
+                #                  D O T S
                 if visObj.dots_active:
                     if visObj.dots_vao is None:
                         shapes._make_gl_dots (self.dots_program,  vismol_object = visObj)
                     else:
                         self._draw_dots(visObj = visObj, color_indices = False)
-                
+                #                R I B B O N S
                 if visObj.ribbons_active:
                     if visObj.ribbons_vao is None:
                         shapes._make_gl_ribbon_lines(self.ribbons_program, vismol_object = visObj)
                     else:
                         self._draw_ribbons(visObj = visObj)
-                
+                #             N O N  B O N D E D
                 if visObj.non_bonded_active:
                     if visObj.non_bonded_vao is None:
                         shapes._make_gl_non_bonded(self.non_bonded_program, vismol_object = visObj)
                     else:
                         self._draw_non_bonded(visObj = visObj)
-                
+                #               S T I C K S
                 if visObj.sticks_active:
                     if visObj.sticks_vao is None:
                         shapes._make_gl_sticks(self.sticks_program, vismol_object = visObj)
                     else:
                         self._draw_sticks(visObj = visObj)
-                
+                #          D O T S  S U R F A C E
                 if visObj.dots_surface_active:
                     if visObj.dots_surface_vao is None:
                         shapes._make_gl_dots_surface (self.dots_surface_program,  vismol_object = visObj)
                     else:
                         self._draw_dots_surface(visObj = visObj, indices = False)
                 
-                
+                #          S P H E R E S  D O T 
+                '''
                 if visObj.sphere_dot_active:
                     if visObj.sphere_dots_vao is None:
                         shapes._make_gl_sphere_dots (self.spheres_dots_program,  vismol_object = visObj)
                         self._draw_sphere_dots(visObj = visObj, indices = False)
+                        print('render self._draw_sphere_dots(visObj = visObj, indices = False), line 473')
 
                     else:
                         self._draw_sphere_dots(visObj = visObj, indices = False)
-
-                
+                        pass
+                '''
+                #             S P H E R E S  
                 if visObj.spheres_active:
                     if visObj.sphere_rep is None:
-                        visObj.sphere_rep = sph_r.SphereRepresentation(vismol_object = visObj, level = 'level_1')
+                        visObj.sphere_rep = sph_r.SphereRepresentation(vismol_object = visObj, level = 'level_2')
                         visObj.sphere_rep._create_sphere_data()
                         visObj.sphere_rep._make_gl_spheres(self.spheres_program)
-                        visObj.sphere_rep._create_sel_sphere_data('level_0')
+                        visObj.sphere_rep._create_sel_sphere_data('level_1')
                         visObj.sphere_rep._make_sel_gl_spheres(self.sel_spheres_program)
                     else:
                         self._draw_spheres(visObj = visObj, indices = False)
@@ -507,13 +510,16 @@ class VisMolGLCore():
         #-------------------------------------------------------------------------------
         #'''
         for visObj in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
+            '''
+            Here are represented the blue 
+            dots referring to the selections of atoms
+            '''
             if visObj.selection_dots_vao is None:
                 shapes._make_gl_selection_dots(self.picking_dots_program, vismol_object = visObj)
             indices = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]
-            #print ('passei aqui2')
             #GL.glPointSize(400/(abs(self.dist_cam_zrp))/2)
+            #print ('line 522')
             GL.glPointSize(15)
-            #GL.glEnable(GL.GL_DEPTH_TEST)
             GL.glUseProgram(self.picking_dots_program)
             GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
             self.load_matrices(self.picking_dots_program, visObj.model_mat)
@@ -562,7 +568,7 @@ class VisMolGLCore():
             print('OpenGL major version not found')
         
         
-        
+        #-------------------------------------------------------------------------------------
         # D O T S
         #self.dots_program = self.load_shaders(dotsShaders.vertex_shader_dots, 
         #                                      dotsShaders.fragment_shader_dots)
@@ -571,10 +577,15 @@ class VisMolGLCore():
                                                dotsShaders.fragment_shader_dot_sphere
                                                )
         
+        self.sel_dots_program = self.load_shaders(dotsShaders.vertex_shader_dot_sphere  ,
+                                                  dotsShaders.fragment_shader_dot_sphere
+                                                  )
+        #self.sel_dots_program = self.load_shaders(dotsShaders.sel_vertex_shader_dots, 
+        #                                          dotsShaders.sel_fragment_shader_dots)
+        #-------------------------------------------------------------------------------------
         
-        self.sel_dots_program = self.load_shaders(dotsShaders.sel_vertex_shader_dots, 
-                                                  dotsShaders.sel_fragment_shader_dots)
-        
+        #-------------------------------------------------------------------------------------
+
         self.dots_surface_program = self.load_shaders(dotsShaders.vertex_shader_dots_surface, 
                                                       dotsShaders.fragment_shader_dots_surface, 
                                                       dotsShaders.geometry_shader_dots_surface)
@@ -582,6 +593,10 @@ class VisMolGLCore():
         self.sel_dots_surface_program = self.load_shaders(dotsShaders.sel_vertex_shader_dots_surface, 
                                                           dotsShaders.sel_fragment_shader_dots_surface, 
                                                           dotsShaders.sel_geometry_shader_dots_surface)
+        #-------------------------------------------------------------------------------------
+
+        
+        #-------------------------------------------------------------------------------------
 
         # L I N E S 
         self.lines_program = self.load_shaders(linesShaders.vertex_shader_lines, 
@@ -591,7 +606,8 @@ class VisMolGLCore():
         self.sel_lines_program = self.load_shaders(linesShaders.sel_vertex_shader_lines, 
                                                    linesShaders.sel_fragment_shader_lines, 
                                                    linesShaders.sel_geometry_shader_lines)        
-        
+        #-------------------------------------------------------------------------------------
+
         #self.new_selection_lines_program = self.load_shaders( linesShaders.new_selection_vertex_shader_lines  ,
         #                                                      linesShaders.new_selection_geometry_shader_lines,
         #                                                      linesShaders.new_selection_fragment_shader_lines
@@ -636,10 +652,10 @@ class VisMolGLCore():
         self.sel_spheres_program = self.load_shaders(spheresShaders.sel_vertex_shader_spheres, 
                                                      spheresShaders.sel_fragment_shader_spheres)
         
-        # D O T   S P H E R E S 
-        self.spheres_dots_program = self.load_shaders (dotsShaders.vertex_shader_dot_sphere   ,
-                                                       dotsShaders.fragment_shader_dot_sphere
-                                                       )
+        ## D O T   S P H E R E S 
+        #self.spheres_dots_program = self.load_shaders (dotsShaders.vertex_shader_dot_sphere   ,
+        #                                               dotsShaders.fragment_shader_dot_sphere
+        #                                               )
         
         
         # P I C K 
@@ -743,11 +759,19 @@ class VisMolGLCore():
                     if visObj.new_selection_lines_vao is None:
                         shapes._make_new_selection_gl_lines(self.new_selection_lines_program, vismol_object = visObj)
                         self._draw_new_selection_gl_lines(visObj = visObj )
-                        print('747')
+                        print('_pick2 line 747')
                     else:
                         self._draw_new_selection_gl_lines(visObj = visObj )
-                        print('749')
+                        print('_pick2 line 749')
 
+
+                    if visObj.sel_dots_vao is None:
+                        shapes._make_sel_gl_dots(self.sel_dots_program, vismol_object = visObj)
+                        self._draw_sel_dots(visObj = visObj )
+                        #print('_pick2 line 747')
+                    else:
+                        self._draw_sel_dots(visObj = visObj )
+                        #print('_pick2 line 749')
                         
                 #if visObj.ribbons_active:
                     #if visObj.sel_ribbons_vao is None:
@@ -930,6 +954,14 @@ class VisMolGLCore():
             frame = self.frame
         return frame
 
+    
+    #def _draw_3D_representation (self, visObj = None, gl_program = None ):
+    #    """ Function doc """
+    #    GL.glEnable(GL.GL_DEPTH_TEST)
+    #    GL.glUseProgram(gl_program)
+    #    self.load_matrices(gl_program, visObj.model_mat)
+    #    self.load_fog(gl_program)
+    
     def _draw_non_bonded(self, visObj = None, indices = False):
         """ Function doc
         """
@@ -1263,8 +1295,6 @@ class VisMolGLCore():
         GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.nbytes, indices, GL.GL_DYNAMIC_DRAW)
         
         
-
-        
     def set_draw_sticks_indices ( self, visObj = None, show = True, input_indices = []):
         """ Function doc """
 
@@ -1277,9 +1307,6 @@ class VisMolGLCore():
         ind_vbo = visObj.sel_sticks_buffers[0]
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
         GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.nbytes, indices, GL.GL_DYNAMIC_DRAW)
-
-
-
 
 
     def _draw_new_selection_gl_lines (self, visObj = None):
@@ -1313,8 +1340,6 @@ class VisMolGLCore():
                                 GL.GL_STATIC_DRAW)              
                 
                 GL.glDrawElements(GL.GL_LINES, int(len(visObj.index_bonds)*2), GL.GL_UNSIGNED_INT, None)
-                
-                
                 
          
     def _draw_lines(self, visObj = None):
@@ -1429,9 +1454,8 @@ class VisMolGLCore():
         GL.glBindVertexArray(0)
         GL.glUseProgram(0)
     
-        
     
-    def _draw_sel_lines(self, visObj = None):
+    def _draw_sel_lines_NOT_USED(self, visObj = None):
         """ Function doc
         """
         GL.glEnable(GL.GL_DEPTH_TEST)
@@ -1591,7 +1615,7 @@ class VisMolGLCore():
                 pass
             else:
                 frame = self._safe_frame_exchange(visObj)
-                GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.dot_buffers[1])
+                GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.sel_dots_buffers[1])
                 GL.glBufferData(GL.GL_ARRAY_BUFFER,
                     frame.nbytes,
                     frame,
@@ -1665,7 +1689,7 @@ class VisMolGLCore():
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glUseProgram(self.sel_dots_surface_program)
         self.load_matrices(self.sel_dots_surface_program, visObj.model_mat)
-        GL.glPointSize(5)
+        GL.glPointSize(15)
         if visObj.sel_dots_surface_vao is not None:
             GL.glBindVertexArray(visObj.sel_dots_surface_vao)
             if self.modified_view:
@@ -1673,7 +1697,7 @@ class VisMolGLCore():
             else:
                 frame = self._safe_frame_exchange(visObj)
                 GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.sel_dots_surface_buffers[1])
-                GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.itemsize*int(len(frame)), 
+                GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.nbytes, 
                                                     frame, GL.GL_STATIC_DRAW)
                 GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
         GL.glPointSize(1)

@@ -107,7 +107,7 @@ class VismolObject:
         #                V I S M O L   a t t r i b u t e s
         #----------------------------------------------------------------- 
         self.vismol_session = VMSession     #
-        self.active        = False         # for "show and hide"   enable/disable
+        self.active         = False         # for "show and hide"   enable/disable
         self.editing        = False         # for translate and rotate  xyz coords 
         self.Type           = 'molecule'    # Not used yet
         self.name           = name          # 
@@ -133,15 +133,15 @@ class VismolObject:
         #         Bonds         #
         #-----------------------#
         self.index_bonds        = []
-        self.index_bonds_rep    = []
-        self.index_bonds_pairs  = []
+        #self.index_bonds_rep    = []
+        #self.index_bonds_pairs  = []
         
         
         #-----------------------#
         #         Bonds         #
         #-----------------------#
-        self.index_dots         = []
-        self.index_dots_rep     = []
+        #self.index_dots         = []
+        #self.index_dots_rep     = []
         
         
         
@@ -173,7 +173,7 @@ class VismolObject:
         #-----------------------------------------------------------------                
         """   L I N E S   """
         self.lines_active       = True
-        self.lines_show_list     = False
+        #self.lines_show_list     = False
 
         """   D O T S   """
         self.dots_active = False
@@ -208,21 +208,21 @@ class VismolObject:
         #print ('frames:     ', len(self.frames))
         #print ('frame size: ', len(self.frames[0]))
         #-----------------------------------------------------------------
-        self.dots_vao        = None
-        self.lines_vao       = None
-        self.ribbons_vao     = None
-        self.non_bonded_vao  = None
-        self.sticks_vao   = None
-        self.spheres_vao     = None
-        self.dots_surface_vao = None
-        self.spheres_vao_ON_THE_FLY =None
+        self.dots_vao               = None
+        self.lines_vao              = None
+        self.ribbons_vao            = None
+        self.non_bonded_vao         = None
+        self.sticks_vao             = None
+        self.spheres_vao            = None
+        self.dots_surface_vao       = None
+        self.spheres_vao_ON_THE_FLY = None
     
-        self.dots_buffers        = None
-        self.lines_buffers      = None
-        self.ribbons_buffers    = None
-        self.non_bonded_buffers = None
-        self.sticks_buffers  = None
-        self.spheres_buffers    = None
+        self.dots_buffers         = None
+        self.lines_buffers        = None
+        self.ribbons_buffers      = None
+        self.non_bonded_buffers   = None
+        self.sticks_buffers       = None
+        self.spheres_buffers      = None
         self.dots_surface_buffers = None
         #self.spheres_buffers_ON_THE_FLY = None
         

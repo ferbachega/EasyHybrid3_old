@@ -160,14 +160,14 @@ class SphereRepresentation:
         GL.glBufferData(GL.GL_ARRAY_BUFFER, self.sel_coords.itemsize*len(self.sel_coords), self.sel_coords, GL.GL_STATIC_DRAW)
         gl_coord = GL.glGetAttribLocation(program, 'vert_coord')
         GL.glEnableVertexAttribArray(gl_coord)
-        GL.glVertexAttribPointer(gl_coord, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*self.sel_coords.itemsize, ctypes.c_void_p(0))
+        GL.glVertexAttribPointer(gl_coord, 3, GL.GL_FLOAT, GL.GL_FALSE, self.sel_coords.nbytes, ctypes.c_void_p(0))
         
         col_vbo = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, col_vbo)
         GL.glBufferData(GL.GL_ARRAY_BUFFER, self.sel_colors.itemsize*len(self.sel_colors), self.sel_colors, GL.GL_STATIC_DRAW)
         gl_colors = GL.glGetAttribLocation(program, 'vert_color')
         GL.glEnableVertexAttribArray(gl_colors)
-        GL.glVertexAttribPointer(gl_colors, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*self.sel_colors.itemsize, ctypes.c_void_p(0))
+        GL.glVertexAttribPointer(gl_colors, 3, GL.GL_FLOAT, GL.GL_FALSE, self.sel_colors.nbytes, ctypes.c_void_p(0))
         
         GL.glBindVertexArray(0)
         GL.glDisableVertexAttribArray(gl_coord)
