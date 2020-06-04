@@ -263,6 +263,13 @@ class VisMolSession (ShowHideVisMol):
         }
         self.insert_glmenu(functions)
 
+        self.default_rep = {'nonbond' : True,
+                    'lines'   : True,
+                    'spheres' : False,
+                    'sticks'  : False,
+                    'ribbons' : False,
+                    'surface' : False,
+                }
 
     def insert_glmenu (self, menu_items = None):
 	    """ Function doc """
@@ -310,6 +317,9 @@ class VisMolSession (ShowHideVisMol):
 
 
         self.vismol_objects[-1].active = True
+        #for default_rep in self.default_rep:
+		#	if 
+        
         self.glwidget.queue_draw()
        
         #if self.backend == 'gtk3':

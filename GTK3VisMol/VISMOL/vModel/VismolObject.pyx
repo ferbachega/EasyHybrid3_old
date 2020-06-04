@@ -38,14 +38,20 @@ from VISMOL.vModel.Bond       import Bond
 
 
 
-class sticksData:
+class Representation:
     """ Class doc """
-    
-    def __init__ (self):
+
+    def __init__ (self, name = 'mol', active = False, vao = None, buffers = None, _type = 'line',   visObj = None ):
         """ Class initialiser """
-        self.sticks_active = False
-        self.sticks_vao   = None
-        self.sel_sticks_buffers = None
+        self.name        = name
+        self.active      = active
+        self.vao         = vao
+        self.buffers     = buffers
+        self.type        = _type
+        self.visObj      = visObj
+        self.sel_vao     = None
+        self.sel_buffers = None
+
 
 
 class VismolObject:
@@ -133,17 +139,7 @@ class VismolObject:
         #         Bonds         #
         #-----------------------#
         self.index_bonds        = []
-        #self.index_bonds_rep    = []
-        #self.index_bonds_pairs  = []
-        
-        
-        #-----------------------#
-        #         Bonds         #
-        #-----------------------#
-        #self.index_dots         = []
-        #self.index_dots_rep     = []
-        
-        
+       
         
         #-----------------------#
         #       Nonbonded       #
@@ -171,6 +167,20 @@ class VismolObject:
         #-----------------------------------------------------------------
         #                O p e n G L   a t t r i b u t e s
         #-----------------------------------------------------------------                
+        
+        #self.rep_line    = Representation(name = 'mol', 
+        #                                active = False, 
+        #                                   vao = None  , 
+        #                               buffers = None  , 
+        #                                 _type = 'line',   
+        #                                visObj = None )    
+        #self.rep_nonbond = None
+        #self.rep_stick   = None
+        #self.rep_sphere  = None
+        #self.rep_dots    = None
+		
+                
+        
         """   L I N E S   """
         self.lines_active       = True
         #self.lines_show_list     = False
