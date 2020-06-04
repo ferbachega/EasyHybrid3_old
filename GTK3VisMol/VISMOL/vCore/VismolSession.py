@@ -56,16 +56,16 @@ class ShowHideVisMol:
 #'''
     def _hide_dots (self, Vobjects ):
         for Vobject in Vobjects:
-            Vobject.flat_sphere_representation.actived = False
+            Vobject.flat_sphere_representation.active = False
             #self.flat_sphere_representation.update()
 
     def _show_dots (self, Vobjects = []):
         """ Function doc """
         for Vobject in Vobjects:
-            Vobject.dots_actived = True
+            Vobject.dots_active = True
             
             
-            #Vobject.dots_actived.update()
+            #Vobject.dots_active.update()
             
     def _hide_ribbons (self, Vobjects ):
         """ Function doc """
@@ -309,7 +309,7 @@ class VisMolSession (ShowHideVisMol):
             self._load_xyz_file(infile = infile)
 
 
-        self.vismol_objects[-1].actived = True
+        self.vismol_objects[-1].active = True
         self.glwidget.queue_draw()
        
         #if self.backend == 'gtk3':
@@ -365,13 +365,13 @@ class VisMolSession (ShowHideVisMol):
         #self.glwidget.center_on_atom(mass_center)
 
     def disable_by_index (self, index = 0):
-        self.vismol_objects[index].actived = False
+        self.vismol_objects[index].active = False
         #self.glwidget.draw()
         self.glwidget.queue_draw()
             
     def enable_by_index (self, index = 0):
         """ Function doc """
-        self.vismol_objects[index].actived = True
+        self.vismol_objects[index].active = True
         #self.glwidget.draw()
         self.glwidget.queue_draw()
     

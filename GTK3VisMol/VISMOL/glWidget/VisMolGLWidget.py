@@ -421,21 +421,21 @@ class GtkGLAreaWidget(Gtk.GLArea):
         if k_name == 'r':
             #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
             visObj = self.vismolSession.vismol_objects[0]
-            #visObj.ribbons_actived =  True
-            if visObj.ribbons_actived:
-                visObj.ribbons_actived =  False
+            #visObj.ribbons_active =  True
+            if visObj.ribbons_active:
+                visObj.ribbons_active =  False
             else:
-                visObj.ribbons_actived =  True
+                visObj.ribbons_active =  True
 
 
         if k_name == 's':
             #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
             visObj = self.vismolSession.vismol_objects[0]
             
-            if visObj.spheres_actived:
-                visObj.spheres_actived =  False
+            if visObj.spheres_active:
+                visObj.spheres_active =  False
             else:
-                visObj.spheres_actived =  True
+                visObj.spheres_active =  True
             #self.vismolSession.show (_type = 'lines', Vobjects =  [])
 
 
@@ -444,10 +444,10 @@ class GtkGLAreaWidget(Gtk.GLArea):
             #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
             visObj = self.vismolSession.vismol_objects[0]
             
-            if visObj.spheres_ON_THE_FLY_actived:
-                visObj.spheres_ON_THE_FLY_actived =  False
+            if visObj.spheres_ON_THE_FLY_active:
+                visObj.spheres_ON_THE_FLY_active =  False
             else:
-                visObj.spheres_ON_THE_FLY_actived =  True
+                visObj.spheres_ON_THE_FLY_active =  True
             #self.vismolSession.show (_type = 'lines', Vobjects =  [])
 
 
@@ -456,31 +456,31 @@ class GtkGLAreaWidget(Gtk.GLArea):
         if k_name == 't':
             #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
             for visObj in self.vismolSession.vismol_objects:
-                if visObj.sticks_actived:
-                    visObj.sticks_actived =  False
+                if visObj.sticks_active:
+                    visObj.sticks_active =  False
                 else:
-                    visObj.sticks_actived =  True
+                    visObj.sticks_active =  True
 
         if k_name == 'd':
             self.vismolSession.show(_type = 'dots', Vobjects =  [self.vismolSession.vismol_objects[-1]])
             #visObj = self.vismolSession.vismol_objects[0]
-            #visObj.dots_actived =  True
+            #visObj.dots_active =  True
         
         if k_name == 'v':
             #self.vismolSession.show(_type = 'dots', Vobjects =  [self.vismolSession.vismol_objects[-1]])
             visObj = self.vismolSession.vismol_objects[0]
-            if visObj.dots_surface_actived:
-                visObj.dots_surface_actived =  False
+            if visObj.dots_surface_active:
+                visObj.dots_surface_active =  False
             else:
-                visObj.dots_surface_actived =  True
+                visObj.dots_surface_active =  True
 
         if k_name == 'b':
             for visObj in self.vismolSession.vismol_objects:
                 #visObj = self.vismolSession.vismol_objects[0]
-                if visObj.sphere_dot_activated:
-                    visObj.sphere_dot_activated =  False
+                if visObj.sphere_dot_active:
+                    visObj.sphere_dot_active =  False
                 else:
-                    visObj.sphere_dot_activated =  True
+                    visObj.sphere_dot_active =  True
 
         if k_name == 'q':
             #self.vismolSession.glwidget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  indexes = False)
@@ -509,14 +509,14 @@ class GtkGLAreaWidget(Gtk.GLArea):
             for atom in self.vismolSession.selections[self.vismolSession.current_selection].selected_atoms:
                 #print (atom.name)
                 for bond in atom.bonds:
-                    bond.line_activated = False
+                    bond.line_active = False
 
             # Build a list of the connections that are active -> this list will be sent to the openGL buffer
             for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
                 indices_bonds = []
                 
                 for bonds in vobject.bonds:
-                    if bonds.line_activated:
+                    if bonds.line_active:
                         indices_bonds.append(bonds.atom_index_i)
                         indices_bonds.append(bonds.atom_index_j)
                     else:
@@ -525,7 +525,7 @@ class GtkGLAreaWidget(Gtk.GLArea):
                 # When the list is [] we simply have to disable the display of the representation type
                 if indices_bonds == []:
                     #print('indices_bonds == []')
-                    vobject.lines_actived  = False
+                    vobject.lines_active  = False
                 else:
                     #print('indices_bonds ==', indices_bonds)
                     self.vm_widget.set_draw_lines_indexes (visObj = vobject,  show = False, input_indexes = indices_bonds)
@@ -537,14 +537,14 @@ class GtkGLAreaWidget(Gtk.GLArea):
             for atom in self.vismolSession.selections[self.vismolSession.current_selection].selected_atoms:
                 print (atom.name)
                 for bond in atom.bonds:
-                    bond.line_activated = False
+                    bond.line_active = False
 
             # Build a list of the connections that are active -> this list will be sent to the openGL buffer
             for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
                 indices_bonds = []
                 
                 for bond in vobject.bonds:
-                    if bond.line_activated:
+                    if bond.line_active:
                         indices_bonds.append(bond.atom_index_i)
                         indices_bonds.append(bond.atom_index_j)
                     else:
@@ -553,7 +553,7 @@ class GtkGLAreaWidget(Gtk.GLArea):
                 # When the list is [] we simply have to disable the display of the representation type
                 if indices_bonds == []:
                     #print('indices_bonds == []')
-                    vobject.sticks_actived  = False
+                    vobject.sticks_active  = False
                 else:
                     #print('indices_bonds ==', indices_bonds)
                     self.vm_widget.set_draw_sticks_indexes (visObj = vobject,  show = False, input_indexes = indices_bonds)

@@ -72,7 +72,7 @@ class VisMolViewingSelection:
         #---------------------------------------------------------------
         #                S E L E C T I O N S
         #---------------------------------------------------------------
-        self.actived = True
+        self.active = True
         
         self._selection_mode    = 'residue'
         self.selected_objects          = {} #dic of VisMol objects (obj)

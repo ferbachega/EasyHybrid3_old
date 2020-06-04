@@ -223,7 +223,7 @@ class VisMolGLCore():
                 # If {} means that there are no selection points on the screen
                 if self.vismolSession.selections[self.vismolSession.current_selection].selected_objects == {}:
                     
-                    print('selection is not activated')
+                    print('selection is not active')
                     # There is no selection (blue dots) but an atom was identified in the click with the right button
                     if self.atom_picked is not None:
 
@@ -235,9 +235,9 @@ class VisMolGLCore():
                     else:
                         # When no atom is identified in the click (user clicked on a point in the background)
                         print ('self.atom_picked is None')
-                        print ('selection is not activated')
+                        print ('selection is not active')
                 else:
-                    print('selection is  activated')
+                    print('selection is  active')
                     self.vismolSession.selections[self.vismolSession.current_selection].get_selection_info()
                 #self.parent_widget.glMenu.#open_gl_menu(event = event)
                 
@@ -427,46 +427,46 @@ class VisMolGLCore():
         for visObj in self.vismolSession.vismol_objects:
             #print ('passei aqui1')
 
-            if visObj.actived:
+            if visObj.active:
                 
-                if visObj.lines_actived:
+                if visObj.lines_active:
                     if visObj.lines_vao is None:
                         shapes._make_gl_lines(self.lines_program, vismol_object = visObj)
                     else:
                         self._draw_lines(visObj = visObj)
                 
-                if visObj.dots_actived:
+                if visObj.dots_active:
                     if visObj.dots_vao is None:
                         shapes._make_gl_dots (self.dots_program,  vismol_object = visObj)
                     else:
                         self._draw_dots(visObj = visObj, color_indexes = False)
                 
-                if visObj.ribbons_actived:
+                if visObj.ribbons_active:
                     if visObj.ribbons_vao is None:
                         shapes._make_gl_ribbon_lines(self.ribbons_program, vismol_object = visObj)
                     else:
                         self._draw_ribbons(visObj = visObj)
                 
-                if visObj.non_bonded_actived:
+                if visObj.non_bonded_active:
                     if visObj.non_bonded_vao is None:
                         shapes._make_gl_non_bonded(self.non_bonded_program, vismol_object = visObj)
                     else:
                         self._draw_non_bonded(visObj = visObj)
                 
-                if visObj.sticks_actived:
+                if visObj.sticks_active:
                     if visObj.sticks_vao is None:
                         shapes._make_gl_sticks(self.sticks_program, vismol_object = visObj)
                     else:
                         self._draw_sticks(visObj = visObj)
                 
-                if visObj.dots_surface_actived:
+                if visObj.dots_surface_active:
                     if visObj.dots_surface_vao is None:
                         shapes._make_gl_dots_surface (self.dots_surface_program,  vismol_object = visObj)
                     else:
                         self._draw_dots_surface(visObj = visObj, indexes = False)
                 
                 
-                if visObj.sphere_dot_activated:
+                if visObj.sphere_dot_active:
                     if visObj.sphere_dots_vao is None:
                         shapes._make_gl_sphere_dots (self.spheres_dots_program,  vismol_object = visObj)
                         self._draw_sphere_dots(visObj = visObj, indexes = False)
@@ -475,7 +475,7 @@ class VisMolGLCore():
                         self._draw_sphere_dots(visObj = visObj, indexes = False)
 
                 
-                if visObj.spheres_actived:
+                if visObj.spheres_active:
                     if visObj.sphere_rep is None:
                         visObj.sphere_rep = sph_r.SphereRepresentation(vismol_object = visObj, level = 'level_1')
                         visObj.sphere_rep._create_sphere_data()
@@ -485,13 +485,13 @@ class VisMolGLCore():
                     else:
                         self._draw_spheres(visObj = visObj, indexes = False)
                 
-                #if visObj.spheres_ON_THE_FLY_actived:
+                #if visObj.spheres_ON_THE_FLY_active:
                 #    if visObj.spheres_vao_ON_THE_FLY  is None:
                 #        shapes._make_gl_spheres_ON_THE_FLY(self.sel_spheres_program_ON_THE_FLY,  vismol_object = visObj)
                 #    else:
                 #        self._draw_spheres_ON_THE_FLY(visObj = visObj, indexes = False)              
                 
-                if visObj.text_activated:
+                if visObj.text_active:
                     if visObj.vm_font.vao is None:
                         visObj.vm_font.make_freetype_font()
                         visObj.vm_font.make_freetype_texture(self.freetype_program)
@@ -702,7 +702,7 @@ class VisMolGLCore():
         GL.glClearColor(1,1,1,1)
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
         for visObj in self.vismolSession.vismol_objects:
-            if visObj.actived:
+            if visObj.active:
                 if visObj.picking_dots_vao is None:
                     shapes._make_gl_picking_dots(self.picking_dots_program,  vismol_object = visObj)
                 GL.glEnable(GL.GL_DEPTH_TEST)
@@ -737,9 +737,9 @@ class VisMolGLCore():
         GL.glClearColor(1,1,1,1)
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
         for visObj in self.vismolSession.vismol_objects:
-            if visObj.actived:
+            if visObj.active:
                 
-                if visObj.lines_actived:
+                if visObj.lines_active:
                     if visObj.new_selection_lines_vao is None:
                         shapes._make_new_selection_gl_lines(self.new_selection_lines_program, vismol_object = visObj)
                         self._draw_new_selection_gl_lines(visObj = visObj )
@@ -749,34 +749,34 @@ class VisMolGLCore():
                         print('749')
 
                         
-                #if visObj.ribbons_actived:
+                #if visObj.ribbons_active:
                     #if visObj.sel_ribbons_vao is None:
                         #shapes._make_sel_gl_ribbon_lines(self.sel_ribbons_program, vismol_object = visObj)
                     #else:
                         #self._draw_sel_ribbons(visObj = visObj)
                 
-                if visObj.non_bonded_actived:
+                if visObj.non_bonded_active:
                     if visObj.sel_non_bonded_vao is None:
                         shapes._make_sel_gl_non_bonded(self.sel_non_bonded_program, vismol_object = visObj)
                         self._draw_sel_non_bonded(visObj = visObj)
                     else:
                         self._draw_sel_non_bonded(visObj = visObj)
                 
-                if visObj.sticks_actived:
+                if visObj.sticks_active:
                     if visObj.sel_sticks_vao is None:
                         shapes._make_sel_gl_sticks(self.sel_sticks_program, vismol_object = visObj)
                         self._draw_sel_sticks(visObj = visObj)
                     else:
                         self._draw_sel_sticks(visObj = visObj)
                 
-                if visObj.dots_surface_actived:
+                if visObj.dots_surface_active:
                     if visObj.sel_dots_surface_vao is None:
                         shapes._make_sel_gl_dots_surface (self.sel_dots_surface_program,  vismol_object = visObj)
                         self._draw_sel_dots_surface(visObj = visObj, indexes = False)
                     else:
                         self._draw_sel_dots_surface(visObj = visObj, indexes = False)
                 
-                if visObj.spheres_actived:
+                if visObj.spheres_active:
                     if visObj.sphere_rep is not None:
                         self._draw_sel_spheres(visObj = visObj, indexes = False)
 

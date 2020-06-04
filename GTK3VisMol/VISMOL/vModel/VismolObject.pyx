@@ -43,7 +43,7 @@ class sticksData:
     
     def __init__ (self):
         """ Class initialiser """
-        self.sticks_actived = False
+        self.sticks_active = False
         self.sticks_vao   = None
         self.sel_sticks_buffers = None
 
@@ -69,7 +69,7 @@ class VismolObject:
     
     Attributes 
     
-    self.actived            = False
+    self.active            = False
     self.editing            = False
     self.Type               = 'molecule'
     self.name               = name #self._get_name(name)
@@ -107,7 +107,7 @@ class VismolObject:
         #                V I S M O L   a t t r i b u t e s
         #----------------------------------------------------------------- 
         self.vismol_session = VMSession     #
-        self.actived        = False         # for "show and hide"   enable/disable
+        self.active        = False         # for "show and hide"   enable/disable
         self.editing        = False         # for translate and rotate  xyz coords 
         self.Type           = 'molecule'    # Not used yet
         self.name           = name          # 
@@ -172,38 +172,38 @@ class VismolObject:
         #                O p e n G L   a t t r i b u t e s
         #-----------------------------------------------------------------                
         """   L I N E S   """
-        self.lines_actived       = True
+        self.lines_active       = True
         self.lines_show_list     = False
 
         """   D O T S   """
-        self.dots_actived = False
+        self.dots_active = False
 
         """   R I B B O N S   """
-        self.ribbons_actived = False
+        self.ribbons_active = False
         
         """   N O N  B O N D E D   """
-        self.non_bonded_actived = True
+        self.non_bonded_active = True
         
         """   S T I C K S   """
-        self.sticks_actived = False
+        self.sticks_active = False
         
         """   S P H E R E S   """
-        self.spheres_actived = False
-        #self.spheres_ON_THE_FLY_actived = False
+        self.spheres_active = False
+        #self.spheres_ON_THE_FLY_active = False
         """   D O T S  S U R F A C E   """
-        self.dots_surface_actived = False
+        self.dots_surface_active = False
         
         """   T E X T   """
-        self.text_activated = False
+        self.text_active = False
         
         """   S E L E C T I O N   """
-        self._sel_lines_actived = False
-        self._sel_dots_actived = False
-        self._sel_ribbons_actived = False
-        self._sel_non_bonded_actived = False
-        self._sel_sticks_actived = True
-        self._sel_spheres_actived = True
-        self._sel_dots_surface_actived = False
+        self._sel_lines_active = False
+        self._sel_dots_active = False
+        self._sel_ribbons_active = False
+        self._sel_non_bonded_active = False
+        self._sel_sticks_active = True
+        self._sel_spheres_active = True
+        self._sel_dots_surface_active = False
         
         #print ('frames:     ', len(self.frames))
         #print ('frame size: ', len(self.frames[0]))
@@ -230,7 +230,7 @@ class VismolObject:
         self.new_selection_lines_vao     = None
         self.new_selection_lines_buffers = None
         #-----------------------------------------------------------------
-        self.sphere_dot_activated= False
+        self.sphere_dot_active   = False
         self.sphere_dots_vao     = None
         self.sphere_dots_buffers = None
         #-----------------------------------------------------------------
