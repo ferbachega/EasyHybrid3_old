@@ -41,7 +41,7 @@ class SphereRepresentation:
         self.coords = None
         self.colors = None
         self.centers = None
-        self.indexes = None
+        self.indices = None
     
     def _create_sphere_data(self):
         """ Function doc """
@@ -53,7 +53,7 @@ class SphereRepresentation:
         coords = sphd.sphere_vertices[self.level]*qtty
         centers = sphd.sphere_vertices[self.level]*qtty
         colors = sphd.sphere_vertices[self.level]*qtty
-        indexes = np.array(sphd.sphere_triangles[self.level]*qtty, dtype=np.uint32)
+        indices = np.array(sphd.sphere_triangles[self.level]*qtty, dtype=np.uint32)
         elems = int(len(sphd.sphere_vertices[self.level])/3)
         offset = int(len(sphd.sphere_vertices[self.level]))
         inds_e = int(len(sphd.sphere_triangles[self.level]))
@@ -67,13 +67,13 @@ class SphereRepresentation:
                 coords[a*offset+i*3] += atom.pos[0]
                 coords[a*offset+i*3+1] += atom.pos[1]
                 coords[a*offset+i*3+2] += atom.pos[2]
-            indexes[a*inds_e:(a+1)*inds_e] += a*elems
+            indices[a*inds_e:(a+1)*inds_e] += a*elems
         end = time.time()
         print('Time used creating nucleus, vertices and colors:', end-init)
         self.coords = np.array(coords, dtype=np.float32)
         self.centers = np.array(centers, dtype=np.float32)
         self.colors = np.array(colors, dtype=np.float32)
-        self.indexes = indexes
+        self.indices = indices
         return True
     
     def _create_sel_sphere_data(self, level):
@@ -85,7 +85,7 @@ class SphereRepresentation:
         colores = [0.0, 0.0, 0.0]*qtty
         coords = sphd.sphere_vertices[level]*qtty
         colors = sphd.sphere_vertices[level]*qtty
-        indexes = np.array(sphd.sphere_triangles[level]*qtty, dtype=np.uint32)
+        indices = np.array(sphd.sphere_triangles[level]*qtty, dtype=np.uint32)
         elems = int(len(sphd.sphere_vertices[level])/3)
         offset = int(len(sphd.sphere_vertices[level]))
         inds_e = int(len(sphd.sphere_triangles[level]))
@@ -98,12 +98,12 @@ class SphereRepresentation:
                 coords[a*offset+i*3] += atom.pos[0]
                 coords[a*offset+i*3+1] += atom.pos[1]
                 coords[a*offset+i*3+2] += atom.pos[2]
-            indexes[a*inds_e:(a+1)*inds_e] += a*elems
+            indices[a*inds_e:(a+1)*inds_e] += a*elems
         end = time.time()
         print('Time used creating nucleus, vertices and colors for selection:', end-init)
         self.sel_coords = np.array(coords, dtype=np.float32)
         self.sel_colors = np.array(colors, dtype=np.float32)
-        self.sel_indexes = indexes
+        self.sel_indices = indices
         return True
     
     def _make_gl_spheres(self, program):
@@ -113,7 +113,7 @@ class SphereRepresentation:
         
         ind_vbo = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self.indexes.itemsize*int(len(self.indexes)), self.indexes, GL.GL_DYNAMIC_DRAW)
+        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self.indices.itemsize*int(len(self.indices)), self.indices, GL.GL_DYNAMIC_DRAW)
         
         coord_vbo = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -143,7 +143,7 @@ class SphereRepresentation:
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
         self.spheres_vao = vertex_array_object
         self.spheres_buffers = (ind_vbo, coord_vbo, col_vbo)
-        self.triangles = int(len(self.indexes))
+        self.triangles = int(len(self.indices))
         return True
     
     def _make_sel_gl_spheres(self, program):
@@ -153,7 +153,7 @@ class SphereRepresentation:
         
         ind_vbo = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self.sel_indexes.itemsize*int(len(self.sel_indexes)), self.sel_indexes, GL.GL_DYNAMIC_DRAW)
+        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self.sel_indices.itemsize*int(len(self.sel_indices)), self.sel_indices, GL.GL_DYNAMIC_DRAW)
         
         coord_vbo = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -175,6 +175,6 @@ class SphereRepresentation:
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
         self.sel_spheres_vao = vertex_array_object
         self.sel_spheres_buffers = (ind_vbo, coord_vbo, col_vbo)
-        self.sel_triangles = int(len(self.indexes))
+        self.sel_triangles = int(len(self.indices))
         return True
     

@@ -29,12 +29,12 @@ import multiprocessing
 '''
 cpdef tuple C_generate_bonds (list list_of_atoms        , 
                               list atoms                , 
-                              list bonds_pair_of_indexes,  #indexes of connected atoms
-                              list bonds_full_indexes   ,
+                              list bonds_pair_of_indices,  #indices of connected atoms
+                              list bonds_full_indices   ,
                               list non_bonded_list      ): #pairs_of_
 
     
-    #list_of_atoms atoms bonds_full_indexes     bonds_pair_of_indexes    non_bonded_list      
+    #list_of_atoms atoms bonds_full_indices     bonds_pair_of_indices    non_bonded_list      
     
     """
         Calculate the distances and bonds 
@@ -61,8 +61,8 @@ cpdef tuple C_generate_bonds (list list_of_atoms        ,
             each elemte is a list contain required data.
     
     
-    bonds_pair_of_indexes [[a,b],[b,c], ...] where a and b are indexes. 
-    returns a list of pair of indexes "bonds_pair_of_indexes"
+    bonds_pair_of_indices [[a,b],[b,c], ...] where a and b are indices. 
+    returns a list of pair of indices "bonds_pair_of_indices"
     
     """
 
@@ -115,10 +115,10 @@ cpdef tuple C_generate_bonds (list list_of_atoms        ,
                     
                     print ([index_i,index_j])
                     
-                    bonds_pair_of_indexes.append( [index_i, index_j])
+                    bonds_pair_of_indices.append( [index_i, index_j])
                     
-                    bonds_full_indexes.append(index_i  )
-                    bonds_full_indexes.append(index_j  )                 
+                    bonds_full_indices.append(index_i  )
+                    bonds_full_indices.append(index_j  )                 
                     
                     atoms[index_i][8].append(index_j)
                     atoms[index_j][8].append(index_i)
@@ -129,16 +129,16 @@ cpdef tuple C_generate_bonds (list list_of_atoms        ,
                 else:
                     pass
 
-    return atoms, bonds_full_indexes , bonds_pair_of_indexes, non_bonded_list
-          #atoms, bonds_full_indexes, bonds_pair_of_indexes, non_bonded_list
+    return atoms, bonds_full_indices , bonds_pair_of_indices, non_bonded_list
+          #atoms, bonds_full_indices, bonds_pair_of_indices, non_bonded_list
           
           
           
 cpdef tuple C_generate_bonds_between_sectors (list list_of_atoms1       , 
                                               list list_of_atoms2       , 
                                               list atoms                , 
-                                              list bonds_pair_of_indexes,  #indexes of connected atoms
-                                              list bonds_full_indexes   ,
+                                              list bonds_pair_of_indices,  #indices of connected atoms
+                                              list bonds_full_indices   ,
                                               list non_bonded_list      ):
     """
    
@@ -165,8 +165,8 @@ cpdef tuple C_generate_bonds_between_sectors (list list_of_atoms1       ,
     
     atoms2 = [[index, at_name, cov_rad,  at_pos, at_res_i, at_res_n, at_ch], ...]
 
-    bonds_pair_of_indexes [[a,b],[b,c], ...] where a and b are indexes. 
-    returns a list of pair of indexes "bonds_pair_of_indexes"
+    bonds_pair_of_indices [[a,b],[b,c], ...] where a and b are indices. 
+    returns a list of pair of indices "bonds_pair_of_indices"
     """
 
     cdef int i
@@ -220,10 +220,10 @@ cpdef tuple C_generate_bonds_between_sectors (list list_of_atoms1       ,
                     
                     if r_ij <= cov_rad_ij_sqrt:
                         
-                        bonds_pair_of_indexes.append( [index_i, index_j])
+                        bonds_pair_of_indices.append( [index_i, index_j])
                         
-                        bonds_full_indexes.append(index_i  )
-                        bonds_full_indexes.append(index_j  )                 
+                        bonds_full_indices.append(index_i  )
+                        bonds_full_indices.append(index_j  )                 
                         
                         atoms[index_i][8].append(index_j)
                         atoms[index_j][8].append(index_i)
@@ -234,7 +234,7 @@ cpdef tuple C_generate_bonds_between_sectors (list list_of_atoms1       ,
                     else:
                         pass
 
-    return atoms, bonds_full_indexes, bonds_pair_of_indexes, non_bonded_list
+    return atoms, bonds_full_indices, bonds_pair_of_indices, non_bonded_list
 
 cpdef dict build_atomic_grid (list atoms):
     """  fucntion build_atomic_grid
@@ -388,8 +388,8 @@ cpdef list _determine_the_paired_atomic_grid_elements(atomic_grid):
 
 cpdef tuple _generate_connections_into_a_grid_element (list list_of_atoms  , 
                                         list atoms          , 
-                                        list bonds_pair_of_indexes   ,  #indexes of connected atoms
-                                        list bonds_full_indexes    ,
+                                        list bonds_pair_of_indices   ,  #indices of connected atoms
+                                        list bonds_full_indices    ,
                                         list non_bonded_list): #pairs_of_
     """
         Calculate the distances and bonds 
@@ -416,8 +416,8 @@ cpdef tuple _generate_connections_into_a_grid_element (list list_of_atoms  ,
             each elemte is a list contain required data.
     
     
-    bonds_pair_of_indexes [[a,b],[b,c], ...] where a and b are indexes. 
-    returns a list of pair of indexes "bonds_pair_of_indexes"
+    bonds_pair_of_indices [[a,b],[b,c], ...] where a and b are indices. 
+    returns a list of pair of indices "bonds_pair_of_indices"
     
     """
 
@@ -472,10 +472,10 @@ cpdef tuple _generate_connections_into_a_grid_element (list list_of_atoms  ,
                     r_ij = (dX + dY + dZ)
                     if r_ij <= cov_rad_ij_sqrt:
                         pass
-                        bonds_pair_of_indexes.append([index_i , atoms[j][0]])
+                        bonds_pair_of_indices.append([index_i , atoms[j][0]])
                         
-                        bonds_full_indexes.append  (index_i               )
-                        bonds_full_indexes.append  (atoms[j][0]           )                 
+                        bonds_full_indices.append  (index_i               )
+                        bonds_full_indices.append  (atoms[j][0]           )                 
                         
                         atoms[i][8].append  (atoms[j][0]           )
                         atoms[j][8].append  (atoms[i][0]           )
@@ -487,13 +487,13 @@ cpdef tuple _generate_connections_into_a_grid_element (list list_of_atoms  ,
                     else:
                         pass
 
-    return atoms, bonds_full_indexes , bonds_pair_of_indexes, non_bonded_list
+    return atoms, bonds_full_indices , bonds_pair_of_indices, non_bonded_list
 
 cpdef tuple _generate_connections_between_grid_elements (list lits_of_atoms1       , 
                                                         list lits_of_atoms2       , 
                                                         list atoms                , 
-                                                        list bonds_pair_of_indexes,  #indexes of connected atoms
-                                                        list bonds_full_indexes   ,
+                                                        list bonds_pair_of_indices,  #indices of connected atoms
+                                                        list bonds_full_indices   ,
                                                         list non_bonded_list      ):
     """
    
@@ -520,8 +520,8 @@ cpdef tuple _generate_connections_between_grid_elements (list lits_of_atoms1    
     
     atoms2 = [[index, at_name, cov_rad,  at_pos, at_res_i, at_res_n, at_ch], ...]
 
-    bonds_pair_of_indexes [[a,b],[b,c], ...] where a and b are indexes. 
-    returns a list of pair of indexes "bonds_pair_of_indexes"
+    bonds_pair_of_indices [[a,b],[b,c], ...] where a and b are indices. 
+    returns a list of pair of indices "bonds_pair_of_indices"
     """
     
 
@@ -573,10 +573,10 @@ cpdef tuple _generate_connections_between_grid_elements (list lits_of_atoms1    
                     r_ij = (dX + dY + dZ)
                     
                     if r_ij <= cov_rad_ij_sqrt:
-                        bonds_pair_of_indexes.append( [index_i , atoms[j][0]] )
+                        bonds_pair_of_indices.append( [index_i , atoms[j][0]] )
                         
-                        bonds_full_indexes.append   (index_i                )
-                        bonds_full_indexes.append   (atoms[j][0]            )                 
+                        bonds_full_indices.append   (index_i                )
+                        bonds_full_indices.append   (atoms[j][0]            )                 
                         
                         atoms[i][8].append   (atoms[j][0]            )
                         atoms[j][8].append   (atoms[i][0]            )
@@ -585,7 +585,7 @@ cpdef tuple _generate_connections_between_grid_elements (list lits_of_atoms1    
                         non_bonded_list[atoms[j][0]] = False
 
 
-    return atoms, bonds_full_indexes, bonds_pair_of_indexes, non_bonded_list
+    return atoms, bonds_full_indices, bonds_pair_of_indices, non_bonded_list
 
 cpdef dict _build_the_atomic_grid (list atoms):
     """  fucntion build_atomic_grid
@@ -636,7 +636,7 @@ cpdef dict _build_the_atomic_grid (list atoms):
 cpdef _generete_NB_list_from_TrueFalse_list(list NB_TrueFalse_list):
 
     #debug =  {'pName': '_generete_NB_list_from_TrueFalse_list'}
-    NB_indexes_list  = []
+    NB_indices_list  = []
     #---------------------------------------------------------------#
     #initial       = time.time()
     #---------------------------------------------------------------#
@@ -644,15 +644,15 @@ cpdef _generete_NB_list_from_TrueFalse_list(list NB_TrueFalse_list):
     
     for TrueFalse in NB_TrueFalse_list:
         if TrueFalse:
-            NB_indexes_list.append(index)
+            NB_indices_list.append(index)
         index += 1
-    NB_indexes_list = np.array(NB_indexes_list, dtype=np.uint32)
+    NB_indices_list = np.array(NB_indices_list, dtype=np.uint32)
     #--------------------------------------------------------------#
     #final = time.time()                                            #
     #print ('method2 time : ', final - initial, '\n')#
     #--------------------------------------------------------------#
     
-    return NB_indexes_list#, debug
+    return NB_indices_list#, debug
 
 
 cpdef generete_full_NB_and_Bonded_lists(atoms):
@@ -664,7 +664,7 @@ cpdef generete_full_NB_and_Bonded_lists(atoms):
     #--------------------------------------------------------------#
     initial       = time.time()                                    #
     #--------------------------------------------------------------#
-    bonds_full_indexes, bonds_pair_of_indexes = [], []
+    bonds_full_indices, bonds_pair_of_indices = [], []
     atomic_grid               = _build_the_atomic_grid(atoms)
     pairs_of_grid_elements    = _determine_the_paired_atomic_grid_elements(atomic_grid)
     NB_TrueFalse_list         = [True]*len(atoms)
@@ -692,23 +692,23 @@ cpdef generete_full_NB_and_Bonded_lists(atoms):
     #'''
     for list_of_atoms in atomic_grid.values():
         #print (len(atoms))
-        atoms, bonds_full_indexes, bonds_pair_of_indexes, NB_TrueFalse_list = _generate_connections_into_a_grid_element( list_of_atoms         , 
+        atoms, bonds_full_indices, bonds_pair_of_indices, NB_TrueFalse_list = _generate_connections_into_a_grid_element( list_of_atoms         , 
                                                                                                               atoms                 , 
-                                                                                                              bonds_pair_of_indexes , 
-                                                                                                              bonds_full_indexes    ,
+                                                                                                              bonds_pair_of_indices , 
+                                                                                                              bonds_full_indices    ,
                                                                                                               NB_TrueFalse_list       )    
     #'''
     #'''
     for pair_of_grid_elements in pairs_of_grid_elements:
-        atoms, bonds_full_indexes, bonds_pair_of_indexes, NB_TrueFalse_list = _generate_connections_between_grid_elements(pair_of_grid_elements[0],
+        atoms, bonds_full_indices, bonds_pair_of_indices, NB_TrueFalse_list = _generate_connections_between_grid_elements(pair_of_grid_elements[0],
                                                                                                                              pair_of_grid_elements[1],
                                                                                                                              atoms                   ,
-                                                                                                                             bonds_pair_of_indexes   , 
-                                                                                                                             bonds_full_indexes      ,
+                                                                                                                             bonds_pair_of_indices   , 
+                                                                                                                             bonds_full_indices      ,
                                                                                                                              NB_TrueFalse_list           )
     #'''
 
-    print ('Bonds                   :', len(bonds_pair_of_indexes))
+    print ('Bonds                   :', len(bonds_pair_of_indices))
     #--------------------------------------------------------------#
     final = time.time()                                            #
     print ('Bonds calcultation time : ', final - initial, '\n')#
@@ -720,11 +720,11 @@ cpdef generete_full_NB_and_Bonded_lists(atoms):
     #                                                  N B Atoms
     #-----------------------------------------------------------------------------------------------------------------------------------------------
     '''
-    NB_indexes_list = _generete_NB_list_from_TrueFalse_list(NB_TrueFalse_list)
-    print ('NB atoms                :', len(NB_indexes_list))
+    NB_indices_list = _generete_NB_list_from_TrueFalse_list(NB_TrueFalse_list)
+    print ('NB atoms                :', len(NB_indices_list))
     #-----------------------------------------------------------------------------------------------------------------------------------------------
 
-    return atoms, bonds_full_indexes, bonds_pair_of_indexes, NB_indexes_list
+    return atoms, bonds_full_indices, bonds_pair_of_indices, NB_indices_list
 
 
 

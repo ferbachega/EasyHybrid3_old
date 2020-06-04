@@ -33,20 +33,20 @@ class SelectionBox:
     """
     
     def __init__ (self):
-        """ Constructor that defines the color of the box, the indexes to form
+        """ Constructor that defines the color of the box, the indices to form
             the box and the triangles for the fill box. The color can be changed
             here, but you should not change the other parameters, since that
             will cause unwanted behavior.
             Despite the box only needs 4 points to create a quad, we use 5 to
             obtain a closed quad, this is because the GL_LINE_STRIP function do
             not join the first item with the last.
-            For the box lines we use the indexes disposed as:
+            For the box lines we use the indices disposed as:
             
                        0,4----------3
                         |           |
                         1-----------2
             
-            For the triangles we use the same indexes but the order will be:
+            For the triangles we use the same indices but the order will be:
             
                   0,4----------3        0       3
                    |           |        | \     |
@@ -64,7 +64,7 @@ class SelectionBox:
         self.end = None
         self.points = None
         self.color = np.array([0.0, 0.5, 0.5]*5, dtype=np.float32)
-        self.indexes = np.array([0, 1, 2, 3, 4], dtype=np.uint32)
+        self.indices = np.array([0, 1, 2, 3, 4], dtype=np.uint32)
         self.triangles = np.array([1, 0, 2, 3], dtype=np.uint32)
         self.vertex_shader_sb = """
 #version 330
@@ -148,7 +148,7 @@ void main(){
         
         ind_vbo = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self.indexes.itemsize*int(len(self.indexes)), self.indexes, GL.GL_DYNAMIC_DRAW)
+        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self.indices.itemsize*int(len(self.indices)), self.indices, GL.GL_DYNAMIC_DRAW)
         
         coord_vbo = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -189,8 +189,8 @@ void main(){
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.buffers[1])
         GL.glBufferData(GL.GL_ARRAY_BUFFER, self.points.itemsize*int(len(self.points)), self.points, GL.GL_DYNAMIC_DRAW)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.buffers[0])
-        GL.glBufferData(GL.GL_ARRAY_BUFFER, self.indexes.itemsize*int(len(self.indexes)), self.indexes, GL.GL_DYNAMIC_DRAW)
-        GL.glDrawElements(GL.GL_LINE_STRIP, int(len(self.indexes)), GL.GL_UNSIGNED_INT, None)
+        GL.glBufferData(GL.GL_ARRAY_BUFFER, self.indices.itemsize*int(len(self.indices)), self.indices, GL.GL_DYNAMIC_DRAW)
+        GL.glDrawElements(GL.GL_LINE_STRIP, int(len(self.indices)), GL.GL_UNSIGNED_INT, None)
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glEnable(GL.GL_BLEND)
         GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_SRC_ALPHA)

@@ -38,7 +38,7 @@ def make_spheres(program, points):
     coords = np.array([], dtype=np.float32)
     colors = np.array([], dtype=np.float32)
     centers = np.array([], dtype=np.float32)
-    indexes = np.array([], dtype=np.uint32)
+    indices = np.array([], dtype=np.uint32)
     for i in range(0, amount, 3):
         center = [points[i], points[i+1], points[i+2]]
         verts, inds, cols = shapes.get_sphere(center, 1.1, [0, 1, 0], level='level_2')
@@ -48,7 +48,7 @@ def make_spheres(program, points):
         coords = np.concatenate((coords,verts))
         colors = np.concatenate((colors,cols))
         centers = np.concatenate((centers,center))
-        indexes = np.concatenate((indexes,inds))
+        indices = np.concatenate((indices,inds))
     
     vertex_array_object = GL.glGenVertexArrays(1)
     GL.glBindVertexArray(vertex_array_object)
@@ -56,11 +56,11 @@ def make_spheres(program, points):
     coords = np.array(coords,dtype=np.float32)
     colors = np.array(colors,dtype=np.float32)
     centers = np.array(centers,dtype=np.float32)
-    indexes = np.array(indexes, dtype=np.uint32)
+    indices = np.array(indices, dtype=np.uint32)
     
     ind_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
     
     coord_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -88,5 +88,5 @@ def make_spheres(program, points):
     GL.glDisableVertexAttribArray(gl_center)
     GL.glDisableVertexAttribArray(gl_colors)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
-    return vertex_array_object, (coord_vbo, centr_vbo, col_vbo), int(len(indexes))
+    return vertex_array_object, (coord_vbo, centr_vbo, col_vbo), int(len(indices))
 

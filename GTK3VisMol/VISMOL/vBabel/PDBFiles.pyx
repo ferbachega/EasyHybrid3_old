@@ -38,9 +38,9 @@ cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None):
     #-------------------------------------------------------------------------------------------
     #                                Bonded and NB lists 
     #-------------------------------------------------------------------------------------------
-    atoms, bonds_full_indexes, bonds_pair_of_indexes, NB_indexes_list = cdist.generete_full_NB_and_Bonded_lists(atoms)
+    atoms, bonds_full_indices, bonds_pair_of_indices, NB_indices_list = cdist.generete_full_NB_and_Bonded_lists(atoms)
     #-------------------------------------------------------------------------------------------
-    #print (bonds_pair_of_indexes, NB_indexes_list )
+    #print (bonds_pair_of_indices, NB_indices_list )
     #for atom in atoms:
     #    pprint (atom[8])
     #-------------------------------------------------------------------------------------------
@@ -55,12 +55,12 @@ cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None):
     
     vismol_object._generate_atomtree_structure()
     vismol_object._generate_atom_unique_color_id()
-    vismol_object.index_bonds       = bonds_full_indexes
-    vismol_object.index_bonds_pairs = bonds_pair_of_indexes
-    vismol_object.import_bonds(bonds_pair_of_indexes)
-    vismol_object.non_bonded_atoms  = NB_indexes_list
-    vismol_object.generate_dot_indexes()
-    #vismol_object.get_backbone_indexes()
+    vismol_object.index_bonds       = bonds_full_indices
+    vismol_object.index_bonds_pairs = bonds_pair_of_indices
+    vismol_object.import_bonds(bonds_pair_of_indices)
+    vismol_object.non_bonded_atoms  = NB_indices_list
+    vismol_object.generate_dot_indices()
+    #vismol_object.get_backbone_indices()
     #-------------------------------------------------------------------------------------------
     return vismol_object
     

@@ -123,7 +123,7 @@ class GLAxis:
             [1.0, 0.0, 0.0, 1.0, 0.0, 0.0,
              0.0, 1.0, 0.0, 0.0, 1.0, 0.0,
              0.0, 0.0, 1.0, 0.0, 0.0, 1.0], dtype=np.float32)
-        self.axis_indexes = np.array([0, 1, 8, 1, 2, 8, 2, 3, 8, 3, 4, 8,
+        self.axis_indices = np.array([0, 1, 8, 1, 2, 8, 2, 3, 8, 3, 4, 8,
                                       4, 5, 8, 5, 6, 8, 6, 7, 8, 7, 0, 8,
                                       0, 1, 9, 1, 2, 9, 2, 3, 9, 3, 4, 9,
                                       4, 5, 9, 5, 6, 9, 6, 7, 9, 7, 0, 9], dtype=np.uint32)
@@ -309,7 +309,7 @@ void main()
         
         ind_vbo = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self.axis_indexes.itemsize*int(len(self.axis_indexes)), self.axis_indexes, GL.GL_STATIC_DRAW)
+        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self.axis_indices.itemsize*int(len(self.axis_indices)), self.axis_indices, GL.GL_STATIC_DRAW)
         
         vert_vbo = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vert_vbo)
@@ -424,13 +424,13 @@ void main()
             GL.glUseProgram(self.gizmo_axis_program)
             self.load_params()
             GL.glBindVertexArray(self.x_vao)
-            GL.glDrawElements(GL.GL_TRIANGLES, len(self.axis_indexes), GL.GL_UNSIGNED_INT, None)
+            GL.glDrawElements(GL.GL_TRIANGLES, len(self.axis_indices), GL.GL_UNSIGNED_INT, None)
             GL.glBindVertexArray(0)
             GL.glBindVertexArray(self.y_vao)
-            GL.glDrawElements(GL.GL_TRIANGLES, len(self.axis_indexes), GL.GL_UNSIGNED_INT, None)
+            GL.glDrawElements(GL.GL_TRIANGLES, len(self.axis_indices), GL.GL_UNSIGNED_INT, None)
             GL.glBindVertexArray(0)
             GL.glBindVertexArray(self.z_vao)
-            GL.glDrawElements(GL.GL_TRIANGLES, len(self.axis_indexes), GL.GL_UNSIGNED_INT, None)
+            GL.glDrawElements(GL.GL_TRIANGLES, len(self.axis_indices), GL.GL_UNSIGNED_INT, None)
             GL.glBindVertexArray(0)
             GL.glUseProgram(0)
         else:

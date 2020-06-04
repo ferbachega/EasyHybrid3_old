@@ -483,27 +483,27 @@ class GtkGLAreaWidget(Gtk.GLArea):
                     visObj.sphere_dot_active =  True
 
         if k_name == 'q':
-            #self.vismolSession.glwidget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  indexes = False)
-            self.vm_widget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  input_indexes = [1,2])#[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22, 23])
+            #self.vismolSession.glwidget._set_draw_dots_indices (visObj = self.vismolSession.vismol_objects[0],  indices = False)
+            self.vm_widget._set_draw_dots_indices (visObj = self.vismolSession.vismol_objects[0],  input_indices = [1,2])#[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22, 23])
         
         if k_name == 'w':
-            #self.vismolSession.glwidget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  indexes = False)
+            #self.vismolSession.glwidget._set_draw_dots_indices (visObj = self.vismolSession.vismol_objects[0],  indices = False)
             
             for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
                 print (vobject.name, self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[vobject], 'selection_function_viewing button1' )
                 lista = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[vobject]                
-                self.vm_widget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  input_indexes = lista)
+                self.vm_widget._set_draw_dots_indices (visObj = self.vismolSession.vismol_objects[0],  input_indices = lista)
     
         if k_name == 'a':
-            #self.vismolSession.glwidget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  indexes = False)
-            self.vm_widget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  input_indexes = [ 0], show = False)
+            #self.vismolSession.glwidget._set_draw_dots_indices (visObj = self.vismolSession.vismol_objects[0],  indices = False)
+            self.vm_widget._set_draw_dots_indices (visObj = self.vismolSession.vismol_objects[0],  input_indices = [ 0], show = False)
             for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
                 print (vobject.name, self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[vobject], 'selection_function_viewing button1' )
                 lista = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[vobject]                
-                self.vm_widget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  input_indexes = lista, show = False)
+                self.vm_widget._set_draw_dots_indices (visObj = self.vismolSession.vismol_objects[0],  input_indices = lista, show = False)
        
         if k_name == 'z':
-            #self.vismolSession.glwidget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  indexes = False)
+            #self.vismolSession.glwidget._set_draw_dots_indices (visObj = self.vismolSession.vismol_objects[0],  indices = False)
 
             # Associates selected bonds as false / true
             for atom in self.vismolSession.selections[self.vismolSession.current_selection].selected_atoms:
@@ -528,10 +528,10 @@ class GtkGLAreaWidget(Gtk.GLArea):
                     vobject.lines_active  = False
                 else:
                     #print('indices_bonds ==', indices_bonds)
-                    self.vm_widget.set_draw_lines_indexes (visObj = vobject,  show = False, input_indexes = indices_bonds)
+                    self.vm_widget.set_draw_lines_indices (visObj = vobject,  show = False, input_indices = indices_bonds)
 
         if k_name == 'x':
-            #self.vismolSession.glwidget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  indexes = False)
+            #self.vismolSession.glwidget._set_draw_dots_indices (visObj = self.vismolSession.vismol_objects[0],  indices = False)
             
             # Associates selected bonds as false / true
             for atom in self.vismolSession.selections[self.vismolSession.current_selection].selected_atoms:
@@ -556,7 +556,7 @@ class GtkGLAreaWidget(Gtk.GLArea):
                     vobject.sticks_active  = False
                 else:
                     #print('indices_bonds ==', indices_bonds)
-                    self.vm_widget.set_draw_sticks_indexes (visObj = vobject,  show = False, input_indexes = indices_bonds)
+                    self.vm_widget.set_draw_sticks_indices (visObj = vobject,  show = False, input_indices = indices_bonds)
 
         
 

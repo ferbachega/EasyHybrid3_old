@@ -77,19 +77,19 @@ class ShowHideVisMol:
         for Vobject in Vobjects:
             Vobject.show_ribbons = True
         
-    def _hide_lines (self, visObj = None, indexes = []):
+    def _hide_lines (self, visObj = None, indices = []):
         """ Function doc 
         
         _hide_lines
         visObj  = object
-        indexes = [] list
+        indices = [] list
         
         """
-        if indexes == []:
+        if indices == []:
             for atom in visObj.atoms:
                 atom.lines =  False        
         else:
-            for index in indexes:
+            for index in indices:
                 visObj.atoms[index].lines = False
 
         visObj.index_bonds = []
@@ -99,22 +99,22 @@ class ShowHideVisMol:
                 visObj.index_bonds.append(visObj.atoms[bond_pairs[0]].index-1)
                 visObj.index_bonds.append(visObj.atoms[bond_pairs[1]].index-1)
 
-        shapes.change_vbo_indexes (ind_vbo = visObj.lines_buffers[0], indexes = visObj.index_bonds)
+        shapes.change_vbo_indices (ind_vbo = visObj.lines_buffers[0], indices = visObj.index_bonds)
     
-    def _show_lines (self, visObj = None, indexes = [] ):
+    def _show_lines (self, visObj = None, indices = [] ):
         """ Function doc 
         
         visObj  = object
-        indexes = [] list
+        indices = [] list
         
         
         """
         
-        if indexes == []:
+        if indices == []:
             for atom in visObj.atoms:
                 atom.lines =  True        
         else:
-            for index in indexes:
+            for index in indices:
                 visObj.atoms[index].lines = True
 
         visObj.index_bonds = []
@@ -124,9 +124,9 @@ class ShowHideVisMol:
                 visObj.index_bonds.append(visObj.atoms[bond_pairs[0]].index-1)
                 visObj.index_bonds.append(visObj.atoms[bond_pairs[1]].index-1)
 
-        shapes.change_vbo_indexes (ind_vbo = visObj.lines_buffers[0], indexes = visObj.index_bonds)
+        shapes.change_vbo_indices (ind_vbo = visObj.lines_buffers[0], indices = visObj.index_bonds)
     
-    def hide (self, Vobjects =  [], _type = 'lines', indexes = [] ):
+    def hide (self, Vobjects =  [], _type = 'lines', indices = [] ):
         """ Function doc """    
         if _type == 'dots':
             self._hide_dots (Vobjects )
@@ -145,7 +145,7 @@ class ShowHideVisMol:
         
         self.glwidget.updateGL()
 
-    def show (self, _type = 'lines', Vobjects =  [], indexes = [] ):
+    def show (self, _type = 'lines', Vobjects =  [], indices = [] ):
         """ Function doc """
         if _type == 'dots':
             self._show_dots (Vobjects )
@@ -248,7 +248,7 @@ class VisMolSession (ShowHideVisMol):
         def f2 (_):
             """ Function doc """
             print('f2')
-            self._show_lines(visObj = self.vismol_objects[0], indexes = [0,1,2,3,4] )
+            self._show_lines(visObj = self.vismol_objects[0], indices = [0,1,2,3,4] )
         
         def f3 (_):
             """ Function doc """
@@ -274,20 +274,20 @@ class VisMolSession (ShowHideVisMol):
         print (cmd)
         
         obj     = int(cmd[1]            )
-        _indexes = cmd[2].split('+')
-        indexes = []
+        _indices = cmd[2].split('+')
+        indices = []
         
         
-        for index in _indexes:
-            indexes.append(int(index))
+        for index in _indices:
+            indices.append(int(index))
         
         if cmd[0] == 'show':
             self._show_lines (visObj = self.vismol_objects[obj], 
-                                       indexes = indexes)       
+                                       indices = indices)       
         
         if cmd[0] == 'hide':
             self._hide_lines (visObj = self.vismol_objects[obj], 
-                                       indexes = indexes)  
+                                       indices = indices)  
         
         self.ctrl = True
         
@@ -353,7 +353,7 @@ class VisMolSession (ShowHideVisMol):
         self.vismol_objects.pop(index)
         #self.glwidget.updateGL()
         
-    def select (self, obj =  None, indexes = []):
+    def select (self, obj =  None, indices = []):
         """ Function doc """
 
     def orient (self, obj =  None):

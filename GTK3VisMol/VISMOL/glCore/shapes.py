@@ -119,21 +119,21 @@ def _make_gl_selection_dots(program, vismol_object = None):
     bckgrnd_color = [0,0,0]
     bckgrnd_color = np.array(bckgrnd_color, dtype=np.float32)
     
-    indexes = []
+    indices = []
     for i in range(dot_qtty):
-        indexes.append(i)
-    indexes = np.array(indexes,dtype=np.uint32)
+        indices.append(i)
+    indices = np.array(indices,dtype=np.uint32)
     
     vao = GL.glGenVertexArrays(1)
     GL.glBindVertexArray(vao)
     
     ind_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
     
     ind_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
     
     coord_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -169,16 +169,16 @@ def _make_gl_dots(program, vismol_object = None, bckgrnd_color= [0.0,0.0,0.0,1.0
     dot_sizes = vismol_object.vdw_dot_sizes
     dot_qtty  = int(len(coords)/3)
 
-    indexes = []
+    indices = []
     for i in range(dot_qtty):
-        indexes.append(i)
-    indexes = np.array(indexes,dtype=np.uint32)
+        indices.append(i)
+    indices = np.array(indices,dtype=np.uint32)
     
 
     
     vismol_object.dots_vao, vismol_object.dots_buffers = build_gl_VAO_and_buffers (program   = program, 
                                                                                    VAO       = True,
-                                                                                   indices   = indexes,
+                                                                                   indices   = indices,
                                                                                    coords    = coords, 
                                                                                    colors    = colors, 
                                                                                    dot_sizes = None)
@@ -190,7 +190,7 @@ def _make_gl_dots(program, vismol_object = None, bckgrnd_color= [0.0,0.0,0.0,1.0
     #
     #ind_vbo = GL.glGenBuffers(1)
     #GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
     #
     #coord_vbo = GL.glGenBuffers(1)
     #GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -239,13 +239,13 @@ def _make_gl_dots(program, vismol_object = None, bckgrnd_color= [0.0,0.0,0.0,1.0
 def _make_gl_non_bonded(program, vismol_object = None):
     """ Function doc
     """
-    indexes = np.array(vismol_object.non_bonded_atoms, dtype=np.uint32)
+    indices = np.array(vismol_object.non_bonded_atoms, dtype=np.uint32)
     coords  = vismol_object.frames[0]
     colors  = vismol_object.colors
     
     vao, buffers  = build_gl_VAO_and_buffers (program   = program, 
                                               VAO       = True,
-                                              indices   = indexes,
+                                              indices   = indices,
                                               coords    = coords, 
                                               colors    = colors, 
                                               dot_sizes = None)
@@ -257,7 +257,7 @@ def _make_gl_non_bonded(program, vismol_object = None):
     #
     #ind_vbo = GL.glGenBuffers(1)
     #GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
     #
     #coord_vbo = GL.glGenBuffers(1)
     #GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -287,7 +287,7 @@ def _make_gl_non_bonded(program, vismol_object = None):
 def _make_gl_sticks(program, vismol_object = None):
     """ Function doc
     """
-    indexes = np.array(vismol_object.index_bonds,dtype=np.uint32)
+    indices = np.array(vismol_object.index_bonds,dtype=np.uint32)
     coords  = vismol_object.frames[0]
     colors  = vismol_object.colors
     
@@ -296,7 +296,7 @@ def _make_gl_sticks(program, vismol_object = None):
     
     ind_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
     
     coord_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -329,11 +329,11 @@ def _make_gl_dots_surface(program, vismol_object = None):
     
     colors = vismol_object.colors
     coords = vismol_object.frames[0]
-    indexes = np.array(vismol_object.dot_indexes,dtype=np.uint32)
+    indices = np.array(vismol_object.dot_indices,dtype=np.uint32)
     
     vao , buffers =  build_gl_VAO_and_buffers (program   = program, 
                                                VAO       = True,
-                                               indices   = indexes,
+                                               indices   = indices,
                                                coords    = coords, 
                                                colors    = colors, 
                                                dot_sizes = None)
@@ -346,7 +346,7 @@ def _make_gl_dots_surface(program, vismol_object = None):
     #
     #ind_vbo = GL.glGenBuffers(1)
     #GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
     #
     #coord_vbo = GL.glGenBuffers(1)
     #GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -376,7 +376,7 @@ def _make_gl_dots_surface(program, vismol_object = None):
 def _make_gl_lines(program, vismol_object = None):
     """ Function doc
     """ 
-    indexes = np.array(vismol_object.index_bonds,dtype=np.uint32)
+    indices = np.array(vismol_object.index_bonds,dtype=np.uint32)
     coords  = vismol_object.frames[0]
     colors  = vismol_object.colors
     '''
@@ -385,7 +385,7 @@ def _make_gl_lines(program, vismol_object = None):
     
     ind_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
     
     coord_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -411,7 +411,7 @@ def _make_gl_lines(program, vismol_object = None):
     
     vismol_object.lines_vao, vismol_object.line_buffers = build_gl_VAO_and_buffers (program   = program, 
                                                                                     VAO       = True,
-                                                                                    indices   = indexes,
+                                                                                    indices   = indices,
                                                                                     coords    = coords, 
                                                                                     colors    = colors, 
                                                                                     dot_sizes = None) 
@@ -419,14 +419,14 @@ def _make_gl_lines(program, vismol_object = None):
     
 def _make_new_selection_gl_lines (program, vismol_object = None):
     """ Function doc """
-    indexes = np.array(vismol_object.index_bonds,dtype=np.uint32)
+    indices = np.array(vismol_object.index_bonds,dtype=np.uint32)
     coords  = vismol_object.frames[0]
-    colors  = vismol_object.color_indexes
+    colors  = vismol_object.color_indices
     
 
     vao , buffers =  build_gl_VAO_and_buffers (program   = program, 
                                                VAO       = True,
-                                               indices   = indexes,
+                                               indices   = indices,
                                                coords    = coords, 
                                                colors    = colors, 
                                                dot_sizes = None)
@@ -440,7 +440,7 @@ def _make_new_selection_gl_lines (program, vismol_object = None):
     
     ind_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.nbytes, indexes, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.nbytes, indices, GL.GL_DYNAMIC_DRAW)
     
     coord_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -473,13 +473,13 @@ def _make_new_selection_gl_lines (program, vismol_object = None):
 def _make_gl_ribbon_lines(program, vismol_object = None):
     """ Function doc
     """  
-    indexes = np.array(vismol_object.ribbons_Calpha_indexes_rep,dtype=np.uint32)
+    indices = np.array(vismol_object.ribbons_Calpha_indices_rep,dtype=np.uint32)
     coords  = vismol_object.frames[0]
     colors  = vismol_object.colors
     
     vao , buffers =  build_gl_VAO_and_buffers (program   = program, 
                                                VAO       = True,
-                                               indices   = indexes,
+                                               indices   = indices,
                                                coords    = coords, 
                                                colors    = colors, 
                                                dot_sizes = None)
@@ -492,7 +492,7 @@ def _make_gl_ribbon_lines(program, vismol_object = None):
 def _make_sel_gl_dots(program, vismol_object = None, bckgrnd_color= [1.0,1.0,1.0,1.0]):
     """ Function doc
     """
-    colors    = vismol_object.color_indexes
+    colors    = vismol_object.color_indices
     #dot_sizes = vismol_object.vdw_dot_sizes
     coords    = vismol_object.frames[0]
     
@@ -500,12 +500,12 @@ def _make_sel_gl_dots(program, vismol_object = None, bckgrnd_color= [1.0,1.0,1.0
     bckgrnd_color = [bckgrnd_color[0],bckgrnd_color[1],
                      bckgrnd_color[2],bckgrnd_color[3]]*dot_qtty
     bckgrnd_color = np.array(bckgrnd_color, dtype=np.float32)
-    #indexes = np.array(vismol_object.dot_indexes, dtype=np.uint32)
+    #indices = np.array(vismol_object.dot_indices, dtype=np.uint32)
     
-    indexes = []
+    indices = []
     for i in range(dot_qtty):
-        indexes.append(i)
-    indexes = np.array(indexes,dtype=np.uint32)
+        indices.append(i)
+    indices = np.array(indices,dtype=np.uint32)
     
     
     vao = GL.glGenVertexArrays(1)
@@ -513,7 +513,7 @@ def _make_sel_gl_dots(program, vismol_object = None, bckgrnd_color= [1.0,1.0,1.0
     
     ind_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
     
     coord_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -559,13 +559,13 @@ def _make_sel_gl_dots(program, vismol_object = None, bckgrnd_color= [1.0,1.0,1.0
 def _make_sel_gl_non_bonded(program, vismol_object = None):
     """ Function doc
     """
-    indexes = np.array(vismol_object.non_bonded_atoms, dtype=np.uint32)
+    indices = np.array(vismol_object.non_bonded_atoms, dtype=np.uint32)
     coords  = vismol_object.frames[0]
-    colors  = vismol_object.color_indexes
+    colors  = vismol_object.color_indices
     
     vao , buffers =  build_gl_VAO_and_buffers (program   = program, 
                                                VAO       = True,
-                                               indices   = indexes,
+                                               indices   = indices,
                                                coords    = coords, 
                                                colors    = colors, 
                                                dot_sizes = None)
@@ -578,7 +578,7 @@ def _make_sel_gl_non_bonded(program, vismol_object = None):
     #
     #ind_vbo = GL.glGenBuffers(1)
     #GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
     #
     #coord_vbo = GL.glGenBuffers(1)
     #GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -608,12 +608,12 @@ def _make_sel_gl_non_bonded(program, vismol_object = None):
 def _make_sel_gl_sticks(program, vismol_object = None):
     """ Function doc
     """
-    indexes = np.array(vismol_object.index_bonds,dtype=np.uint32)
+    indices = np.array(vismol_object.index_bonds,dtype=np.uint32)
     coords  = vismol_object.frames[0]
-    colors  = vismol_object.color_indexes
+    colors  = vismol_object.color_indices
     vao , buffers =  build_gl_VAO_and_buffers (program   = program, 
                                                VAO       = True,
-                                               indices   = indexes,
+                                               indices   = indices,
                                                coords    = coords, 
                                                colors    = colors, 
                                                dot_sizes = None)
@@ -626,7 +626,7 @@ def _make_sel_gl_sticks(program, vismol_object = None):
     #
     #ind_vbo = GL.glGenBuffers(1)
     #GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
     #
     #coord_vbo = GL.glGenBuffers(1)
     #GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -656,16 +656,16 @@ def _make_sel_gl_sticks(program, vismol_object = None):
 def _make_sel_gl_dots_surface(program, vismol_object = None):
     """ Function doc
     """
-    colors = vismol_object.color_indexes
+    colors = vismol_object.color_indices
     coords = vismol_object.frames[0]
-    indexes = np.array(vismol_object.dot_indexes,dtype=np.uint32)
+    indices = np.array(vismol_object.dot_indices,dtype=np.uint32)
     
     vao = GL.glGenVertexArrays(1)
     GL.glBindVertexArray(vao)
     
     ind_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
     
     coord_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -693,11 +693,11 @@ def _make_sel_gl_dots_surface(program, vismol_object = None):
 
 
 
-def change_vbo_indexes (ind_vbo = None, indexes = []):
+def change_vbo_indices (ind_vbo = None, indices = []):
     """ Function doc """
-    indexes = np.array(indexes,dtype=np.uint32)
+    indices = np.array(indices,dtype=np.uint32)
     GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
 
 
 def change_vbo_colors  (col_vbo = None, colors = [], program = None):
@@ -716,14 +716,14 @@ def _make_gl_spheres_ON_THE_FLY (program, vismol_object = None): # unused
     """
     colors  = vismol_object.colors
     coords  = vismol_object.frames[0]
-    indexes = np.array(vismol_object.dot_indexes,dtype=np.uint32)
+    indices = np.array(vismol_object.dot_indices,dtype=np.uint32)
     
     vao = GL.glGenVertexArrays(1)
     GL.glBindVertexArray(vao)
     
     ind_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
     
     coord_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -757,19 +757,19 @@ def _make_gl_spheres_ON_THE_FLY (program, vismol_object = None): # unused
 def _make_gl_picking_dots_NOT_USED(program, vismol_object = None, bckgrnd_color= [0.0,0.0,0.0,1.0]):
     """ Function doc
     """
-    colors    = vismol_object.color_indexes
+    colors    = vismol_object.color_indices
     coords    = vismol_object.frames[0]
     dot_qtty      = int(len(coords)/3)
 
     
-    indexes = []
+    indices = []
     for i in range(dot_qtty):
-        indexes.append(i)
-    indexes = np.array(indexes,dtype=np.uint32)
+        indices.append(i)
+    indices = np.array(indices,dtype=np.uint32)
     
     vismol_object.picking_dots_vao, vismol_object.picking_dot_buffers = build_gl_VAO_and_buffers (program   = program, 
                                                                                                   VAO       = True,
-                                                                                                  indices   = indexes,
+                                                                                                  indices   = indices,
                                                                                                   coords    = coords, 
                                                                                                   colors    = colors, 
                                                                                                   dot_sizes = None)
@@ -783,7 +783,7 @@ def _make_gl_picking_dots_NOT_USED(program, vismol_object = None, bckgrnd_color=
     #
     #ind_vbo = GL.glGenBuffers(1)
     #GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
     #
     #coord_vbo = GL.glGenBuffers(1)
     #GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -836,7 +836,7 @@ def _make_gl_sphere_dots_old(program, vismol_object = None, bckgrnd_color= [0.0,
     """ Function doc
     """
     colors    = vismol_object.colors
-    #colors    = vismol_object.color_indexes
+    #colors    = vismol_object.color_indices
     #dot_sizes = vismol_object.vdw_dot_sizes
     
     coords    = vismol_object.frames[0]
@@ -847,10 +847,10 @@ def _make_gl_sphere_dots_old(program, vismol_object = None, bckgrnd_color= [0.0,
     #                 bckgrnd_color[2],bckgrnd_color[3]]*dot_qtty
     #bckgrnd_color = np.array(bckgrnd_color, dtype=np.float32)
     
-    indexes = []
+    indices = []
     for i in range(dot_qtty):
-        indexes.append(i)
-    indexes = np.array(indexes,dtype=np.uint32)
+        indices.append(i)
+    indices = np.array(indices,dtype=np.uint32)
     dot_sizes = np.array(dot_sizes,dtype=np.float32)
     
     vao = GL.glGenVertexArrays(1)
@@ -858,7 +858,7 @@ def _make_gl_sphere_dots_old(program, vismol_object = None, bckgrnd_color= [0.0,
     
     ind_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.nbytes, indexes, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.nbytes, indices, GL.GL_DYNAMIC_DRAW)
     
     coord_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -913,7 +913,7 @@ def _make_gl_dots_backup(program, vismol_object = None, bckgrnd_color= [0.0,0.0,
     """ Function doc
     """
     colors    = vismol_object.colors
-    #colors    = vismol_object.color_indexes
+    #colors    = vismol_object.color_indices
     #dot_sizes = vismol_object.vdw_dot_sizes
     
     coords    = vismol_object.frames[0]
@@ -926,17 +926,17 @@ def _make_gl_dots_backup(program, vismol_object = None, bckgrnd_color= [0.0,0.0,
     #                 bckgrnd_color[2],bckgrnd_color[3]]*dot_qtty
     #bckgrnd_color = np.array(bckgrnd_color, dtype=np.float32)
     
-    indexes = []
+    indices = []
     for i in range(dot_qtty):
-        indexes.append(i)
-    indexes = np.array(indexes,dtype=np.uint32)
+        indices.append(i)
+    indices = np.array(indices,dtype=np.uint32)
     
     vao = GL.glGenVertexArrays(1)
     GL.glBindVertexArray(vao)
     
     ind_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
     
     coord_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -989,15 +989,15 @@ def _make_sel_gl_lines_old(program, vismol_object = None):#, lines_vao = None, l
     """ Function doc
     """
 
-    colors  = vismol_object.color_indexes
+    colors  = vismol_object.color_indices
     
     vao = vismol_object.lines_vao
     GL.glBindVertexArray(vao)
     
     ind_vbo = vismol_object.lines_buffers[0]# GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
-    #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.nbytes, indexes, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
+    #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.nbytes, indices, GL.GL_DYNAMIC_DRAW)
     
     coord_vbo = vismol_object.lines_buffers[1]
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -1024,17 +1024,17 @@ def _make_sel_gl_lines_old(program, vismol_object = None):#, lines_vao = None, l
     #print ('    vismol_object.sel_line_buffers = (ind_vbo, coord_vbo, col_vbo)', vismol_object.sel_line_buffers)
     #print (vismol_object.sel_line_buffers)
 
-    indexes = np.array(vismol_object.index_bonds, dtype=np.uint32)
+    indices = np.array(vismol_object.index_bonds, dtype=np.uint32)
     coords  = vismol_object.frames[0]
-    colors  = vismol_object.color_indexes
+    colors  = vismol_object.color_indices
     
     vao = GL.glGenVertexArrays(1)
     GL.glBindVertexArray(vao)
     
     ind_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.nbytes, indexes, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.nbytes, indices, GL.GL_DYNAMIC_DRAW)
 	
     coord_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -1068,16 +1068,16 @@ def _make_sel_gl_lines_old(program, vismol_object = None):#, lines_vao = None, l
 def _make_sel_gl_lines_old2(program, vismol_object = None):
     """ Function doc
     """
-    indexes = np.array(vismol_object.index_bonds, dtype=np.uint32)
+    indices = np.array(vismol_object.index_bonds, dtype=np.uint32)
     coords  = vismol_object.frames[0]
-    colors  = vismol_object.color_indexes
+    colors  = vismol_object.color_indices
     
     vao = GL.glGenVertexArrays(1)
     GL.glBindVertexArray(vao)
     
     ind_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
     
     coord_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)
@@ -1136,18 +1136,18 @@ def _make_gl_dots_backup(program, vismol_object = None, bckgrnd_color= [0.0,0.0,
     bckgrnd_color = [bckgrnd_color[0],bckgrnd_color[1],
                      bckgrnd_color[2],bckgrnd_color[3]]*dot_qtty
     bckgrnd_color = np.array(bckgrnd_color, dtype=np.float32)
-    #indexes = vismol_object.non_bonded_atoms
+    #indices = vismol_object.non_bonded_atoms
     
-    #indexes = []
-    #indexes = vismol_object.non_bonded_atoms
+    #indices = []
+    #indices = vismol_object.non_bonded_atoms
     #for i in range(dot_qtty):
-        #indexes.append(i)
+        #indices.append(i)
     
-    #indexes = [0,1,2,3]
-    indexes = np.array(vismol_object.dot_indexes,dtype=np.uint32)
-    #indexes = np.array(indexes,dtype=np.uint32)
+    #indices = [0,1,2,3]
+    indices = np.array(vismol_object.dot_indices,dtype=np.uint32)
+    #indices = np.array(indices,dtype=np.uint32)
     #try:
-    #    indexes = np.array(indexes,dtype=np.uint32)
+    #    indices = np.array(indices,dtype=np.uint32)
     #except:
     #    pass
         
@@ -1156,8 +1156,8 @@ def _make_gl_dots_backup(program, vismol_object = None, bckgrnd_color= [0.0,0.0,
     
     ind_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
-    #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), indexes, GL.GL_DYNAMIC_DRAW)
-    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indexes.nbytes, indexes, GL.GL_DYNAMIC_DRAW)
+    #GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.itemsize*int(len(indices)), indices, GL.GL_DYNAMIC_DRAW)
+    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.nbytes, indices, GL.GL_DYNAMIC_DRAW)
     
     coord_vbo = GL.glGenBuffers(1)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, coord_vbo)

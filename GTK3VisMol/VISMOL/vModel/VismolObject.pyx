@@ -155,7 +155,7 @@ class VismolObject:
         #-----------------------#
         self.ribbons_Calpha_pairs_full  = []
         self.ribbons_Calpha_pairs_rep   = []
-        self.ribbons_Calpha_indexes_rep = []
+        self.ribbons_Calpha_indices_rep = []
         #-----------------------------------------------------------------
         
         #-----------------------#
@@ -256,7 +256,7 @@ class VismolObject:
         self.sel_dots_surface_buffers = None
         
         
-        self.dot_indexes     = None
+        self.dot_indices     = None
         
         self.selection_dots_vao      = None
         self.selection_dot_buffers   = None
@@ -272,15 +272,15 @@ class VismolObject:
         self.picking_dot_buffers   = None
         #-----------------------------------------------------------------
     
-    def generate_dot_indexes(self):
+    def generate_dot_indices(self):
         """ Function doc
         """
-        #self.dot_indexes = []
-        self.dot_indexes =range(0, len(self.atoms))
+        #self.dot_indices = []
+        self.dot_indices =range(0, len(self.atoms))
         
         #for i in range(int(len(self.atoms))):
-        #    self.dot_indexes.append(i)
-        self.dot_indexes = np.array(self.dot_indexes, dtype=np.uint32)
+        #    self.dot_indices.append(i)
+        self.dot_indices = np.array(self.dot_indices, dtype=np.uint32)
 	
 		
     def _generate_atomtree_structure (self):
@@ -387,7 +387,7 @@ class VismolObject:
 
         final = time.time() 
         print ('_generate_atomtree_structure end -  total time: ', final - initial, '\n')
-        self.get_backbone_indexes()
+        self.get_backbone_indices()
         return True
 
 
@@ -431,7 +431,7 @@ class VismolObject:
         
         
         """
-        self.color_indexes  = []
+        self.color_indices  = []
         self.colors         = []        
         self.vdw_dot_sizes  = []
         self.cov_dot_sizes  = []
@@ -444,9 +444,9 @@ class VismolObject:
             g = (i & 0x0000FF00) >>  8
             b = (i & 0x00FF0000) >> 16
            
-            self.color_indexes.append(r/255.0)
-            self.color_indexes.append(g/255.0)
-            self.color_indexes.append(b/255.0)
+            self.color_indices.append(r/255.0)
+            self.color_indices.append(g/255.0)
+            self.color_indices.append(b/255.0)
             
             pickedID = r + g * 256 + b * 256*256
             atom.color_id = [r/255.0, g/255.0, b/255.0]
@@ -466,7 +466,7 @@ class VismolObject:
             self.vdw_dot_sizes.append(atom.vdw_rad*3)
             self.cov_dot_sizes.append(atom.cov_rad)
 
-        self.color_indexes = np.array(self.color_indexes, dtype=np.float32)
+        self.color_indices = np.array(self.color_indices, dtype=np.float32)
         self.colors        = np.array(self.colors       , dtype=np.float32)    
         self.vdw_dot_sizes = np.array(self.vdw_dot_sizes, dtype=np.float32)
         self.cov_dot_sizes = np.array(self.cov_dot_sizes, dtype=np.float32)
@@ -478,14 +478,14 @@ class VismolObject:
         return True
     
 
-    def get_backbone_indexes (self):
+    def get_backbone_indices (self):
         """ Function doc """
         chains_list   = []
         bonds_pairs   = [] 
-        bonds_indexes = [] 
+        bonds_indices = [] 
         
         for chain in self.chains.values():
-            #bonds_indexes = [] 
+            #bonds_indices = [] 
             chain_list    = []
 
             resi       = None
@@ -503,8 +503,8 @@ class VismolObject:
                     if resi == atom.resi-1:
                         
                         bonds_pairs.append([atomi,atom.index])
-                        bonds_indexes.append(atomi)
-                        bonds_indexes.append(atom.index)
+                        bonds_indices.append(atomi)
+                        bonds_indices.append(atom.index)
 
                         chain_list.append([atom.resi, atom.index])
                         
@@ -520,10 +520,10 @@ class VismolObject:
                 chains_list.append(chain_list)
 
         
-        bonds_indexes = np.array(bonds_indexes, dtype=np.uint32)
+        bonds_indices = np.array(bonds_indices, dtype=np.uint32)
         self.ribbons_Calpha_pairs_full  = bonds_pairs
         self.ribbons_Calpha_pairs_rep   = bonds_pairs
-        self.ribbons_Calpha_indexes_rep = bonds_indexes
+        self.ribbons_Calpha_indices_rep = bonds_indices
         
     
     def import_bonds (self, bonds_list = [] ):
