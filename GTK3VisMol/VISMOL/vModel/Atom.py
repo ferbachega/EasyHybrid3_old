@@ -44,8 +44,9 @@ class Atom:
         self.cov_rad      = at.get_cov_rad  (name)
         self.ball_radius  = at.get_ball_rad (name)
 
-        self.lines          = True
+        self.lines          = False
         self.dots           = False
+        self.nonbonded      = False
         self.ribbons        = False
         self.ball_and_stick = False
         self.sticks         = False

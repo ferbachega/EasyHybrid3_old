@@ -263,13 +263,13 @@ class VisMolSession (ShowHideVisMol):
         }
         self.insert_glmenu(functions)
 
-        self.default_rep = {'nonbond' : True,
-                    'lines'   : True,
-                    'spheres' : False,
-                    'sticks'  : False,
-                    'ribbons' : False,
-                    'surface' : False,
-                }
+        self.default_rep = {'nonbonded' : False,
+                              'lines'   : True,
+                              'spheres' : False,
+                              'sticks'  : False,
+                              'ribbons' : False,
+                              'surface' : False,
+                              }
 
     def insert_glmenu (self, menu_items = None):
 	    """ Function doc """
@@ -304,7 +304,7 @@ class VisMolSession (ShowHideVisMol):
     def load (self, infile, widget = None, autocenter = True):
         """ Function doc """
         #Vobject_id = len(self.vismol_objects)
-
+        print ('load')
         
         if infile[-3:] == 'pdb':
             self._load_pdb_file(infile = infile)
@@ -317,6 +317,8 @@ class VisMolSession (ShowHideVisMol):
 
 
         self.vismol_objects[-1].active = True
+        self.vismol_objects[-1].generate_default_representations (reps_list = self.default_rep)
+        #print (self.vismol_objects[-1].representations)
         #for default_rep in self.default_rep:
 		#	if 
         

@@ -30,27 +30,39 @@ import multiprocessing
 
 import VISMOL.glCore.vismol_font as vmf
 
-from VISMOL.vModel.Atom       import Atom
-from VISMOL.vModel.Chain      import Chain
-from VISMOL.vModel.Residue    import Residue
-from VISMOL.vModel.Bond       import Bond
+from VISMOL.vModel.Atom              import Atom
+from VISMOL.vModel.Chain             import Chain
+from VISMOL.vModel.Residue           import Residue
+from VISMOL.vModel.Bond              import Bond
+from VISMOL.vModel.Representations   import LinesRepresentation
+from VISMOL.vModel.Representations   import NonBondedRepresentation
+from VISMOL.vModel.Representations   import SticksRepresentation
+from VISMOL.vModel.Representations   import DotsRepresentation
+from VISMOL.vModel.Representations   import SpheresRepresentation
 
-
-
-
-class Representation:
-    """ Class doc """
-
-    def __init__ (self, name = 'mol', active = False, vao = None, buffers = None, _type = 'line',   visObj = None ):
-        """ Class initialiser """
-        self.name        = name
-        self.active      = active
-        self.vao         = vao
-        self.buffers     = buffers
-        self.type        = _type
-        self.visObj      = visObj
-        self.sel_vao     = None
-        self.sel_buffers = None
+#class Representation:
+#    """ Class doc """
+#
+#    def __init__ (self, name = 'lines', active = True, vao = None, buffers = None, _type = 'mol', visObj = None ):
+#        """ Class initialiser """
+#        self.name               = name
+#        self.active             = active
+#        self.vao                = vao
+#        self.buffers            = buffers
+#        self.type               = _type
+#        self.visObj             = visObj
+#        self.sel_vao            = None
+#        self.sel_buffers        = None
+#        self.shader_program     = None 
+#        self.sel_shader_program = None 
+#        
+#        if name == 'lines':
+#            self.indices = self.visObj.index_bonds
+#        if name == 'sticks':
+#            self.indices = self.visObj.index_bonds
+#        if name == 'nonbonded':
+#            self.indices = self.visObj.non_bonded_atoms
+#
 
 
 
@@ -161,25 +173,21 @@ class VismolObject:
         self.sphere_triangles_full = []
         self.sphere_rep = None
 
-
+        
+        self.representations = {'nonbonded' : None,
+                                'lines'     : None,
+                                'spheres'   : None,
+                                'sticks'    : None,
+                                'ribbons'   : None,
+                                'surface'   : None,
+                                }
+        
+        
         self.sel_sphere_rep = None
 
         #-----------------------------------------------------------------
         #                O p e n G L   a t t r i b u t e s
         #-----------------------------------------------------------------                
-        
-        #self.rep_line    = Representation(name = 'mol', 
-        #                                active = False, 
-        #                                   vao = None  , 
-        #                               buffers = None  , 
-        #                                 _type = 'line',   
-        #                                visObj = None )    
-        #self.rep_nonbond = None
-        #self.rep_stick   = None
-        #self.rep_sphere  = None
-        #self.rep_dots    = None
-		
-                
         
         """   L I N E S   """
         self.lines_active       = True
@@ -206,68 +214,11 @@ class VismolObject:
         """   T E X T   """
         self.text_active = False
         
-        """   S E L E C T I O N   """
-        self._sel_lines_active = False
-        self._sel_dots_active = False
-        self._sel_ribbons_active = False
-        self._sel_non_bonded_active = False
-        self._sel_sticks_active = True
-        self._sel_spheres_active = True
-        self._sel_dots_surface_active = False
         
-        #print ('frames:     ', len(self.frames))
-        #print ('frame size: ', len(self.frames[0]))
-        #-----------------------------------------------------------------
-        self.dots_vao               = None
-        self.lines_vao              = None
-        self.ribbons_vao            = None
-        self.non_bonded_vao         = None
-        self.sticks_vao             = None
-        self.spheres_vao            = None
-        self.dots_surface_vao       = None
-        self.spheres_vao_ON_THE_FLY = None
-    
-        self.dots_buffers         = None
-        self.lines_buffers        = None
-        self.ribbons_buffers      = None
-        self.non_bonded_buffers   = None
-        self.sticks_buffers       = None
-        self.spheres_buffers      = None
-        self.dots_surface_buffers = None
-        #self.spheres_buffers_ON_THE_FLY = None
-        
-        #-----------------------------------------------------------------
-        self.new_selection_lines_vao     = None
-        self.new_selection_lines_buffers = None
-        #-----------------------------------------------------------------
-        self.sphere_dot_active   = False
-        self.sphere_dots_vao     = None
-        self.sphere_dots_buffers = None
-        #-----------------------------------------------------------------
 
-        """   S E L E C T I O N   """
-        self.sel_dots_vao = None
-        self.sel_lines_vao = None
-        self.sel_lines_vao2 = None
-        self.sel_ribbons_vao = None
-        self.sel_non_bonded_vao = None
-        self.sel_sticks_vao = None
-        self.sel_spheres_vao = None
-        self.sel_dots_surface_vao = None
-        
-        self.sel_dots_buffers = None
-        self.sel_lines_buffers = None
-        self.sel_lines_buffers2 = None
-
-        self.sel_ribbons_buffers = None
-        self.sel_non_bonded_buffers = None
-        self.sel_sticks_buffers = None
-        self.sel_spheres_buffers = None
-        self.sel_dots_surface_buffers = None
         
         
-        self.dot_indices     = None
-        
+        self.dot_indices             = None
         self.selection_dots_vao      = None
         self.selection_dot_buffers   = None
         
@@ -282,6 +233,46 @@ class VismolObject:
         self.picking_dot_buffers   = None
         #-----------------------------------------------------------------
     
+    
+    def generate_default_representations (self, reps_list = {}) :
+        """ Function doc """
+        rep  = LinesRepresentation (name = 'lines', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
+        print (rep, rep.name)        
+        self.representations[rep.name] = rep
+        print (self.representations)
+        
+        
+        rep  = NonBondedRepresentation (name = 'nonbonded', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
+        print (rep, rep.name)
+        self.representations[rep.name] = rep
+        print (self.representations)        
+        
+
+        #rep  = SticksRepresentation (name = 'sticks', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
+        #print (rep, rep.name)
+        #self.representations[rep.name] = rep
+        #print (self.representations)        
+        #
+        #rep  = DotsRepresentation (name = 'dots', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
+        #print (rep, rep.name)
+        #self.representations[rep.name] = rep
+        #print (self.representations)        
+        
+
+        rep  = SpheresRepresentation (name = 'spheres', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
+        print (rep, rep.name)
+        self.representations[rep.name] = rep
+        print (self.representations)            
+        
+        '''
+        for rep_name in reps_list:
+            if reps_list[rep_name]:
+                new_rep = Representation(name = rep_name, 
+                                       visObj = self)
+                                        
+                self.representations[rep_name] = new_rep
+        '''
+
     def generate_dot_indices(self):
         """ Function doc
         """
@@ -291,7 +282,11 @@ class VismolObject:
         #for i in range(int(len(self.atoms))):
         #    self.dot_indices.append(i)
         self.dot_indices = np.array(self.dot_indices, dtype=np.uint32)
-	
+        
+        for index in self.non_bonded_atoms:
+            print (index, self.atoms[index].name, )
+            self.atoms[index].nonbonded = True
+        
 		
     def _generate_atomtree_structure (self):
         """ Function doc """

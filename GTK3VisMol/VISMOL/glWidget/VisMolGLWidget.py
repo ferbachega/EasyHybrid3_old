@@ -528,14 +528,15 @@ class GtkGLAreaWidget(Gtk.GLArea):
                     vobject.lines_active  = False
                 else:
                     #print('indices_bonds ==', indices_bonds)
-                    self.vm_widget.set_draw_lines_indices (visObj = vobject,  show = False, input_indices = indices_bonds)
+                    vobject.representations['lines'].define_new_indices_to_VBO(indices_bonds)
+                    #self.vm_widget.set_draw_lines_indices (visObj = vobject,  show = False, input_indices = indices_bonds)
 
         if k_name == 'x':
             #self.vismolSession.glwidget._set_draw_dots_indices (visObj = self.vismolSession.vismol_objects[0],  indices = False)
             
             # Associates selected bonds as false / true
             for atom in self.vismolSession.selections[self.vismolSession.current_selection].selected_atoms:
-                print (atom.name)
+                #print (atom.name)
                 for bond in atom.bonds:
                     bond.line_active = False
 
@@ -556,9 +557,67 @@ class GtkGLAreaWidget(Gtk.GLArea):
                     vobject.sticks_active  = False
                 else:
                     #print('indices_bonds ==', indices_bonds)
-                    self.vm_widget.set_draw_sticks_indices (visObj = vobject,  show = False, input_indices = indices_bonds)
+                    vobject.representations['sticks'].define_new_indices_to_VBO(indices_bonds)
 
-        
+
+
+
+
+        if k_name == 'c':
+            #self.vismolSession.glwidget._set_draw_dots_indices (visObj = self.vismolSession.vismol_objects[0],  indices = False)
+            
+            # Associates selected bonds as false / true
+            for atom in self.vismolSession.selections[self.vismolSession.current_selection].selected_atoms:
+                atom.nonbonded = False
+                #print (atom.name)
+                
+            for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
+                indices = []
+                
+                for atom in vobject.atoms:
+                    if atom.nonbonded:
+                        indices.append(atom.index-1)
+                    else:                   
+                        pass
+                
+                # When the list is [] we simply have to disable the display of the representation type
+                if indices == []:
+                    #print('indices_bonds == []')
+                    vobject.representations['nonbonded'].active = False
+                else:
+                    #print('indices_bonds ==', indices_bonds)
+                    vobject.representations['nonbonded'].define_new_indices_to_VBO(indices)
+
+        if k_name == 'b':
+            #self.vismolSession.glwidget._set_draw_dots_indices (visObj = self.vismolSession.vismol_objects[0],  indices = False)
+            
+            # Associates selected bonds as false / true
+            for atom in self.vismolSession.selections[self.vismolSession.current_selection].selected_atoms:
+                atom.nonbonded = False
+                #print (atom.name)
+                
+            for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
+                indices = []
+                
+                for atom in vobject.atoms:
+                    if atom.nonbonded:
+                        indices.append(atom.index-1)
+                    else:                   
+                        pass
+                
+                # When the list is [] we simply have to disable the display of the representation type
+                if indices == []:
+                    #print('indices_bonds == []')
+                    vobject.representations['dots'].active = False
+                else:
+                    #print('indices_bonds ==', indices_bonds)
+                    vobject.representations['dots'].define_new_indices_to_VBO(indices)
+
+
+
+
+
+
 
         if k_name == 'period':
             #self.vismolSession.get_frame()
