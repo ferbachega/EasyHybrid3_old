@@ -124,7 +124,7 @@ out vec3 index_color;
 
 void main(){
     gl_Position  = proj_mat * view_mat * model_mat * vec4(vert_coord, 1.0);
-    gl_PointSize = 15;
+    //gl_PointSize = 15;
     index_color = vert_color;
 }
 """

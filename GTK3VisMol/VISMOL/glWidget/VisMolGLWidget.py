@@ -593,14 +593,14 @@ class GtkGLAreaWidget(Gtk.GLArea):
             
             # Associates selected bonds as false / true
             for atom in self.vismolSession.selections[self.vismolSession.current_selection].selected_atoms:
-                atom.nonbonded = False
+                atom.spheres = False
                 #print (atom.name)
                 
             for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
                 indices = []
                 
                 for atom in vobject.atoms:
-                    if atom.nonbonded:
+                    if atom.spheres:
                         indices.append(atom.index-1)
                     else:                   
                         pass
@@ -612,6 +612,7 @@ class GtkGLAreaWidget(Gtk.GLArea):
                 else:
                     #print('indices_bonds ==', indices_bonds)
                     vobject.representations['dots'].define_new_indices_to_VBO(indices)
+                    vobject.representations['spheres'].define_new_indices_to_VBO(indices)
 
 
 

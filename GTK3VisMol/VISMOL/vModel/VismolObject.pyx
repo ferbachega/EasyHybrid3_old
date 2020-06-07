@@ -253,15 +253,15 @@ class VismolObject:
         self.representations[rep.name] = rep
         #print (self.representations)        
         
-        rep  = DotsRepresentation (name = 'dots', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
+        rep  = DotsRepresentation (name = 'dots', active = False, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
         #print (rep, rep.name)
         self.representations[rep.name] = rep
         #print (self.representations)        
         
 
-        #rep  = SpheresRepresentation (name = 'spheres', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
+        rep  = SpheresRepresentation (name = 'spheres', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
         #print (rep, rep.name)
-        #self.representations[rep.name] = rep
+        self.representations[rep.name] = rep
         #print (self.representations)            
         
         '''

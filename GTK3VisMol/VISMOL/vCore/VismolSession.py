@@ -54,115 +54,125 @@ class ShowHideVisMol:
         """ Class initialiser """
         pass
 #'''
-    def _hide_dots (self, Vobjects ):
-        for Vobject in Vobjects:
-            Vobject.flat_sphere_representation.active = False
-            #self.flat_sphere_representation.update()
-
-    def _show_dots (self, Vobjects = []):
+    def _selected_atoms_change_attributes(self, _type = 'lines', atoms = [], show = True ):
         """ Function doc """
-        for Vobject in Vobjects:
-            Vobject.dots_active = True
+        for atom in self.selections[self.current_selection].selected_atoms:
+            #print (atom.name)
+            
+            #               B O N D S
+            if _type in ['lines','sticks','ribbons']:
+                for bond in atom.bonds:
+                    
+                    if _type == 'lines':
+                        if show:
+                            bond.line_active  = True
+                        else:
+                            bond.line_active  = False
+
+                    if _type == 'sticks':
+                        if show:
+                            bond.stick_active = True        
+                        else:
+                            bond.stick_active = False        
+
+            
+            #               A T O M S 
+            else:
+                if _type == 'nonbonded':
+                    if show:
+                        atom.nonbonded = True
+                    else:
+                        atom.nonbonded = False
+
+                if _type == 'dots':
+                    if show:
+                        atom.dots = True
+                    else:
+                        atom.dots = False
+
+                if _type == 'spheres':
+                    if show:
+                        atom.spheres = True
+                    else:
+                        atom.spheres = False
+
+    def show_or_hide (self, _type = 'lines', sel_objects = [] , atoms = [], show = True ):
+        """ Function doc """
+        
+        for atom in self.selections[self.current_selection].selected_atoms:
+            #print (atom.name)
+            
+            #               B O N D S
+            if _type in ['lines','sticks','ribbons']:
+                for bond in atom.bonds:
+                    
+                    if _type == 'lines':
+                        if show:
+                            bond.line_active  = True
+                        else:
+                            bond.line_active  = False
+
+                    if _type == 'sticks':
+                        if show:
+                            bond.stick_active = True        
+                        else:
+                            bond.stick_active = False        
+
+            
+            #               A T O M S 
+            else:
+                if _type == 'nonbonded':
+                    if show:
+                        atom.nonbonded = True
+                    else:
+                        atom.nonbonded = False
+
+                if _type == 'dots':
+                    if show:
+                        atom.dots = True
+                    else:
+                        atom.dots = False
+
+                if _type == 'spheres':
+                    if show:
+                        atom.spheres = True
+                    else:
+                        atom.spheres = False
+                
+        
+        # Build a list of the connections that are active -> this list will be sent to the openGL buffer
+        for vobject in sel_objects:
             
             
-            #Vobject.dots_active.update()
+            if _type in ['lines','sticks','ribbons']:
+                indices_bonds = []
+                for bond in vobject.bonds:
+                    if bond.line_active:
+                        indices_bonds.append(bond.atom_index_i)
+                        indices_bonds.append(bond.atom_index_j)
+                    else:
+                        pass
             
-    def _hide_ribbons (self, Vobjects ):
-        """ Function doc """
-        for Vobject in Vobjects:
-            pass
-    
-    def _show_ribbons (self, Vobjects ):
-        """ Function doc """
-        for Vobject in Vobjects:
-            Vobject.show_ribbons = True
+                if indices_bonds == []:
+                    #print('indices_bonds == []')
+                    vobject.sticks_active  = False
+                else:
+                    #print('indices_bonds ==', indices_bonds)
+                    vobject.representations['sticks'].define_new_indices_to_VBO(indices_bonds)
+            
+            
+            #           nonbond  spheres  dots
+            else:   
+                indices = []
+                for atom in vobject.atoms:
+                    if atom.spheres:
+                        index = vobject.atoms.index(atom)
+                        #indices.append(atom.index-1)
+                        indices.append(index)
+                    else:                   
+                        pass
         
-    def _hide_lines (self, visObj = None, indices = []):
-        """ Function doc 
-        
-        _hide_lines
-        visObj  = object
-        indices = [] list
-        
-        """
-        if indices == []:
-            for atom in visObj.atoms:
-                atom.lines =  False        
-        else:
-            for index in indices:
-                visObj.atoms[index].lines = False
 
-        visObj.index_bonds = []
-        
-        for bond_pairs in visObj.index_bonds_pairs:
-            if visObj.atoms[bond_pairs[0]].lines and  visObj.atoms[bond_pairs[1]].lines:
-                visObj.index_bonds.append(visObj.atoms[bond_pairs[0]].index-1)
-                visObj.index_bonds.append(visObj.atoms[bond_pairs[1]].index-1)
-
-        shapes.change_vbo_indices (ind_vbo = visObj.lines_buffers[0], indices = visObj.index_bonds)
-    
-    def _show_lines (self, visObj = None, indices = [] ):
-        """ Function doc 
-        
-        visObj  = object
-        indices = [] list
-        
-        
-        """
-        
-        if indices == []:
-            for atom in visObj.atoms:
-                atom.lines =  True        
-        else:
-            for index in indices:
-                visObj.atoms[index].lines = True
-
-        visObj.index_bonds = []
-        
-        for bond_pairs in visObj.index_bonds_pairs:
-            if visObj.atoms[bond_pairs[0]].lines and  visObj.atoms[bond_pairs[1]].lines:
-                visObj.index_bonds.append(visObj.atoms[bond_pairs[0]].index-1)
-                visObj.index_bonds.append(visObj.atoms[bond_pairs[1]].index-1)
-
-        shapes.change_vbo_indices (ind_vbo = visObj.lines_buffers[0], indices = visObj.index_bonds)
-    
-    def hide (self, Vobjects =  [], _type = 'lines', indices = [] ):
-        """ Function doc """    
-        if _type == 'dots':
-            self._hide_dots (Vobjects )
-
-        if _type == 'lines':
-            self._hide_lines (Vobjects )
-
-        if _type == 'ribbons':
-            self._hide_ribbons (Vobjects )
-        
-        if _type == 'ball_and_stick':
-            self._hide_ball_and_stick(Vobjects )
-        
-        if _type == 'spheres':
-            self._hide_spheres (Vobjects )            
-        
-        self.glwidget.updateGL()
-
-    def show (self, _type = 'lines', Vobjects =  [], indices = [] ):
-        """ Function doc """
-        if _type == 'dots':
-            self._show_dots (Vobjects )
-
-        if _type == 'lines':
-            self._show_lines (Vobjects )
-
-        if _type == 'ribbons':
-            self._show_ribbons (Vobjects )
-        
-        if _type == 'ball_and_stick':
-            self._show_ball_and_stick(Vobjects)
-        
-        if _type == 'spheres':
-            self._show_spheres(Vobjects ) 
-    
-        #self.glwidget.updateGL()
 
 
 class VisMolSession (ShowHideVisMol):

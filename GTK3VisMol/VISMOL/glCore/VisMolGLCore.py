@@ -72,7 +72,7 @@ class VisMolGLCore():
         self.model_mat = np.identity(4, dtype=np.float32)
         self.normal_mat = np.identity(3, dtype=np.float32)
         self.zero_reference_point = np.array([0.0, 0.0, 0.0],dtype=np.float32)
-        self.glcamera = cam.GLCamera(10.0, self.width/self.height, np.array([0,0,10],dtype=np.float32), self.zero_reference_point)
+        self.glcamera = cam.GLCamera(15.0, self.width/self.height, np.array([0,0,10],dtype=np.float32), self.zero_reference_point)
         self.axis = glaxis.GLAxis()
         self.parent_widget.set_has_depth_buffer(True)
         self.parent_widget.set_has_alpha(True)
@@ -89,8 +89,8 @@ class VisMolGLCore():
         self.bckgrnd_color = [0.0,0.0,0.0,1.0]#[0.5,0.5,0.5,1.0] #[0.0,0.0,0.0,1.0] #[1.0,1.0,1.0,1.0] or [0.0,0.0,0.0,1.0]
         self.light_position = np.array([-2.5,2.5,3.0],dtype=np.float32)
         self.light_color = np.array([1.0,1.0,1.0,1.0],dtype=np.float32)
-        self.light_ambient_coef = 0.5
-        self.light_shininess = 5.5
+        self.light_ambient_coef = 0.4
+        self.light_shininess =   5.5
         self.light_intensity = np.array([0.6,0.6,0.6],dtype=np.float32)
         self.light_specular_color = np.array([1.0,1.0,1.0],dtype=np.float32)
         self.dist_cam_zrp = np.linalg.norm(self.glcamera.get_position()-self.zero_reference_point)
@@ -454,9 +454,9 @@ class VisMolGLCore():
             if visObj.selection_dots_vao is None:
                 shapes._make_gl_selection_dots(self.picking_dots_program, vismol_object = visObj)
             indices = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]
-            #GL.glPointSize(400/(abs(self.dist_cam_zrp))/2)
+            GL.glPointSize(800/(abs(self.dist_cam_zrp))/2)
             #print ('line 522')
-            GL.glPointSize(15)
+            #GL.glPointSize(15)
             GL.glUseProgram(self.picking_dots_program)
             GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
             self.load_matrices(self.picking_dots_program, visObj.model_mat)
@@ -566,14 +566,18 @@ class VisMolGLCore():
                                                     sticksShaders.sel_geometry_shader_sticks)
                                                     
         # S P H E R E S                                                    
-        self.spheres_program = self.load_shaders(spheresShaders.v_s_glumpy, 
-                                                 spheresShaders.f_s_glumpy)
+        #self.spheres_program = self.load_shaders(spheresShaders.v_s_glumpy, 
+        #                                         spheresShaders.f_s_glumpy)
+        #
+        #self.sel_spheres_program = self.load_shaders(spheresShaders.v_s_glumpy, 
+        #                                             spheresShaders.f_s_glumpy)
         
-        self.sel_spheres_program = self.load_shaders(spheresShaders.v_s_glumpy, 
-                                                     spheresShaders.f_s_glumpy)
         
+        self.spheres_program = self.load_shaders(spheresShaders.vertex_shader_spheres, 
+                                                 spheresShaders.fragment_shader_spheres)
         
-        
+        self.sel_spheres_program = self.load_shaders(spheresShaders.vertex_shader_spheres,  
+                                                     spheresShaders.fragment_shader_spheres)
         
         
         

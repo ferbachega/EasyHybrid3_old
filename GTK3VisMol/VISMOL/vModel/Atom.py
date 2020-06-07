@@ -50,7 +50,7 @@ class Atom:
         self.ribbons        = False
         self.ball_and_stick = False
         self.sticks         = False
-        self.spheres        = False
+        self.spheres        = True
         self.surface        = False
         self.connected2     = []
         self.bonds          = []
