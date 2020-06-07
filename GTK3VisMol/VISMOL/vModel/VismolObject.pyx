@@ -237,32 +237,32 @@ class VismolObject:
     def generate_default_representations (self, reps_list = {}) :
         """ Function doc """
         rep  = LinesRepresentation (name = 'lines', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
-        print (rep, rep.name)        
+        #print (rep, rep.name)        
         self.representations[rep.name] = rep
-        print (self.representations)
+        #print (self.representations)
         
         
         rep  = NonBondedRepresentation (name = 'nonbonded', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
-        print (rep, rep.name)
+        #print (rep, rep.name)
         self.representations[rep.name] = rep
-        print (self.representations)        
-        
-
-        #rep  = SticksRepresentation (name = 'sticks', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
-        #print (rep, rep.name)
-        #self.representations[rep.name] = rep
-        #print (self.representations)        
-        #
-        #rep  = DotsRepresentation (name = 'dots', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
-        #print (rep, rep.name)
-        #self.representations[rep.name] = rep
         #print (self.representations)        
         
 
-        rep  = SpheresRepresentation (name = 'spheres', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
-        print (rep, rep.name)
+        rep  = SticksRepresentation (name = 'sticks', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
+        #print (rep, rep.name)
         self.representations[rep.name] = rep
-        print (self.representations)            
+        #print (self.representations)        
+        
+        rep  = DotsRepresentation (name = 'dots', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
+        #print (rep, rep.name)
+        self.representations[rep.name] = rep
+        #print (self.representations)        
+        
+
+        #rep  = SpheresRepresentation (name = 'spheres', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
+        #print (rep, rep.name)
+        #self.representations[rep.name] = rep
+        #print (self.representations)            
         
         '''
         for rep_name in reps_list:
@@ -284,7 +284,7 @@ class VismolObject:
         self.dot_indices = np.array(self.dot_indices, dtype=np.uint32)
         
         for index in self.non_bonded_atoms:
-            print (index, self.atoms[index].name, )
+            #print (index, self.atoms[index].name, )
             self.atoms[index].nonbonded = True
         
 		

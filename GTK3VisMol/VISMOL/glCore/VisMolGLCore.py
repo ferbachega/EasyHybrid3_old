@@ -769,6 +769,11 @@ class VisMolGLCore():
         GL.glUniformMatrix4fv(view, 1, GL.GL_FALSE, self.glcamera.view_matrix)
         proj = GL.glGetUniformLocation(program, 'proj_mat')
         GL.glUniformMatrix4fv(proj, 1, GL.GL_FALSE, self.glcamera.projection_matrix)
+        
+        ## not sure if is necessary
+        #norm = GL.glGetUniformLocation(program, 'normal_mat')
+        #GL.glUniformMatrix3fv(norm, 1, GL.GL_FALSE, self.normal_mat)
+        
         return True
     
     def load_dot_params(self, program):

@@ -73,6 +73,43 @@ class Representation:
                         GL.GL_STATIC_DRAW)    
 
 
+    def _make_gl_representation_vao_and_vbos (self, 
+                                              indices    = None,
+                                              coords     = None,
+                                              colors     = None,
+                                              dot_sizes  = None,
+                                              ):
+        """ Function doc """
+        print ('building', self.name,' VAO  and VBOs')    
+        self.vao        =   self._make_gl_VAO()
+        self.ind_vbo    =   self._make_gl_index_buffer( indices                        )
+        self.coord_vbo  =   self._make_gl_coord_buffer( coords   , self.shader_program )
+        self.col_vbo    =   self._make_gl_color_buffer( colors   , self.shader_program )
+        if dot_sizes is not None:
+            self.sel_size_vbo   =   self._make_gl_size_buffer ( dot_sizes , self.sel_shader_program )
+        else:
+            pass
+        
+    
+    def _make_gl_sel_representation_vao_and_vbos (self, 
+                                                  indices    = None,
+                                                  coords     = None,
+                                                  colors     = None,
+                                                  dot_sizes  = None,
+                                                  ):
+        """ Function doc """
+        print ('building', self.name,'background selection  VAO  and VBOs')    
+        self.sel_vao        =   self._make_gl_VAO()
+        self.sel_ind_vbo    =   self._make_gl_index_buffer( indices                             )
+        self.sel_coord_vbo  =   self._make_gl_coord_buffer( coords    , self.sel_shader_program )
+        self.sel_col_vbo    =   self._make_gl_color_buffer( colors    , self.sel_shader_program )
+        if dot_sizes is not None:
+            self.sel_size_vbo   =   self._make_gl_size_buffer ( dot_sizes , self.sel_shader_program )
+        else:
+            pass
+        
+        
+
     def _check_VAO_and_VBOs (self):
         """ Function doc """
         if self.sel_vao is None:
@@ -112,6 +149,11 @@ class Representation:
         att_colors = GL.glGetAttribLocation(self.shader_program, 'vert_color')
         GL.glEnableVertexAttribArray(att_colors)
         GL.glVertexAttribPointer(att_colors, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*colors.itemsize, ctypes.c_void_p(0))
+
+
+
+
+
 
 class LinesRepresentation (Representation):
     """ Class doc """
@@ -162,20 +204,19 @@ class LinesRepresentation (Representation):
         coords  = self.visObj.frames[0]
         colors  = self.visObj.colors
 
-        print ('building lines  VAO  and VBOs')    
-        self.vao        =   self._make_gl_VAO()
-        self.ind_vbo    =   self._make_gl_index_buffer( indices                        )
-        self.coord_vbo  =   self._make_gl_coord_buffer( coords   , self.shader_program )
-        self.col_vbo    =   self._make_gl_color_buffer( colors   , self.shader_program )
-        #self.size_vbo   =   self._make_gl_size_buffer ( dot_sizes, self.shader_program )
-
+        self._make_gl_representation_vao_and_vbos (indices    = indices,
+                                                   coords     = coords ,
+                                                   colors     = colors ,
+                                                   dot_sizes  = None   ,
+                                                   )
         colors_idx = self.visObj.color_indices
-        print ('building lines background selection  VAO  and VBOs')    
-        self.sel_vao        =   self._make_gl_VAO()
-        self.sel_ind_vbo    =   self._make_gl_index_buffer( indices                        )
-        self.sel_coord_vbo  =   self._make_gl_coord_buffer( coords    , self.sel_shader_program )
-        self.sel_col_vbo    =   self._make_gl_color_buffer( colors_idx, self.sel_shader_program )
-        #self.sel_size_vbo   =   self._make_gl_size_buffer ( dot_sizes , self.sel_shader_program )
+        self._make_gl_sel_representation_vao_and_vbos (indices    = indices    ,
+                                                       coords     = coords     ,
+                                                       colors     = colors_idx ,
+                                                       dot_sizes  = None       ,
+                                                       )
+
+
 
     def draw_representation (self):
         """ Function doc """
@@ -245,7 +286,12 @@ class LinesRepresentation (Representation):
             #                GL.GL_STATIC_DRAW)              
 
             GL.glDrawElements(GL.GL_LINES, int(len(self.visObj.index_bonds)*2), GL.GL_UNSIGNED_INT, None)  
-
+        GL.glBindVertexArray(0)
+        GL.glLineWidth(1)
+        GL.glUseProgram(0)
+        #GL.glDisable(GL.GL_LINE_SMOOTH)
+        #GL.glDisable(GL.GL_BLEND)
+        GL.glDisable(GL.GL_DEPTH_TEST)
 
 
 
@@ -293,27 +339,17 @@ class SticksRepresentation (Representation):
         coords  = self.visObj.frames[0]
         colors  = self.visObj.colors
 
-        print ('building lines  VAO and VBOs')    
-        self.vao        =   self._make_gl_VAO()
-        self.ind_vbo    =   self._make_gl_index_buffer( indices                        )
-        self.coord_vbo  =   self._make_gl_coord_buffer( coords   , self.shader_program )
-        self.col_vbo    =   self._make_gl_color_buffer( colors   , self.shader_program )
-        #self.size_vbo   =   self._make_gl_size_buffer ( dot_sizes, self.shader_program )
-
-        #GL.glBindVertexArray(0)
-        #GL.glDisableVertexAttribArray(att_position)
-        #GL.glDisableVertexAttribArray(att_size)
-        #GL.glDisableVertexAttribArray(att_bck_color)
-        #GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
-        #GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0)
-
+        self._make_gl_representation_vao_and_vbos (indices    = indices,
+                                                   coords     = coords ,
+                                                   colors     = colors ,
+                                                   dot_sizes  = None   ,
+                                                   )
         colors_idx = self.visObj.color_indices
-        print ('building lines background selection VAO  and VBOs')    
-        self.sel_vao        =   self._make_gl_VAO()
-        self.sel_ind_vbo    =   self._make_gl_index_buffer( indices                        )
-        self.sel_coord_vbo  =   self._make_gl_coord_buffer( coords    , self.sel_shader_program )
-        self.sel_col_vbo    =   self._make_gl_color_buffer( colors_idx, self.sel_shader_program )
-        #self.sel_size_vbo   =   self._make_gl_size_buffer ( dot_sizes , self.sel_shader_program )
+        self._make_gl_sel_representation_vao_and_vbos (indices    = indices    ,
+                                                       coords     = coords     ,
+                                                       colors     = colors_idx ,
+                                                       dot_sizes  = None       ,
+                                                       )
 
     def draw_representation (self):
         """ Function doc """
@@ -379,7 +415,6 @@ class SticksRepresentation (Representation):
 
 
 
-
 class NonBondedRepresentation (Representation):
     """ Class doc """
     
@@ -424,27 +459,17 @@ class NonBondedRepresentation (Representation):
         coords  = self.visObj.frames[0]
         colors  = self.visObj.colors
 
-        print ('building lines  VAO  and VBOs')    
-        self.vao        =   self._make_gl_VAO()
-        self.ind_vbo    =   self._make_gl_index_buffer( indices                        )
-        self.coord_vbo  =   self._make_gl_coord_buffer( coords   , self.shader_program )
-        self.col_vbo    =   self._make_gl_color_buffer( colors   , self.shader_program )
-        #self.size_vbo   =   self._make_gl_size_buffer ( dot_sizes, self.shader_program )
-
-        #GL.glBindVertexArray(0)
-        #GL.glDisableVertexAttribArray(att_position)
-        #GL.glDisableVertexAttribArray(att_size)
-        #GL.glDisableVertexAttribArray(att_bck_color)
-        #GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
-        #GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0)
-
+        self._make_gl_representation_vao_and_vbos (indices    = indices,
+                                                   coords     = coords ,
+                                                   colors     = colors ,
+                                                   dot_sizes  = None   ,
+                                                   )
         colors_idx = self.visObj.color_indices
-        print ('building lines background selection  VAO  and VBOs')    
-        self.sel_vao        =   self._make_gl_VAO()
-        self.sel_ind_vbo    =   self._make_gl_index_buffer( indices                        )
-        self.sel_coord_vbo  =   self._make_gl_coord_buffer( coords    , self.sel_shader_program )
-        self.sel_col_vbo    =   self._make_gl_color_buffer( colors_idx, self.sel_shader_program )
-        #self.sel_size_vbo   =   self._make_gl_size_buffer ( dot_sizes , self.sel_shader_program )
+        self._make_gl_sel_representation_vao_and_vbos (indices    = indices    ,
+                                                       coords     = coords     ,
+                                                       colors     = colors_idx ,
+                                                       dot_sizes  = None       ,
+                                                       )
 
     def draw_representation (self):
         """ Function doc """
@@ -501,11 +526,13 @@ class NonBondedRepresentation (Representation):
             '''
             self._set_coordinates_to_buffer ()
             GL.glDrawElements(GL.GL_POINTS, int(len(self.visObj.non_bonded_atoms)), GL.GL_UNSIGNED_INT, None)
-
-
-
-
-
+        
+        GL.glBindVertexArray(0)
+        GL.glLineWidth(1)
+        GL.glUseProgram(0)
+        #GL.glDisable(GL.GL_LINE_SMOOTH)
+        #GL.glDisable(GL.GL_BLEND)
+        GL.glDisable(GL.GL_DEPTH_TEST)
 
 
 
@@ -559,22 +586,17 @@ class DotsRepresentation (Representation):
             indices.append(i)
         indices = np.array(indices,dtype=np.uint32)
 
-
-        print ('building lines  VAO  and VBOs')    
-        self.vao        =   self._make_gl_VAO()
-        self.ind_vbo    =   self._make_gl_index_buffer( indices                        )
-        self.coord_vbo  =   self._make_gl_coord_buffer( coords   , self.shader_program )
-        self.col_vbo    =   self._make_gl_color_buffer( colors   , self.shader_program )
-        #self.size_vbo   =   self._make_gl_size_buffer ( dot_sizes, self.shader_program )
-
-
+        self._make_gl_representation_vao_and_vbos (indices    = indices,
+                                                   coords     = coords ,
+                                                   colors     = colors ,
+                                                   dot_sizes  = None   ,
+                                                   )
         colors_idx = self.visObj.color_indices
-        print ('building lines background selection  VAO  and VBOs')    
-        self.sel_vao        =   self._make_gl_VAO()
-        self.sel_ind_vbo    =   self._make_gl_index_buffer( indices                        )
-        self.sel_coord_vbo  =   self._make_gl_coord_buffer( coords    , self.sel_shader_program )
-        self.sel_col_vbo    =   self._make_gl_color_buffer( colors_idx, self.sel_shader_program )
-        #self.sel_size_vbo   =   self._make_gl_size_buffer ( dot_sizes , self.sel_shader_program )
+        self._make_gl_sel_representation_vao_and_vbos (indices    = indices    ,
+                                                       coords     = coords     ,
+                                                       colors     = colors_idx ,
+                                                       dot_sizes  = None       ,
+                                                       )
 
     def draw_representation (self):
         """ Function doc """
@@ -613,10 +635,11 @@ class DotsRepresentation (Representation):
     def draw_background_sel_representation  (self):
         """ Function doc """
         self._check_VAO_and_VBOs ()
+        
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glUseProgram(self.sel_shader_program)
-        GL.glLineWidth(20)
-
+        GL.glPointSize(200/abs(self.glCore.dist_cam_zrp))
+        #GL.glLineWidth(20)
         self.glCore.load_matrices(self.sel_shader_program, self.visObj.model_mat)
         GL.glBindVertexArray(self.sel_vao)
 
@@ -630,13 +653,9 @@ class DotsRepresentation (Representation):
             different trajectory sizes to be manipulated at the same time within the 
             glArea
             '''
+            print(self.name,'draw_background_sel_representation')
             self._set_coordinates_to_buffer ()
-            GL.glDrawElements(GL.GL_POINTS, int(len(self.visObj.non_bonded_atoms)), GL.GL_UNSIGNED_INT, None)
-
-
-
-
-
+            GL.glDrawElements(GL.GL_POINTS, int(len(self.visObj.atoms)), GL.GL_UNSIGNED_INT, None)
 
 
 
@@ -673,14 +692,16 @@ class SpheresRepresentation (Representation):
         self.sel_shader_program = None
 
 
-    def _make_gl_vao_and_vbos (self):
+    def _make_gl_vao_and_vbos (self, indices    = True ,
+                                     coords     = True ,
+                                     colors     = True ,
+                                     dot_sizes  = False,
+                                     ):
         """ Function doc """
         
         self.shader_program     = self.glCore.shader_programs[self.name]
         self.sel_shader_program = self.glCore.shader_programs[self.name+'_sel']
-        
-        #indices = np.array(self.visObj.index_bonds, dtype=np.uint32)
-        #indices = np.array(self.visObj.idex, dtype=np.uint32)
+
         coords    = self.visObj.frames[0]
         colors    = self.visObj.colors
         dot_sizes = self.visObj.vdw_dot_sizes
@@ -690,80 +711,81 @@ class SpheresRepresentation (Representation):
         for i in range(dot_qtty):
             indices.append(i)
         indices = np.array(indices,dtype=np.uint32)
-
-        print (dot_sizes)
-        print ('building lines  VAO  and VBOs')    
-        self.vao        =   self._make_gl_VAO()
-        self.ind_vbo    =   self._make_gl_index_buffer( indices                        )
-        self.coord_vbo  =   self._make_gl_coord_buffer( coords   , self.shader_program )
-        self.col_vbo    =   self._make_gl_color_buffer( colors   , self.shader_program )
-        self.size_vbo   =   self._make_gl_size_buffer ( dot_sizes, self.shader_program )
-
-
+        
+        self._make_gl_representation_vao_and_vbos (indices    = indices  ,
+                                                   coords     = coords   ,
+                                                   colors     = colors   ,
+                                                   dot_sizes  = dot_sizes,
+                                                   )
         colors_idx = self.visObj.color_indices
-        print ('building lines background selection  VAO  and VBOs')    
-        self.sel_vao        =   self._make_gl_VAO()
-        self.sel_ind_vbo    =   self._make_gl_index_buffer( indices                        )
-        self.sel_coord_vbo  =   self._make_gl_coord_buffer( coords    , self.sel_shader_program )
-        self.sel_col_vbo    =   self._make_gl_color_buffer( colors_idx, self.sel_shader_program )
-        self.sel_size_vbo   =   self._make_gl_size_buffer ( dot_sizes , self.sel_shader_program )
+        self._make_gl_sel_representation_vao_and_vbos (indices    = indices    ,
+                                                       coords     = coords     ,
+                                                       colors     = colors_idx ,
+                                                       dot_sizes  = dot_sizes  ,
+                                                       )
+
+
 
     def draw_representation (self):
+      
         """ Function doc """
-        self._check_VAO_and_VBOs ()
-        self._enable_anti_alis_to_lines()
-        #print ('SpheresRepresentation')
-
-        GL.glUseProgram(self.shader_program)
-        GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
-        #GL.glLineWidth(40/abs(self.glCore.dist_cam_zrp))
-        #GL.glPointSize(200/abs(self.glCore.dist_cam_zrp))
-        self.glCore.load_matrices(self.shader_program, self.visObj.model_mat)
-        #self.glCore.load_fog(self.shader_program)
-        GL.glBindVertexArray(self.vao)
-
-        if self.glCore.modified_view:
-            pass
-
-        else:
-            '''
-            This function checks if the number of the called frame will not exceed 
-            the limit of frames that each object has. Allowing two objects with 
-            different trajectory sizes to be manipulated at the same time within the 
-            glArea'''
-            self._set_coordinates_to_buffer ()
-            GL.glDrawElements(GL.GL_POINTS, int(len(self.visObj.atoms)), GL.GL_UNSIGNED_INT, None)
-
+        #self._check_VAO_and_VBOs ()
+        #
+        #GL.glUseProgram(self.shader_program)
+        #GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
+        #self.glCore.load_matrices(self.shader_program, self.visObj.model_mat)
+        #
+        #GL.glBindVertexArray(self.vao)
+        #if self.glCore.modified_view:
+        #    pass
+        #
+        #else:
+        #
+        #    '''
+        #    This function checks if the number of the called frame will not exceed 
+        #    the limit of frames that each object has. Allowing two objects with 
+        #    different trajectory sizes to be manipulated at the same time within the 
+        #    glArea'''
+        #    self._set_coordinates_to_buffer ()
+        #    GL.glDrawElements(GL.GL_POINTS, int(len(self.visObj.atoms)), GL.GL_UNSIGNED_INT, None)
+        #    #GL.glDrawArrays(GL.GL_POINTS, 0, int(len(self.visObj.atoms)))
+        #    print ('SpheresRepresentation')
+        #
+        ##"""
         #GL.glBindVertexArray(0)
-        #GL.glLineWidth(1)
+        #GL.glDisable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
         #GL.glUseProgram(0)
-        #GL.glDisable(GL.GL_LINE_SMOOTH)
-        #GL.glDisable(GL.GL_BLEND)
-        GL.glDisable(GL.GL_DEPTH_TEST)
+        #GL.glDisable(GL.GL_DEPTH_TEST)
         
             
     def draw_background_sel_representation  (self):
         """ Function doc """
-        self._check_VAO_and_VBOs ()
-        GL.glEnable(GL.GL_DEPTH_TEST)
-        GL.glUseProgram(self.sel_shader_program)
-        GL.glLineWidth(20)
+        
+        #self._check_VAO_and_VBOs ()
+        #print ('draw_background_sel_representation')
+        #GL.glEnable(GL.GL_DEPTH_TEST)
+        #GL.glUseProgram(self.sel_shader_program)
+        #GL.glLineWidth(20)
+        #
+        #self.glCore.load_matrices(self.sel_shader_program, self.visObj.model_mat)
+        #GL.glBindVertexArray(self.sel_vao)
+        #
+        #if self.glCore.modified_view:
+        #    pass
+        #
+        #else:
+        #    '''
+        #    This function checks if the number of the called frame will not exceed 
+        #    the limit of frames that each object has. Allowing two objects with 
+        #    different trajectory sizes to be manipulated at the same time within the 
+        #    glArea
+        #    '''
+        #    self._set_coordinates_to_buffer ()
+        #    GL.glDrawElements(GL.GL_POINTS, int(len(self.visObj.non_bonded_atoms)), GL.GL_UNSIGNED_INT, None)
 
-        self.glCore.load_matrices(self.sel_shader_program, self.visObj.model_mat)
-        GL.glBindVertexArray(self.sel_vao)
 
-        if self.glCore.modified_view:
-            pass
 
-        else:
-            '''
-            This function checks if the number of the called frame will not exceed 
-            the limit of frames that each object has. Allowing two objects with 
-            different trajectory sizes to be manipulated at the same time within the 
-            glArea
-            '''
-            self._set_coordinates_to_buffer ()
-            GL.glDrawElements(GL.GL_POINTS, int(len(self.visObj.non_bonded_atoms)), GL.GL_UNSIGNED_INT, None)
+
 
 
 
