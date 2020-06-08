@@ -602,6 +602,8 @@ class VisMolGLCore():
         # G L U M P Y
         self.glumpy_program = self.load_shaders(glumpyShaders.vertex_shader_glumpy,
                                                 glumpyShaders.fragment_shader_glumpy)
+        self.sel_glumpy_program = self.load_shaders(glumpyShaders.vertex_shader_glumpy,
+                                                    glumpyShaders.fragment_shader_glumpy)
         
         self.shader_programs['dots']             = self.dots_program
         self.shader_programs['dots_sel']         = self.sel_dots_program
@@ -620,6 +622,7 @@ class VisMolGLCore():
         self.shader_programs['picking_dots']     = self.picking_dots_program
         self.shader_programs['freetype']         = self.freetype_program
         self.shader_programs['glumpy']           = self.glumpy_program
+        self.shader_programs['glumpy_sel']       = self.sel_glumpy_program
         
     def load_shaders(self, vertex, fragment, geometry=None):
         """ Here the shaders are loaded and compiled to an OpenGL program. By default

@@ -1023,7 +1023,7 @@ class GlumpyRepresentation (Representation):
         """ Function doc """
         
         self.shader_program     = self.glCore.shader_programs[self.name]
-        # self.sel_shader_program = self.glCore.shader_programs[self.name+'_sel']
+        self.sel_shader_program = self.glCore.shader_programs[self.name+'_sel']
         
         coords  = self.visObj.frames[0]
         colors  = self.visObj.colors
@@ -1039,29 +1039,24 @@ class GlumpyRepresentation (Representation):
                                                    colors     = colors ,
                                                    dot_sizes  = None  ,
                                                    )
-        # colors_idx = self.visObj.color_indices
-        # self._make_gl_sel_representation_vao_and_vbos (indices    = indices    ,
-        #                                                coords     = coords     ,
-        #                                                colors     = colors_idx ,
-        #                                                dot_sizes  = None      ,
-        #                                                )
+        colors_idx = self.visObj.color_indices
+        self._make_gl_sel_representation_vao_and_vbos (indices    = indices    ,
+                                                       coords     = coords     ,
+                                                       colors     = colors_idx ,
+                                                       dot_sizes  = None      ,
+                                                       )
 
     def draw_representation (self):
         """ Function doc """
         self._check_VAO_and_VBOs()
         self._enable_anti_alis_to_lines()
-
         GL.glUseProgram(self.shader_program)
-        
         GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
-        # GL.glPointSize(200/abs(self.glCore.dist_cam_zrp))
         self.glCore.load_matrices(self.shader_program, self.visObj.model_mat)
         self.glCore.load_fog(self.shader_program)
         GL.glBindVertexArray(self.vao)
-
         if self.glCore.modified_view:
             pass
-
         else:
             '''
             This function checks if the number of the called frame will not exceed 
@@ -1070,29 +1065,18 @@ class GlumpyRepresentation (Representation):
             glArea'''
             self._set_coordinates_to_buffer ()
             GL.glDrawElements(GL.GL_POINTS, int(len(self.visObj.atoms)), GL.GL_UNSIGNED_INT, None)
-
-        #GL.glBindVertexArray(0)
-        #GL.glLineWidth(1)
-        #GL.glUseProgram(0)
-        #GL.glDisable(GL.GL_LINE_SMOOTH)
-        #GL.glDisable(GL.GL_BLEND)
         GL.glDisable(GL.GL_DEPTH_TEST)
         
             
     def draw_background_sel_representation  (self):
         """ Function doc """
         self._check_VAO_and_VBOs ()
-        
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glUseProgram(self.sel_shader_program)
-        GL.glPointSize(200/abs(self.glCore.dist_cam_zrp))
-        #GL.glLineWidth(20)
         self.glCore.load_matrices(self.sel_shader_program, self.visObj.model_mat)
         GL.glBindVertexArray(self.sel_vao)
-
         if self.glCore.modified_view:
             pass
-
         else:
             '''
             This function checks if the number of the called frame will not exceed 
