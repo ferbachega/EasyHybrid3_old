@@ -39,6 +39,7 @@ from VISMOL.vModel.Representations   import NonBondedRepresentation
 from VISMOL.vModel.Representations   import SticksRepresentation
 from VISMOL.vModel.Representations   import DotsRepresentation
 from VISMOL.vModel.Representations   import SpheresRepresentation
+from VISMOL.vModel.Representations   import GlumpyRepresentation
 
 #class Representation:
 #    """ Class doc """
@@ -180,6 +181,7 @@ class VismolObject:
                                 'sticks'    : None,
                                 'ribbons'   : None,
                                 'surface'   : None,
+                                'glumpy'    : None,
                                 }
         
         
@@ -214,6 +216,8 @@ class VismolObject:
         """   T E X T   """
         self.text_active = False
         
+        """   G L U M P Y   """
+        self.glumpy_active = False
         
 
         
@@ -242,13 +246,13 @@ class VismolObject:
         #print (self.representations)
         
         
-        rep  = NonBondedRepresentation (name = 'nonbonded', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
+        rep  = NonBondedRepresentation (name = 'nonbonded', active = False, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
         #print (rep, rep.name)
         self.representations[rep.name] = rep
         #print (self.representations)        
         
 
-        rep  = SticksRepresentation (name = 'sticks', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
+        rep  = SticksRepresentation (name = 'sticks', active = False, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
         #print (rep, rep.name)
         self.representations[rep.name] = rep
         #print (self.representations)        
@@ -259,10 +263,13 @@ class VismolObject:
         #print (self.representations)        
         
 
-        rep  = SpheresRepresentation (name = 'spheres', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
+        rep  = SpheresRepresentation (name = 'spheres', active = False, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
         #print (rep, rep.name)
         self.representations[rep.name] = rep
         #print (self.representations)            
+        
+        rep  = GlumpyRepresentation (name = 'glumpy', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
+        self.representations[rep.name] = rep
         
         '''
         for rep_name in reps_list:
