@@ -454,7 +454,9 @@ class GtkGLAreaWidget(Gtk.GLArea):
                     visObj.representations['sticks'].active =  False
                 else:
                     print (visObj.sticks_active)
-
+                    indices = np.array([0,1,0,2,1,2], dtype=np.uint32)
+                    visObj.representations['sticks'].indices = indices
+                    
                     print("visObj.representations['sticks'].active =  False")
                     visObj.representations['sticks'].active =  True
 

@@ -35,5 +35,5 @@ class Bond:
 		self.bond_order = bond_order 
 		
 		self.line_active  = True
-		self.stick_active = True
+		self.stick_active = False
 		pass

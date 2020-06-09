@@ -58,20 +58,38 @@ class Representation:
         return size_vbo
 
 
-    def _set_coordinates_to_buffer (self):
+    def _set_coordinates_to_buffer (self, coord_vbo = True, sel_coord_vbo = True):
         '''Esta função atribui  as coordenadas que dele ser desenhadas  pela função  "draw_representation"'''
         
         frame = self.glCore._safe_frame_exchange(self.visObj)
         #GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.line_buffers[1])
-        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 
-                        self.coord_vbo    )
         
-        GL.glBufferData(GL.GL_ARRAY_BUFFER, 
-                        frame.nbytes      ,
-                        frame             , 
-                        GL.GL_STATIC_DRAW)    
+        if coord_vbo:
+            GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 
+                            self.coord_vbo    )
+            
+            GL.glBufferData(GL.GL_ARRAY_BUFFER, 
+                            frame.nbytes      ,
+                            frame             , 
+                            GL.GL_STATIC_DRAW)   
+        else:
+            pass
+        
+        
+        
+        if sel_coord_vbo:
+            GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 
+                            self.sel_coord_vbo )
+            
+            
+            GL.glBufferData(GL.GL_ARRAY_BUFFER, 
+                            frame.nbytes      ,
+                            frame             , 
+                            GL.GL_STATIC_DRAW)    
 
-
+        else:
+            pass
+            
     def _make_gl_representation_vao_and_vbos (self, 
                                               indices    = None,
                                               coords     = None,
@@ -165,12 +183,6 @@ class LinesRepresentation (Representation):
         self.visObj             = visObj
         self.glCore             = glCore
 
-        #self.vao                = vao
-        #self.buffers            = buffers
-        #self.sel_vao            = None
-        #self.sel_buffers        = None
-
-
         # representation 	
         self.vao            = None
         self.ind_vbo        = None
@@ -228,7 +240,7 @@ class LinesRepresentation (Representation):
         self._check_VAO_and_VBOs ()
         self._enable_anti_alis_to_lines()
         GL.glUseProgram(self.shader_program)
-        GL.glLineWidth(80/abs(self.glCore.dist_cam_zrp))
+        GL.glLineWidth(40/abs(self.glCore.dist_cam_zrp))
 
 
         self.glCore.load_matrices(self.shader_program, self.visObj.model_mat)
@@ -244,7 +256,7 @@ class LinesRepresentation (Representation):
             the limit of frames that each object has. Allowing two objects with 
             different trajectory sizes to be manipulated at the same time within the 
             glArea'''
-            self._set_coordinates_to_buffer ()
+            self._set_coordinates_to_buffer (coord_vbo = True, sel_coord_vbo = False)
             GL.glDrawElements(GL.GL_LINES, int(len(self.visObj.index_bonds)*2), GL.GL_UNSIGNED_INT, None)
 
         GL.glBindVertexArray(0)
@@ -281,7 +293,7 @@ class LinesRepresentation (Representation):
             different trajectory sizes to be manipulated at the same time within the 
             glArea
             '''
-            self._set_coordinates_to_buffer ()
+            self._set_coordinates_to_buffer (coord_vbo = False, sel_coord_vbo = True)
 
             #frame = self.glCore._safe_frame_exchange(self.visObj)
             #GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.sel_coord_vbo)
@@ -303,7 +315,7 @@ class LinesRepresentation (Representation):
 class SticksRepresentation (Representation):
     """ Class doc """
     
-    def __init__ (self, name = 'sticks', active = True, _type = 'mol', visObj = None, glCore = None):
+    def __init__ (self, name = 'sticks', active = True, _type = 'mol', visObj = None, glCore = None,  indices = [] ):
         """ Class initialiser """
         self.name               = name
         self.active             = active
@@ -331,30 +343,35 @@ class SticksRepresentation (Representation):
         #     S H A D E R S
         self.shader_program     = None
         self.sel_shader_program = None
-
-
-    def _make_gl_vao_and_vbos (self, indices = None):
-        """ Function doc """
-        #if indices is not None:
-        #    pass
-        #else:
-        #    indices = np.array(self.visObj.index_bonds,dtype=np.uint32)
         
+        if indices == []:
+            self.indices = np.array(self.visObj.index_bonds, dtype=np.uint32)
+        else:
+            self.indices = np.array(indices, dtype=np.uint32)
+            
+    def _make_gl_vao_and_vbos (self, indices = []):
+        """ Function doc """
+        #if indices == []:
+        #    self.indices = np.array(self.visObj.index_bonds, dtype=np.uint32)
+        #else:
+        #    self.indices = np.array(indices, dtype=np.uint32)
+        
+        #self.indices = np.array([0,1,0,2,1,2], dtype=np.uint32)
         self.shader_program     = self.glCore.shader_programs[self.name]
         self.sel_shader_program = self.glCore.shader_programs[self.name+'_sel']
         
-        indices = np.array(self.visObj.index_bonds, dtype=np.uint32)
+        
         #indices = np.array(self.visObj.index_bonds, dtype=np.uint32)
         coords  = self.visObj.frames[0]
         colors  = self.visObj.colors
 
-        self._make_gl_representation_vao_and_vbos (indices    = indices,
+        self._make_gl_representation_vao_and_vbos (indices    = self.indices,
                                                    coords     = coords ,
                                                    colors     = colors ,
                                                    dot_sizes  = None   ,
                                                    )
         colors_idx = self.visObj.color_indices
-        self._make_gl_sel_representation_vao_and_vbos (indices    = indices    ,
+        self._make_gl_sel_representation_vao_and_vbos (indices    = self.indices    ,
                                                        coords     = coords     ,
                                                        colors     = colors_idx ,
                                                        dot_sizes  = None       ,
@@ -383,7 +400,7 @@ class SticksRepresentation (Representation):
             the limit of frames that each object has. Allowing two objects with 
             different trajectory sizes to be manipulated at the same time within the 
             glArea'''
-            self._set_coordinates_to_buffer ()
+            self._set_coordinates_to_buffer (coord_vbo = True, sel_coord_vbo = False)
             GL.glDrawElements(GL.GL_LINES, int(len(self.visObj.index_bonds)*2), GL.GL_UNSIGNED_INT, None)
         
         GL.glBindVertexArray(0)
@@ -416,7 +433,7 @@ class SticksRepresentation (Representation):
             different trajectory sizes to be manipulated at the same time within the 
             glArea
             '''
-            self._set_coordinates_to_buffer ()
+            self._set_coordinates_to_buffer (coord_vbo = False, sel_coord_vbo = True)
             GL.glDrawElements(GL.GL_LINES, int(len(self.visObj.index_bonds)*2), GL.GL_UNSIGNED_INT, None)
         GL.glBindVertexArray(0)
         GL.glUseProgram(0)
@@ -506,7 +523,7 @@ class NonBondedRepresentation (Representation):
             the limit of frames that each object has. Allowing two objects with 
             different trajectory sizes to be manipulated at the same time within the 
             glArea'''
-            self._set_coordinates_to_buffer ()
+            self._set_coordinates_to_buffer (coord_vbo = True, sel_coord_vbo = False)
             GL.glDrawElements(GL.GL_POINTS, int(len(self.visObj.non_bonded_atoms)), GL.GL_UNSIGNED_INT, None)
 
         GL.glBindVertexArray(0)
@@ -537,7 +554,7 @@ class NonBondedRepresentation (Representation):
             different trajectory sizes to be manipulated at the same time within the 
             glArea
             '''
-            self._set_coordinates_to_buffer ()
+            self._set_coordinates_to_buffer (coord_vbo = False, sel_coord_vbo = True)
             GL.glDrawElements(GL.GL_POINTS, int(len(self.visObj.non_bonded_atoms)), GL.GL_UNSIGNED_INT, None)
         
         GL.glBindVertexArray(0)
@@ -638,7 +655,7 @@ class DotsRepresentation (Representation):
             the limit of frames that each object has. Allowing two objects with 
             different trajectory sizes to be manipulated at the same time within the 
             glArea'''
-            self._set_coordinates_to_buffer ()
+            self._set_coordinates_to_buffer (coord_vbo = True, sel_coord_vbo = False)
             GL.glDrawElements(GL.GL_POINTS, int(len(self.visObj.atoms)), GL.GL_UNSIGNED_INT, None)
 
         #GL.glBindVertexArray(0)
@@ -671,7 +688,7 @@ class DotsRepresentation (Representation):
             glArea
             '''
             print(self.name,'draw_background_sel_representation')
-            self._set_coordinates_to_buffer ()
+            self._set_coordinates_to_buffer (coord_vbo = False, sel_coord_vbo = True)
             GL.glDrawElements(GL.GL_POINTS, int(len(self.visObj.atoms)), GL.GL_UNSIGNED_INT, None)
 
 
@@ -1081,7 +1098,7 @@ class GlumpyRepresentation (Representation):
             the limit of frames that each object has. Allowing two objects with 
             different trajectory sizes to be manipulated at the same time within the 
             glArea'''
-            self._set_coordinates_to_buffer ()
+            self._set_coordinates_to_buffer (coord_vbo = True, sel_coord_vbo = False)
             GL.glDrawElements(GL.GL_POINTS, int(len(self.visObj.atoms)), GL.GL_UNSIGNED_INT, None)
         GL.glDisable(GL.GL_DEPTH_TEST)
         
@@ -1103,7 +1120,7 @@ class GlumpyRepresentation (Representation):
             glArea
             '''
             print(self.name,'draw_background_sel_representation')
-            self._set_coordinates_to_buffer ()
+            self._set_coordinates_to_buffer (coord_vbo = False, sel_coord_vbo = True)
             GL.glDrawElements(GL.GL_POINTS, int(len(self.visObj.atoms)), GL.GL_UNSIGNED_INT, None)
 
 

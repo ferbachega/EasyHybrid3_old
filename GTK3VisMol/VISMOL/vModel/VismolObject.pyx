@@ -240,38 +240,28 @@ class VismolObject:
     
     def generate_default_representations (self, reps_list = {}) :
         """ Function doc """
-        rep  = LinesRepresentation (name = 'lines', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
-        #print (rep, rep.name)        
-        self.representations[rep.name] = rep
-        #print (self.representations)
+        pass
+        #rep  = LinesRepresentation (name = 'lines', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
+        #self.representations[rep.name] = rep
+        #
+        #
+        #rep  = NonBondedRepresentation (name = 'nonbonded', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
+        #self.representations[rep.name] = rep
         
-        
-        rep  = NonBondedRepresentation (name = 'nonbonded', active = False, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
-        #print (rep, rep.name)
-        self.representations[rep.name] = rep
-        #print (self.representations)        
-        
-
+        '''
         rep  = SticksRepresentation (name = 'sticks', active = False, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
-        #print (rep, rep.name)
         self.representations[rep.name] = rep
-        #print (self.representations)        
-        #self.representations[rep.name].active = False
         
         rep  = DotsRepresentation (name = 'dots', active = False, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
-        #print (rep, rep.name)
         self.representations[rep.name] = rep
-        #print (self.representations)        
         
 
         rep  = SpheresRepresentation (name = 'spheres', active = False, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
-        #print (rep, rep.name)
         self.representations[rep.name] = rep
-        #print (self.representations)            
         
         rep  = GlumpyRepresentation (name = 'glumpy', active = False, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
         self.representations[rep.name] = rep
-        
+        '''
         '''
         for rep_name in reps_list:
             if reps_list[rep_name]:
