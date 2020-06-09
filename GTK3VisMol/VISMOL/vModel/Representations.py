@@ -109,10 +109,9 @@ class Representation:
         
         
 
-    def _check_VAO_and_VBOs (self):
+    def _check_VAO_and_VBOs (self, indices = None):
         """ Function doc """
         if self.sel_vao is None:
-            print ('_make_gl_vao_and_vbos')    
             self._make_gl_vao_and_vbos ()
         else:
             pass
@@ -128,11 +127,11 @@ class Representation:
     
     def define_new_indices_to_VBO ( self, input_indices = []):
         """ Function doc """
-        
+        self._check_VAO_and_VBOs ()
         indices = input_indices
         indices = np.array(indices,dtype=np.uint32)
-        
         #ind_vbo = self.ind_vbo
+        
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, self.ind_vbo)
         GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, indices.nbytes, indices, GL.GL_DYNAMIC_DRAW)
         
@@ -193,9 +192,16 @@ class LinesRepresentation (Representation):
         self.sel_shader_program = None
 
 
-    def _make_gl_vao_and_vbos (self):
+    def _make_gl_vao_and_vbos (self, indices = None):
         """ Function doc """
         
+        #if indices is not None:
+        #    print ('_make_gl_vao_and_vbos',indices)
+        #    pass
+        #else:
+        #    print ('_make_gl_vao_and_vbos',indices)
+        #    indices = np.array(self.visObj.index_bonds,dtype=np.uint32)
+
         self.shader_program     = self.glCore.shader_programs[self.name]
         self.sel_shader_program = self.glCore.shader_programs[self.name+'_sel']
         
@@ -327,14 +333,18 @@ class SticksRepresentation (Representation):
         self.sel_shader_program = None
 
 
-    def _make_gl_vao_and_vbos (self):
+    def _make_gl_vao_and_vbos (self, indices = None):
         """ Function doc """
+        #if indices is not None:
+        #    pass
+        #else:
+        #    indices = np.array(self.visObj.index_bonds,dtype=np.uint32)
         
         self.shader_program     = self.glCore.shader_programs[self.name]
         self.sel_shader_program = self.glCore.shader_programs[self.name+'_sel']
         
-        #indices = np.array(self.visObj.index_bonds, dtype=np.uint32)
         indices = np.array(self.visObj.index_bonds, dtype=np.uint32)
+        #indices = np.array(self.visObj.index_bonds, dtype=np.uint32)
         coords  = self.visObj.frames[0]
         colors  = self.visObj.colors
 
@@ -447,14 +457,18 @@ class NonBondedRepresentation (Representation):
         self.sel_shader_program = None
 
 
-    def _make_gl_vao_and_vbos (self):
+    def _make_gl_vao_and_vbos (self, indices = None):
         """ Function doc """
+        if indices is not None:
+            pass
+        else:
+            indices = np.array(self.visObj.non_bonded_atoms, dtype=np.uint32)
         
         self.shader_program     = self.glCore.shader_programs[self.name]
         self.sel_shader_program = self.glCore.shader_programs[self.name+'_sel']
         
         #indices = np.array(self.visObj.index_bonds, dtype=np.uint32)
-        indices = np.array(self.visObj.non_bonded_atoms, dtype=np.uint32)
+        #indices = np.array(self.visObj.non_bonded_atoms, dtype=np.uint32)
         coords  = self.visObj.frames[0]
         colors  = self.visObj.colors
 
@@ -568,8 +582,16 @@ class DotsRepresentation (Representation):
         self.sel_shader_program = None
 
 
-    def _make_gl_vao_and_vbos (self):
+    def _make_gl_vao_and_vbos (self, indices = None):
         """ Function doc """
+        if indices is not None:
+            pass
+        else:
+            dot_qtty  = int(len(coords)/3)
+            indices = []
+            for i in range(dot_qtty):
+                indices.append(i)
+            indices = np.array(indices,dtype=np.uint32)        
         
         self.shader_program     = self.glCore.shader_programs[self.name]
         self.sel_shader_program = self.glCore.shader_programs[self.name+'_sel']
@@ -579,11 +601,7 @@ class DotsRepresentation (Representation):
         coords  = self.visObj.frames[0]
         colors  = self.visObj.colors
 
-        dot_qtty  = int(len(coords)/3)
-        indices = []
-        for i in range(dot_qtty):
-            indices.append(i)
-        indices = np.array(indices,dtype=np.uint32)
+
 
         self._make_gl_representation_vao_and_vbos (indices    = indices,
                                                    coords     = coords ,
@@ -703,7 +721,7 @@ class SpheresRepresentation (Representation):
         self.shader_program     = None
         self.sel_shader_program = None
      
-    def _create_sphere_data(self):
+    def _create_sphere_data(self, indices = None):
         """ Function doc """
         init = time.time()
         #cdef Py_ssize_t a, i, qtty, elems, offset, inds_e
@@ -1019,7 +1037,7 @@ class GlumpyRepresentation (Representation):
         self.sel_shader_program = None
 
 
-    def _make_gl_vao_and_vbos (self):
+    def _make_gl_vao_and_vbos (self, indices = None):
         """ Function doc """
         
         self.shader_program     = self.glCore.shader_programs[self.name]

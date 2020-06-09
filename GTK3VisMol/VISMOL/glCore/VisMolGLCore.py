@@ -442,6 +442,7 @@ class VisMolGLCore():
                     else:
                         # only shows the representation if representations[rep_name].active = True
                         if visObj.representations[rep_name].active:
+                            #print(rep_name,visObj.representations[rep_name].active)
                             visObj.representations[rep_name].draw_representation()
                         else:
                             pass

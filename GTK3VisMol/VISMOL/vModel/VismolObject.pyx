@@ -256,6 +256,7 @@ class VismolObject:
         #print (rep, rep.name)
         self.representations[rep.name] = rep
         #print (self.representations)        
+        #self.representations[rep.name].active = False
         
         rep  = DotsRepresentation (name = 'dots', active = False, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
         #print (rep, rep.name)
@@ -268,7 +269,7 @@ class VismolObject:
         self.representations[rep.name] = rep
         #print (self.representations)            
         
-        rep  = GlumpyRepresentation (name = 'glumpy', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
+        rep  = GlumpyRepresentation (name = 'glumpy', active = False, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
         self.representations[rep.name] = rep
         
         '''

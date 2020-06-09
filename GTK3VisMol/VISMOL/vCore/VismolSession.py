@@ -98,10 +98,12 @@ class ShowHideVisMol:
 
     def show_or_hide (self, _type = 'lines', sel_objects = [] , atoms = [], show = True ):
         """ Function doc """
+        #self._selected_atoms_change_attributes(_type = _type, 
+        #                                       atoms = atoms, 
+        #                                        show = show )
         
         for atom in self.selections[self.current_selection].selected_atoms:
-            #print (atom.name)
-            
+
             #               B O N D S
             if _type in ['lines','sticks','ribbons']:
                 for bond in atom.bonds:
@@ -141,29 +143,48 @@ class ShowHideVisMol:
                 
         
         # Build a list of the connections that are active -> this list will be sent to the openGL buffer
-        for vobject in sel_objects:
-            
-            
+        for vobject in self.selections[self.current_selection].selected_objects:
+            #vobject.representations[_type].active = True
+            self.glwidget.queue_draw()
+                
             if _type in ['lines','sticks','ribbons']:
                 indices_bonds = []
                 for bond in vobject.bonds:
-                    if bond.line_active:
-                        indices_bonds.append(bond.atom_index_i)
-                        indices_bonds.append(bond.atom_index_j)
-                    else:
-                        pass
-            
+                    
+                    if _type == 'lines':
+                        if bond.line_active:
+                            indices_bonds.append(bond.atom_index_i)
+                            indices_bonds.append(bond.atom_index_j)
+                        else:
+                            pass
+                    
+                    if _type == 'sticks':
+                        if bond.stick_active:
+                            indices_bonds.append(bond.atom_index_i)
+                            indices_bonds.append(bond.atom_index_j)
+                        else:
+                            pass
+                    
                 if indices_bonds == []:
-                    #print('indices_bonds == []')
-                    vobject.sticks_active  = False
+                    print('indices_bonds == []')
+                    #vobject.representations[_type].active = False
+                    #print(vobject.representations[_type].active)
+                    vobject.representations[_type].define_new_indices_to_VBO ( indices_bonds)
                 else:
-                    #print('indices_bonds ==', indices_bonds)
-                    vobject.representations['sticks'].define_new_indices_to_VBO(indices_bonds)
-            
-            
+                    #print ('line:172',_type)
+                    #print ('line:173',indices_bonds)
+                    vobject.representations[_type].define_new_indices_to_VBO ( indices_bonds)
+                    #vobject.representations[_type].active = True
+                    self.glwidget.queue_draw()
+
+
             #           nonbond  spheres  dots
             else:   
+                
                 indices = []
+                if _type == 'nonbonded':
+                    pass
+
                 for atom in vobject.atoms:
                     if atom.spheres:
                         index = vobject.atoms.index(atom)
@@ -171,7 +192,6 @@ class ShowHideVisMol:
                         indices.append(index)
                     else:                   
                         pass
-        
 
 
 
