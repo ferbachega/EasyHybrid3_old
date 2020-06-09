@@ -474,6 +474,12 @@ class GtkGLAreaWidget(Gtk.GLArea):
                 visObj.dots_surface_active =  True
 
 
+        if k_name == 'e':                             
+            self.vismolSession.show_or_hide( _type = 'spheres', show = True)
+        if k_name == 'd':
+            self.vismolSession.show_or_hide( _type = 'spheres', show = False) 
+
+
         if k_name == 'w':                             
             self.vismolSession.show_or_hide( _type = 'sticks', show = True)
         if k_name == 's':

@@ -696,7 +696,14 @@ class DotsRepresentation (Representation):
 class SpheresRepresentation (Representation):
     """ Class doc """
     
-    def __init__ (self, name = 'spheres', active = True, _type = 'mol', visObj = None, glCore = None,  level = 'level_1', scale = 1.0):
+    def __init__ (self, name = 'spheres', 
+                      active = True, 
+                       _type = 'mol', 
+                      visObj = None, 
+                      glCore = None,  
+                       atoms = None,
+                       level = 'level_1', 
+                       scale = 1.0):
         
         """ Class initialiser """
         self.name               = name
@@ -709,7 +716,14 @@ class SpheresRepresentation (Representation):
         # --------------------------------
         self.level              = level
         self.scale              = scale
-
+        
+        
+        if atoms is None:
+            self.atoms          = self.visObj.atoms
+        else:
+            self.atoms          = atoms
+        
+        
         self.coords             = None
         self.colors             = None
         self.centers            = None
@@ -738,11 +752,36 @@ class SpheresRepresentation (Representation):
         self.shader_program     = None
         self.sel_shader_program = None
      
-    def _create_sphere_data(self, indices = None):
+    
+    def _update_sphere_data_to_VBOs (self):
+        """ Function doc """
+        
+        #GL.glDeleteVertexArrays( 1, self.vao)        
+        #GL.glDeleteBuffers(1, self.ind_vbo)
+        #GL.glDeleteBuffers(1, self.coord_vbo)
+        #GL.glDeleteBuffers(1, self.centr_vbo)
+        #GL.glDeleteBuffers(1, self.col_vbo)
+        #self._make_gl_vao_and_vbos ()
+        
+        GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, self.ind_vbo)
+        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self.indices.nbytes, self.indices, GL.GL_DYNAMIC_DRAW)
+        
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.coord_vbo)
+        GL.glBufferData(GL.GL_ARRAY_BUFFER, self.coords.nbytes, self.coords, GL.GL_STATIC_DRAW)
+        
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.centr_vbo)
+        GL.glBufferData(GL.GL_ARRAY_BUFFER, self.centers.itemsize*len(self.centers), self.centers, GL.GL_STATIC_DRAW)
+        
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.col_vbo)
+        GL.glBufferData(GL.GL_ARRAY_BUFFER, self.colors.itemsize*len(self.colors), self.colors, GL.GL_STATIC_DRAW)
+
+    
+    def _create_sphere_data(self ):
+        
         """ Function doc """
         init = time.time()
         #cdef Py_ssize_t a, i, qtty, elems, offset, inds_e
-        qtty = int(len(self.visObj.atoms))
+        qtty = int(len( self.atoms))
         nucleus = [0.0, 0.0, 0.0]*qtty
         colores = [0.0, 0.0, 0.0]*qtty
         coords  = sphd.sphere_vertices[self.level]*qtty
@@ -757,9 +796,9 @@ class SpheresRepresentation (Representation):
         self.frames = []
         frame =0
         #for frame in range(len(self.visObj.frames)-1):
-        for a, atom in enumerate(self.visObj.atoms[50:]):
+        for a, atom in enumerate( self.atoms ):
             pos = atom.coords (frame)
-            #print (pos,atom, frame)
+            print (pos, atom.index, frame)
 
             colors[a*offset:(a+1)*offset]  = [atom.color[0],atom.color[1],atom.color[2]]*elems
             centers[a*offset:(a+1)*offset] = [pos[0],pos[1],pos[2]]*elems
@@ -787,7 +826,7 @@ class SpheresRepresentation (Representation):
             for frame in range(1,len(self.visObj.frames)-1):
                 coords  = sphd.sphere_vertices[self.level]*qtty
                 centers = sphd.sphere_vertices[self.level]*qtty
-                for a, atom in enumerate(self.visObj.atoms[50:]):
+                for a, atom in enumerate( self.atoms ):
                     pos = atom.coords (frame)
                     centers[a*offset:(a+1)*offset] = [pos[0],pos[1],pos[2]]*elems
                     
@@ -912,7 +951,7 @@ class SpheresRepresentation (Representation):
     '''
     def _make_gl_vao_and_vbos (self):
         """ Function doc """
-        self._create_sphere_data()
+        #self._create_sphere_data()
 
         self.shader_program     = self.glCore.shader_programs[self.name]
         self.sel_shader_program = self.glCore.shader_programs[self.name+'_sel']
