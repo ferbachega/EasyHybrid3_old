@@ -460,10 +460,10 @@ class GtkGLAreaWidget(Gtk.GLArea):
                     print("visObj.representations['sticks'].active =  False")
                     visObj.representations['sticks'].active =  True
 
-        if k_name == 'd':
-            self.vismolSession.show(_type = 'dots', Vobjects =  [self.vismolSession.vismol_objects[-1]])
-            #visObj = self.vismolSession.vismol_objects[0]
-            #visObj.dots_active =  True
+        #if k_name == 'd':
+        #    self.vismolSession.show(_type = 'dots', Vobjects =  [self.vismolSession.vismol_objects[-1]])
+        #    #visObj = self.vismolSession.vismol_objects[0]
+        #    #visObj.dots_active =  True
         
         if k_name == 'v':
             #self.vismolSession.show(_type = 'dots', Vobjects =  [self.vismolSession.vismol_objects[-1]])

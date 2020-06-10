@@ -127,19 +127,23 @@ class ShowHideVisMol:
 
             #               B O N D S
             if _type in ['lines','sticks','ribbons']:
+                
+                
+                
                 for bond in atom.bonds:
-                    
-                    if _type == 'lines':
-                        if show:
-                            bond.line_active  = True
-                        else:
-                            bond.line_active  = False
+                    if bond.atom_i in self.selections[self.current_selection].selected_atoms and bond.atom_j in self.selections[self.current_selection].selected_atoms:
 
-                    if _type == 'sticks':
-                        if show:
-                            bond.stick_active = True        
-                        else:
-                            bond.stick_active = False        
+                        if _type == 'lines':
+                            if show:
+                                bond.line_active  = True
+                            else:
+                                bond.line_active  = False
+
+                        if _type == 'sticks':
+                            if show:
+                                bond.stick_active = True        
+                            else:
+                                bond.stick_active = False        
 
             
             #               A T O M S 
@@ -157,6 +161,7 @@ class ShowHideVisMol:
                         atom.dots = False
 
                 if _type == 'spheres':
+                    #print (atom.name, atom.index, atom.Vobject.name)
                     if show:
                         atom.spheres = True
                     else:
@@ -164,8 +169,11 @@ class ShowHideVisMol:
                 
         
         for vobject in self.selections[self.current_selection].selected_objects:
+            print("Vobject.name:",vobject.name)
+
             if _type in ['lines','sticks','ribbons']:
                 #----------------------------------------------------------------   
+                
                 indices_bonds = []
                 
                 for bond in vobject.bonds:
@@ -196,11 +204,11 @@ class ShowHideVisMol:
                     rep  = SticksRepresentation    (name    = _type, 
                                                     active  = True, 
                                                     _type   = 'mol', 
-                                                    visObj  = self.vismol_objects[-1], 
+                                                    visObj  = vobject, 
                                                     glCore  = self.glwidget.vm_widget,
                                                     indices = indices_bonds)
                                                     
-                    self.vismol_objects[-1].representations[rep.name] = rep 
+                    vobject.representations[rep.name] = rep 
                     print(vobject.representations[_type])
                 
                 else:
@@ -256,20 +264,20 @@ class ShowHideVisMol:
                         rep  = SpheresRepresentation    (name    = _type, 
                                                          active  = True, 
                                                          _type   = 'mol', 
-                                                         visObj  = self.vismol_objects[-1], 
+                                                         visObj  = vobject, 
                                                          glCore  = self.glwidget.vm_widget,
                                                          atoms   = atoms2spheres
                                                          )
                         
                         print ('len', len(atoms2spheres))
                         rep._create_sphere_data()                                
-                        self.vismol_objects[-1].representations[rep.name] = rep 
+                        vobject.representations[rep.name] = rep 
                         
                         print(vobject.representations[_type])
-                        self.glwidget.queue_draw()
                     else:
                         if atoms2spheres == []:
                             vobject.representations[_type].active = False
+                            self.glwidget.queue_draw()
                             pass
 
                         else:
@@ -277,7 +285,9 @@ class ShowHideVisMol:
                             vobject.representations[_type]._create_sphere_data() 
                             vobject.representations[_type]._update_sphere_data_to_VBOs ()                               
                             vobject.representations[_type].active = True
-                
+                            self.glwidget.queue_draw()
+                    self.glwidget.queue_draw()
+
 
 
 class VisMolSession (ShowHideVisMol):
@@ -441,6 +451,8 @@ class VisMolSession (ShowHideVisMol):
         rep  = NonBondedRepresentation (name = 'nonbonded', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
         self.vismol_objects[-1].representations[rep.name] = rep
         
+        #rep  = SticksRepresentation (name = 'sticks', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        #self.vismol_objects[-1].representations[rep.name] = rep
         
         #self.glwidget.queue_draw()
        

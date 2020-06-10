@@ -798,7 +798,7 @@ class SpheresRepresentation (Representation):
         #for frame in range(len(self.visObj.frames)-1):
         for a, atom in enumerate( self.atoms ):
             pos = atom.coords (frame)
-            print (pos, atom.index, frame)
+            #print (pos, atom.index, frame)
 
             colors[a*offset:(a+1)*offset]  = [atom.color[0],atom.color[1],atom.color[2]]*elems
             centers[a*offset:(a+1)*offset] = [pos[0],pos[1],pos[2]]*elems
@@ -820,6 +820,9 @@ class SpheresRepresentation (Representation):
         self.centers_list.append(self.centers)
         self.colors  = np.array(colors, dtype=np.float32)
         self.indices = indices
+        
+        self.triangles = int(len(self.indices))
+
         
         if len(self.visObj.frames) > 1:
             
