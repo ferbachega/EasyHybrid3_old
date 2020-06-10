@@ -75,28 +75,24 @@ class ShowHideVisMol:
         """ Class initialiser """
         pass
 #'''
-    def _selected_atoms_change_attributes(self, _type = 'lines', atoms = [], show = True ):
-        """ Function doc """
-        for atom in self.selections[self.current_selection].selected_atoms:
-            #print (atom.name)
-            
+    def change_attributes_for_selected_atoms(self, _type = 'lines', atoms = [], show = True ):
+        for atom in atoms:
+
             #               B O N D S
             if _type in ['lines','sticks','ribbons']:
-                for bond in atom.bonds:
-                    
-                    if _type == 'lines':
-                        if show:
-                            bond.line_active  = True
-                        else:
-                            bond.line_active  = False
+                if _type == 'lines':
+                    if show:
+                        atom.lines = True        
+                    else:         
+                        atom.lines = False 
 
-                    if _type == 'sticks':
-                        if show:
-                            bond.stick_active = True        
-                        else:
-                            bond.stick_active = False        
+                if _type == 'sticks':
+                    if show:
+                        atom.sticks = True        
+                    else:         
+                        atom.sticks = False 
 
-            
+           
             #               A T O M S 
             else:
                 if _type == 'nonbonded':
@@ -112,38 +108,46 @@ class ShowHideVisMol:
                         atom.dots = False
 
                 if _type == 'spheres':
+                    #print (atom.name, atom.index, atom.Vobject.name)
                     if show:
                         atom.spheres = True
                     else:
                         atom.spheres = False
+
+
+
+
+
+
+
+
+
 
     def show_or_hide (self, _type = 'lines', sel_objects = [] , atoms = [], show = True ):
         """ Function doc """
         #self._selected_atoms_change_attributes(_type = _type, 
         #                                       atoms = atoms, 
         #                                        show = show )
-        
+        self.change_attributes_for_selected_atoms (_type = _type , 
+                                                   atoms = self.selections[self.current_selection].selected_atoms,  
+                                                    show = show)
+        '''
         for atom in self.selections[self.current_selection].selected_atoms:
 
             #               B O N D S
             if _type in ['lines','sticks','ribbons']:
-                
-                
-                
-                for bond in atom.bonds:
-                    if bond.atom_i in self.selections[self.current_selection].selected_atoms and bond.atom_j in self.selections[self.current_selection].selected_atoms:
+                if _type == 'lines':
+                    if show:
+                        atom.lines = True        
+                    else:         
+                        atom.lines = False 
 
-                        if _type == 'lines':
-                            if show:
-                                bond.line_active  = True
-                            else:
-                                bond.line_active  = False
+                if _type == 'sticks':
+                    if show:
+                        atom.sticks = True        
+                    else:         
+                        atom.sticks = False 
 
-                        if _type == 'sticks':
-                            if show:
-                                bond.stick_active = True        
-                            else:
-                                bond.stick_active = False        
 
             
             #               A T O M S 
@@ -167,6 +171,34 @@ class ShowHideVisMol:
                     else:
                         atom.spheres = False
                 
+        '''
+        
+        
+        '''
+        if _type in ['lines','sticks','ribbons']:
+            for atom in self.selections[self.current_selection].selected_atoms:
+                for bond in atom.bonds:
+                    if bond.atom_i in self.selections[self.current_selection].selected_atoms and bond.atom_j in self.selections[self.current_selection].selected_atoms:
+
+                        if _type == 'lines':
+                            if show:
+                                bond.line_active  = True
+                            else:
+                                bond.line_active  = False
+
+                        if _type == 'sticks':
+                            if show:
+                                bond.stick_active = True        
+                            else:
+                                bond.stick_active = False        
+        '''
+        
+        
+        
+        
+        
+        
+        
         
         for vobject in self.selections[self.current_selection].selected_objects:
             print("Vobject.name:",vobject.name)
@@ -179,14 +211,15 @@ class ShowHideVisMol:
                 for bond in vobject.bonds:
                     
                     if _type == 'lines':
-                        if bond.line_active:
+                        
+                        if bond.atom_i.lines  and  bond.atom_j.lines:
                             indices_bonds.append(bond.atom_index_i)
                             indices_bonds.append(bond.atom_index_j)
                         else:
                             pass
                     
                     if _type == 'sticks':
-                        if bond.stick_active:
+                        if bond.atom_i.sticks  and  bond.atom_j.sticks:
                             indices_bonds.append(bond.atom_index_i)
                             indices_bonds.append(bond.atom_index_j)
                         else:

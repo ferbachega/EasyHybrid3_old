@@ -456,7 +456,7 @@ class VisMolGLCore():
             if visObj.selection_dots_vao is None:
                 shapes._make_gl_selection_dots(self.picking_dots_program, vismol_object = visObj)
             indices = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]
-            GL.glPointSize(800/(abs(self.dist_cam_zrp))/2)
+            GL.glPointSize(1*self.height/(abs(self.dist_cam_zrp))/2)
             #print ('line 522')
             #GL.glPointSize(15)
             GL.glUseProgram(self.picking_dots_program)
