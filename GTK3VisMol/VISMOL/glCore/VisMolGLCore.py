@@ -87,7 +87,7 @@ class VisMolGLCore():
         self.mouse_x = 0.0
         self.mouse_y = 0.0
         self.selection_box = sb.SelectionBox()
-        self.bckgrnd_color = [0.0,0.0,0.0,1.0]#[0.5,0.5,0.5,1.0] #[0.0,0.0,0.0,1.0] #[1.0,1.0,1.0,1.0] or [0.0,0.0,0.0,1.0]
+        self.bckgrnd_color = [0.0,0.0,0.0,1.0]#[78/255, 78/255, 78/255, 1.0]#[0.0,0.0,0.0,1.0]#[0.5,0.5,0.5,1.0] #[0.0,0.0,0.0,1.0] #[1.0,1.0,1.0,1.0] or [0.0,0.0,0.0,1.0]
         self.light_position = np.array([-2.5,2.5,3.0],dtype=np.float32)
         self.light_color = np.array([1.0,1.0,1.0,1.0],dtype=np.float32)
         self.light_ambient_coef = 0.4
@@ -442,6 +442,7 @@ class VisMolGLCore():
                     else:
                         # only shows the representation if representations[rep_name].active = True
                         if visObj.representations[rep_name].active:
+                            #print(rep_name,visObj.representations[rep_name].active)
                             visObj.representations[rep_name].draw_representation()
                         else:
                             pass
@@ -455,7 +456,7 @@ class VisMolGLCore():
             if visObj.selection_dots_vao is None:
                 shapes._make_gl_selection_dots(self.picking_dots_program, vismol_object = visObj)
             indices = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]
-            GL.glPointSize(800/(abs(self.dist_cam_zrp))/2)
+            GL.glPointSize(1*self.height/(abs(self.dist_cam_zrp))/2)
             #print ('line 522')
             #GL.glPointSize(15)
             GL.glUseProgram(self.picking_dots_program)

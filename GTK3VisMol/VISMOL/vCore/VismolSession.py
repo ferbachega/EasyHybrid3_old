@@ -42,8 +42,29 @@ from VISMOL.vCore.VismolSelections  import VisMolViewingSelection as vSele
 
 import VISMOL.glCore.shapes as shapes
 
-#from VISMOL.gtkWidgets.main_treeview import GtkMainTreeView, FileChooser
 
+
+
+
+from VISMOL.vModel.Representations   import LinesRepresentation
+from VISMOL.vModel.Representations   import NonBondedRepresentation
+from VISMOL.vModel.Representations   import SticksRepresentation
+from VISMOL.vModel.Representations   import DotsRepresentation
+from VISMOL.vModel.Representations   import SpheresRepresentation
+from VISMOL.vModel.Representations   import GlumpyRepresentation
+
+
+
+
+
+
+
+
+
+
+
+#from VISMOL.gtkWidgets.main_treeview import GtkMainTreeView, FileChooser
+import numpy as np
 
 import os
 
@@ -54,28 +75,24 @@ class ShowHideVisMol:
         """ Class initialiser """
         pass
 #'''
-    def _selected_atoms_change_attributes(self, _type = 'lines', atoms = [], show = True ):
-        """ Function doc """
-        for atom in self.selections[self.current_selection].selected_atoms:
-            #print (atom.name)
-            
+    def change_attributes_for_selected_atoms(self, _type = 'lines', atoms = [], show = True ):
+        for atom in atoms:
+
             #               B O N D S
             if _type in ['lines','sticks','ribbons']:
-                for bond in atom.bonds:
-                    
-                    if _type == 'lines':
-                        if show:
-                            bond.line_active  = True
-                        else:
-                            bond.line_active  = False
+                if _type == 'lines':
+                    if show:
+                        atom.lines = True        
+                    else:         
+                        atom.lines = False 
 
-                    if _type == 'sticks':
-                        if show:
-                            bond.stick_active = True        
-                        else:
-                            bond.stick_active = False        
+                if _type == 'sticks':
+                    if show:
+                        atom.sticks = True        
+                    else:         
+                        atom.sticks = False 
 
-            
+           
             #               A T O M S 
             else:
                 if _type == 'nonbonded':
@@ -91,32 +108,46 @@ class ShowHideVisMol:
                         atom.dots = False
 
                 if _type == 'spheres':
+                    #print (atom.name, atom.index, atom.Vobject.name)
                     if show:
                         atom.spheres = True
                     else:
                         atom.spheres = False
 
+
+
+
+
+
+
+
+
+
     def show_or_hide (self, _type = 'lines', sel_objects = [] , atoms = [], show = True ):
         """ Function doc """
-        
+        #self._selected_atoms_change_attributes(_type = _type, 
+        #                                       atoms = atoms, 
+        #                                        show = show )
+        self.change_attributes_for_selected_atoms (_type = _type , 
+                                                   atoms = self.selections[self.current_selection].selected_atoms,  
+                                                    show = show)
+        '''
         for atom in self.selections[self.current_selection].selected_atoms:
-            #print (atom.name)
-            
+
             #               B O N D S
             if _type in ['lines','sticks','ribbons']:
-                for bond in atom.bonds:
-                    
-                    if _type == 'lines':
-                        if show:
-                            bond.line_active  = True
-                        else:
-                            bond.line_active  = False
+                if _type == 'lines':
+                    if show:
+                        atom.lines = True        
+                    else:         
+                        atom.lines = False 
 
-                    if _type == 'sticks':
-                        if show:
-                            bond.stick_active = True        
-                        else:
-                            bond.stick_active = False        
+                if _type == 'sticks':
+                    if show:
+                        atom.sticks = True        
+                    else:         
+                        atom.sticks = False 
+
 
             
             #               A T O M S 
@@ -134,44 +165,161 @@ class ShowHideVisMol:
                         atom.dots = False
 
                 if _type == 'spheres':
+                    #print (atom.name, atom.index, atom.Vobject.name)
                     if show:
                         atom.spheres = True
                     else:
                         atom.spheres = False
                 
+        '''
         
-        # Build a list of the connections that are active -> this list will be sent to the openGL buffer
-        for vobject in sel_objects:
-            
-            
+        
+        '''
+        if _type in ['lines','sticks','ribbons']:
+            for atom in self.selections[self.current_selection].selected_atoms:
+                for bond in atom.bonds:
+                    if bond.atom_i in self.selections[self.current_selection].selected_atoms and bond.atom_j in self.selections[self.current_selection].selected_atoms:
+
+                        if _type == 'lines':
+                            if show:
+                                bond.line_active  = True
+                            else:
+                                bond.line_active  = False
+
+                        if _type == 'sticks':
+                            if show:
+                                bond.stick_active = True        
+                            else:
+                                bond.stick_active = False        
+        '''
+        
+        
+        
+        
+        
+        
+        
+        
+        for vobject in self.selections[self.current_selection].selected_objects:
+            print("Vobject.name:",vobject.name)
+
             if _type in ['lines','sticks','ribbons']:
+                #----------------------------------------------------------------   
+                
                 indices_bonds = []
+                
                 for bond in vobject.bonds:
-                    if bond.line_active:
-                        indices_bonds.append(bond.atom_index_i)
-                        indices_bonds.append(bond.atom_index_j)
-                    else:
-                        pass
-            
-                if indices_bonds == []:
-                    #print('indices_bonds == []')
-                    vobject.sticks_active  = False
+                    
+                    if _type == 'lines':
+                        
+                        if bond.atom_i.lines  and  bond.atom_j.lines:
+                            indices_bonds.append(bond.atom_index_i)
+                            indices_bonds.append(bond.atom_index_j)
+                        else:
+                            pass
+                    
+                    if _type == 'sticks':
+                        if bond.atom_i.sticks  and  bond.atom_j.sticks:
+                            indices_bonds.append(bond.atom_index_i)
+                            indices_bonds.append(bond.atom_index_j)
+                        else:
+                            pass
+                #----------------------------------------------------------------   
+                
+                if vobject.representations[_type] is None:
+                    print(vobject.representations[_type])
+                    #if indices_bonds == []:
+                    #    pass
+                    #
+                    #
+                    #else:
+                    print(indices_bonds)
+                    rep  = SticksRepresentation    (name    = _type, 
+                                                    active  = True, 
+                                                    _type   = 'mol', 
+                                                    visObj  = vobject, 
+                                                    glCore  = self.glwidget.vm_widget,
+                                                    indices = indices_bonds)
+                                                    
+                    vobject.representations[rep.name] = rep 
+                    print(vobject.representations[_type])
+                
                 else:
-                    #print('indices_bonds ==', indices_bonds)
-                    vobject.representations['sticks'].define_new_indices_to_VBO(indices_bonds)
-            
-            
+                
+                    #vobject.representations[_type].indices = indices_bonds
+                    #vobject.representations[_type].active = False
+                    #vobject.representations[_type].active = False
+                    #print(vobject.representations[_type].active)
+                    #vobject.representations[_type].define_new_indices_to_VBO ( indices_bonds)
+                    '''
+                    rep  = NonBondedRepresentation (name = 'nonbonded', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+                    self.vismol_objects[-1].representations[rep.name] = rep                    
+                    '''   
+                    if indices_bonds == []:
+                        vobject.representations[_type].active = False
+                        pass
+                    
+                    else:
+                        indices_bonds = np.array(indices_bonds, dtype=np.uint32)
+                        print (indices_bonds)
+                        vobject.representations[_type].define_new_indices_to_VBO ( indices_bonds)
+                        vobject.representations[_type].active = True
+                        #vobject.representations[_type].define_new_indices_to_VBO ( indices_bonds)
+                        #vobject.representations[_type].active = True
+                
+                self.glwidget.queue_draw()
+
+
             #           nonbond  spheres  dots
             else:   
+                
                 indices = []
-                for atom in vobject.atoms:
-                    if atom.spheres:
-                        index = vobject.atoms.index(atom)
-                        #indices.append(atom.index-1)
-                        indices.append(index)
-                    else:                   
-                        pass
-        
+                if _type == 'nonbonded':
+                    pass
+                
+                if  _type == 'spheres':
+                    
+                    atoms2spheres = []
+                    for atom in vobject.atoms:
+                        if atom.spheres:
+                            atoms2spheres.append(atom)
+                            index = vobject.atoms.index(atom)
+                            #indices.append(atom.index-1)
+                            indices.append(index)
+                        else:                   
+                            pass
+
+
+
+                    if vobject.representations['spheres'] is None:
+                        print(vobject.representations[_type])
+ 
+                        rep  = SpheresRepresentation    (name    = _type, 
+                                                         active  = True, 
+                                                         _type   = 'mol', 
+                                                         visObj  = vobject, 
+                                                         glCore  = self.glwidget.vm_widget,
+                                                         atoms   = atoms2spheres
+                                                         )
+                        
+                        print ('len', len(atoms2spheres))
+                        rep._create_sphere_data()                                
+                        vobject.representations[rep.name] = rep 
+                        
+                        print(vobject.representations[_type])
+                    else:
+                        if atoms2spheres == []:
+                            vobject.representations[_type].active = False
+                            self.glwidget.queue_draw()
+                            pass
+
+                        else:
+                            vobject.representations[_type].atoms = atoms2spheres
+                            vobject.representations[_type]._create_sphere_data() 
+                            vobject.representations[_type]._update_sphere_data_to_VBOs ()                               
+                            vobject.representations[_type].active = True
+                            self.glwidget.queue_draw()
+                    self.glwidget.queue_draw()
 
 
 
@@ -325,14 +473,22 @@ class VisMolSession (ShowHideVisMol):
         if infile[-3:] == 'xyz':
             self._load_xyz_file(infile = infile)
 
-
-        self.vismol_objects[-1].active = True
-        self.vismol_objects[-1].generate_default_representations (reps_list = self.default_rep)
-        #print (self.vismol_objects[-1].representations)
-        #for default_rep in self.default_rep:
-		#	if 
         
-        self.glwidget.queue_draw()
+        self.vismol_objects[-1].active = True
+        #self.vismol_objects[-1].generate_default_representations (reps_list = self.default_rep)
+        #print (self.vismol_objects[-1].representations)
+
+        rep  = LinesRepresentation (name = 'lines', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        self.vismol_objects[-1].representations[rep.name] = rep
+
+        rep  = NonBondedRepresentation (name = 'nonbonded', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        self.vismol_objects[-1].representations[rep.name] = rep
+        
+        #rep  = SticksRepresentation (name = 'sticks', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        #self.vismol_objects[-1].representations[rep.name] = rep
+        rep  = GlumpyRepresentation (name = 'glumpy', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        self.vismol_objects[-1].representations[rep.name] = rep
+        #self.glwidget.queue_draw()
        
         #if self.backend == 'gtk3':
         #    self.refresh_gtk(widget)
@@ -368,13 +524,15 @@ class VisMolSession (ShowHideVisMol):
         vismol_object.set_model_matrix(self.glwidget.vm_widget.model_mat)        
         self.vismol_objects.append(vismol_object)
     
+    '''
     def delete_by_index(self, index = None):
         """ Function doc """
         self.viewing_selections = []
         self.picking_selections = [None]*4        
         self.vismol_objects.pop(index)
         #self.glwidget.updateGL()
-        
+    ''' 
+    
     def select (self, obj =  None, indices = []):
         """ Function doc """
 
