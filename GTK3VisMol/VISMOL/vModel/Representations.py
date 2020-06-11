@@ -1128,7 +1128,11 @@ class GlumpyRepresentation (Representation):
         self._check_VAO_and_VBOs()
         self._enable_anti_alis_to_lines()
         GL.glUseProgram(self.shader_program)
-        GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
+        #GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
+        height = self.visObj.vismol_session.glwidget.vm_widget.height
+        dist_cam_zrp = self.visObj.vismol_session.glwidget.vm_widget.dist_cam_zrp
+        GL.glPointSize(1*height/(abs(dist_cam_zrp)))
+        #GL.glPointSize(55)
         self.glCore.load_matrices(self.shader_program, self.visObj.model_mat)
         self.glCore.load_fog(self.shader_program)
         GL.glBindVertexArray(self.vao)

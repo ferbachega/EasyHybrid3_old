@@ -9,7 +9,7 @@ uniform mat4 proj_mat;
 in vec3 vert_coord;        // attribute vec3 position;
 in vec3 vert_color;        // attribute vec3 color;
 //in float vert_dot_size;   // attribute float radius;
-const float vert_dot_size = 0.5;  // attribute float radius;
+const float vert_dot_size = 0.1;  // attribute float radius;
 
 out vec3 frag_color;       // varying vec3 v_color;
 out float f_radius;        // varying float v_radius;
