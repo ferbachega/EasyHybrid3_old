@@ -38,7 +38,7 @@ import VISMOL.glCore.selection_box as sb
 import VISMOL.glCore.sphere_representation as sph_r
 
 import VISMOL.glCore.shaders.sticks             as sticksShaders
-import VISMOL.glCore.shaders.lines              as linesShaders
+import VISMOL.glCore.shaders.new_lines              as linesShaders
 import VISMOL.glCore.shaders.spheres            as spheresShaders
 import VISMOL.glCore.shaders.dots               as dotsShaders
 import VISMOL.glCore.shaders.freetype           as freetypeShaders
@@ -530,17 +530,17 @@ class VisMolGLCore():
                                                           dotsShaders.sel_geometry_shader_dots_surface)
         #-------------------------------------------------------------------------------------
         # L I N E S 
-        self.lines_program = self.load_shaders(linesShaders.vertex_shader_lines, 
-                                               linesShaders.fragment_shader_lines, 
-                                               linesShaders.geometry_shader_lines)
+        self.lines_program = self.load_shaders(linesShaders.vertex_shader_nlines, 
+                                               linesShaders.fragment_shader_nlines, 
+                                               linesShaders.geometry_shader_nlines)
         
-        self.sel_lines_program = self.load_shaders(linesShaders.sel_vertex_shader_lines, 
-                                                   linesShaders.sel_fragment_shader_lines, 
-                                                   linesShaders.sel_geometry_shader_lines)        
+        self.sel_lines_program = self.load_shaders(linesShaders.sel_vertex_shader_nlines, 
+                                                   linesShaders.sel_fragment_shader_nlines, 
+                                                   linesShaders.sel_geometry_shader_nlines)        
 
-        self.new_selection_lines_program = self.load_shaders( linesShaders.sel_vertex_shader_lines, 
-                                                              linesShaders.sel_fragment_shader_lines,
-                                                              linesShaders.sel_geometry_shader_lines 
+        self.new_selection_lines_program = self.load_shaders( linesShaders.sel_vertex_shader_nlines, 
+                                                              linesShaders.sel_fragment_shader_nlines,
+                                                              linesShaders.sel_geometry_shader_nlines 
                                                               )             
 
         # N O N  B O N D E D

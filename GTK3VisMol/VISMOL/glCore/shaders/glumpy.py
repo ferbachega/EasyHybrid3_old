@@ -23,7 +23,7 @@ void main (void)
     frag_color = vert_color;
     f_radius = vert_dot_size;
     frag_coord = view_mat * model_mat * vec4(vert_coord, 1.0);
-    v_light_direction = normalize(vec3(0,0,2));
+    v_light_direction = normalize(vec3(-2.5,-2.5,3.0));
     gl_Position = proj_mat * frag_coord;
     vec4 p = proj_mat * vec4(vert_dot_size, vert_dot_size, frag_coord.z, frag_coord.w);
     f_size = 512.0 * p.x / p.w;
@@ -36,6 +36,10 @@ fragment_shader_glumpy = """
 uniform mat4 model_mat;
 uniform mat4 view_mat;
 uniform mat4 proj_mat;
+
+uniform vec4 fog_color;
+uniform float fog_start;
+uniform float fog_end;
 
 vec4 outline(float distance, float linewidth, float antialias, vec4 fg_color, vec4 bg_color){
     vec4 frag_color;
@@ -85,7 +89,16 @@ void main()
     vec3 normal = vec3(x,y,z);
     float diffuse = clamp(dot(normal, v_light_direction), 0.0, 1.0);
     vec4 color = vec4((0.5 + 0.5*diffuse)*frag_color, 1.0);
-    gl_FragColor = outline(distance, 1.0, 1.0, vec4(0,0,0,1), color);
+    //gl_FragColor = outline(distance, 1.0, 1.0, vec4(0,0,0,1), color);
+    vec4 temp_color = outline(distance, 1.0, 1.0, vec4(0,0,0,1), color);
     // gl_FragColor = color;
+    float dist = abs(frag_coord.z);
+    if(dist>=fog_start){
+        float fog_factor = (fog_end-dist)/(fog_end-fog_start);
+        gl_FragColor = mix(fog_color, temp_color, fog_factor);
+    }
+    else{
+       gl_FragColor = temp_color;
+    }
 }
 """
