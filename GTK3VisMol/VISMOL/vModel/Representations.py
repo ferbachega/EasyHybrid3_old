@@ -240,7 +240,8 @@ class LinesRepresentation (Representation):
         self._check_VAO_and_VBOs ()
         self._enable_anti_alis_to_lines()
         GL.glUseProgram(self.shader_program)
-        GL.glLineWidth(40/abs(self.glCore.dist_cam_zrp))
+        LineWidth = (40/abs(self.glCore.dist_cam_zrp)/2)**0.5  #40/abs(self.glCore.dist_cam_zrp)
+        GL.glLineWidth(LineWidth)
 
 
         self.glCore.load_matrices(self.shader_program, self.visObj.model_mat)
@@ -275,10 +276,10 @@ class LinesRepresentation (Representation):
         #    self._make_gl_vao_and_vbos ()
         #else:
         #    pass
-        
+        line_width = self.visObj.vismol_session.vConfig.gl_parameters['line_width_selection'] 
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glUseProgram(self.sel_shader_program)
-        GL.glLineWidth(20)
+        GL.glLineWidth(line_width)
 
         self.glCore.load_matrices(self.sel_shader_program, self.visObj.model_mat)
         GL.glBindVertexArray(self.sel_vao)
@@ -601,14 +602,15 @@ class DotsRepresentation (Representation):
 
     def _make_gl_vao_and_vbos (self, indices = None):
         """ Function doc """
-        if indices is not None:
-            pass
-        else:
-            dot_qtty  = int(len(coords)/3)
-            indices = []
-            for i in range(dot_qtty):
-                indices.append(i)
-            indices = np.array(indices,dtype=np.uint32)        
+        #if indices is not None:
+        #    pass
+        #else:
+        
+        dot_qtty  = int(len(self.visObj.frames[0])/3)
+        indices = []
+        for i in range(dot_qtty):
+            indices.append(i)
+        indices = np.array(indices,dtype=np.uint32)        
         
         self.shader_program     = self.glCore.shader_programs[self.name]
         self.sel_shader_program = self.glCore.shader_programs[self.name+'_sel']
@@ -637,11 +639,12 @@ class DotsRepresentation (Representation):
         self._check_VAO_and_VBOs ()
         self._enable_anti_alis_to_lines()
         #print ('DotsRepresentation')
+        height = self.visObj.vismol_session.glwidget.vm_widget.height
 
         GL.glUseProgram(self.shader_program)
-        
+        #1*self.height dot_size
         #GL.glLineWidth(40/abs(self.glCore.dist_cam_zrp))
-        GL.glPointSize(200/abs(self.glCore.dist_cam_zrp))
+        GL.glPointSize(0.1*height/abs(self.glCore.dist_cam_zrp)) # dot size not included yet
         self.glCore.load_matrices(self.shader_program, self.visObj.model_mat)
         self.glCore.load_fog(self.shader_program)
         GL.glBindVertexArray(self.vao)
@@ -703,7 +706,7 @@ class SpheresRepresentation (Representation):
                       glCore = None,  
                        atoms = None,
                        level = 'level_1', 
-                       scale = 1.0):
+                       scale = 0.6):
         
         """ Class initialiser """
         self.name               = name
@@ -1131,6 +1134,7 @@ class GlumpyRepresentation (Representation):
         #GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
         height = self.visObj.vismol_session.glwidget.vm_widget.height
         dist_cam_zrp = self.visObj.vismol_session.glwidget.vm_widget.dist_cam_zrp
+        
         GL.glPointSize(1*height/(abs(dist_cam_zrp)))
         #GL.glPointSize(55)
         self.glCore.load_matrices(self.shader_program, self.visObj.model_mat)

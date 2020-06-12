@@ -39,6 +39,7 @@ from VISMOL.vBabel import XYZFiles
 
 from VISMOL.vCore.VismolSelections  import VisMolPickingSelection as vPick
 from VISMOL.vCore.VismolSelections  import VisMolViewingSelection as vSele
+from VISMOL.vCore.vConfig           import VisMolConfig 
 
 import VISMOL.glCore.shapes as shapes
 
@@ -245,16 +246,7 @@ class ShowHideVisMol:
                     print(vobject.representations[_type])
                 
                 else:
-                
-                    #vobject.representations[_type].indices = indices_bonds
-                    #vobject.representations[_type].active = False
-                    #vobject.representations[_type].active = False
-                    #print(vobject.representations[_type].active)
-                    #vobject.representations[_type].define_new_indices_to_VBO ( indices_bonds)
-                    '''
-                    rep  = NonBondedRepresentation (name = 'nonbonded', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-                    self.vismol_objects[-1].representations[rep.name] = rep                    
-                    '''   
+
                     if indices_bonds == []:
                         vobject.representations[_type].active = False
                         pass
@@ -264,10 +256,7 @@ class ShowHideVisMol:
                         print (indices_bonds)
                         vobject.representations[_type].define_new_indices_to_VBO ( indices_bonds)
                         vobject.representations[_type].active = True
-                        #vobject.representations[_type].define_new_indices_to_VBO ( indices_bonds)
-                        #vobject.representations[_type].active = True
                 
-                self.glwidget.queue_draw()
 
 
             #           nonbond  spheres  dots
@@ -310,7 +299,7 @@ class ShowHideVisMol:
                     else:
                         if atoms2spheres == []:
                             vobject.representations[_type].active = False
-                            self.glwidget.queue_draw()
+                            #self.glwidget.queue_draw()
                             pass
 
                         else:
@@ -318,8 +307,9 @@ class ShowHideVisMol:
                             vobject.representations[_type]._create_sphere_data() 
                             vobject.representations[_type]._update_sphere_data_to_VBOs ()                               
                             vobject.representations[_type].active = True
-                            self.glwidget.queue_draw()
-                    self.glwidget.queue_draw()
+                            #self.glwidget.queue_draw()
+                    #self.glwidget.queue_draw()
+        self.glwidget.queue_draw()
 
 
 
@@ -345,6 +335,9 @@ class VisMolSession (ShowHideVisMol):
         #---------------------------------------------------------------------------
         # gl stuffs
         #---------------------------------------------------------------------------
+        
+        self.vConfig =  VisMolConfig(self)
+        '''
         self.gl_parameters      =     {
                                       
                                       'dot_size'                   : 5        ,
@@ -356,7 +349,7 @@ class VisMolSession (ShowHideVisMol):
                                       'bg_color'                   : [255,255,255,1],
                                       'center_on_coord_sleep_time' : 0.001    ,
 				      }
-        
+        '''
         
         self.backend = backend
         if glwidget:
@@ -486,8 +479,13 @@ class VisMolSession (ShowHideVisMol):
         
         #rep  = SticksRepresentation (name = 'sticks', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
         #self.vismol_objects[-1].representations[rep.name] = rep
-        rep  = GlumpyRepresentation (name = 'glumpy', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        
+        #rep  = GlumpyRepresentation (name = 'glumpy', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        #self.vismol_objects[-1].representations[rep.name] = rep
+        
+        rep  = DotsRepresentation (name = 'dots', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
         self.vismol_objects[-1].representations[rep.name] = rep
+        
         #self.glwidget.queue_draw()
        
         #if self.backend == 'gtk3':

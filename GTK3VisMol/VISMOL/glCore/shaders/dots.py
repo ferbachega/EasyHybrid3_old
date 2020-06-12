@@ -629,7 +629,7 @@ void main(){
 #
 #
 #
-vertex_shader_dot_sphere  = """
+vertex_shader_dot_simple  = """
 # version 330
 
 uniform mat4 model_mat;
@@ -648,7 +648,7 @@ void main()
 }
 """
 
-fragment_shader_dot_sphere  = """
+fragment_shader_dot_simple  = """
 # version 330
 
 in vec3 v_color;
@@ -668,7 +668,23 @@ void main()
 
 
 
+shader_type ={
+			0: { 'vertex_shader'      : vertex_shader_dot_simple     ,
+			     'fragment_shader'    : fragment_shader_dot_simple   ,
+				 'sel_vertex_shader'  : vertex_shader_dot_simple     ,
+                 'sel_fragment_shader': fragment_shader_dot_simple
 
+			   },
+			
+			
+			1: {'vertex_shader'      : vertex_shader_dot_sphere_backup    ,
+			    'fragment_shader'    : fragment_shader_dot_sphere_backup  ,
+			    'sel_vertex_shader'  : vertex_shader_dot_simple           ,
+			    'sel_fragment_shader': fragment_shader_dot_simple
+				}
+
+
+}
 
 
 
