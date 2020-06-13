@@ -575,7 +575,7 @@ class VisMolGLCore():
     def _create_ribbon_shaders (self, _type = 0):
         # L I N E S 
         
-        line_type = self.vConfig.gl_parameters['line_type']
+        line_type = self.vConfig.gl_parameters['ribbon_type']
 
         self.shader_programs['ribbons']      = self.load_shaders(linesShaders.shader_type[line_type]['vertex_shader'  ], 
                                                                  linesShaders.shader_type[line_type]['fragment_shader'], 

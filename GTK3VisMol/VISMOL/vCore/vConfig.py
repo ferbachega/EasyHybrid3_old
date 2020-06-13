@@ -175,6 +175,14 @@ class VisMolConfig:
                                   'line_color'                 : 0                    ,  # 0 - atom types      1 - black (for white bg)     2 - white (for black bg)
                                                                                                                
                                                                                                                
+                                  'ribbon_width'               : 40                   ,  
+                                  'ribbon_width_selection'     : 40                   ,  
+                                  'ribbon_type'                : 0                    ,  # 0 - no detail       1 - Charlitos'style
+                                  'ribbon_color'               : 0                    ,  # 0 - atom types      1 - black (for white bg)     2 - white (for black bg)
+                                                                                                               
+                                                                                                               
+                                                                                                               
+                                                                                                               
                                   'sphere_type'                : 0                    ,  # 0 - real spheres    1 - impostors 
                                   'sphere_scale'               : 0.85                 ,  # Scale size for real spheres
                                   'sphere_quality'             : 1                    ,  # Quality for real spheres - 1 if default

@@ -454,7 +454,14 @@ class RibbonsRepresentation (Representation):
 
         self.visObj             = visObj
         self.glCore             = glCore
-
+        
+        
+        if self.visObj.c_alpha_bonds == []:
+            self.active  = False
+        else:
+            pass
+        
+        
         # representation 	
         self.vao            = None
         self.ind_vbo        = None
@@ -527,7 +534,9 @@ class RibbonsRepresentation (Representation):
         self._check_VAO_and_VBOs ()
         self._enable_anti_alis_to_lines()
         GL.glUseProgram(self.shader_program)
-        LineWidth = (1000/abs(self.glCore.dist_cam_zrp)/2)  #40/abs(self.glCore.dist_cam_zrp)
+        
+        ribbon_width = self.visObj.vismol_session.vConfig.gl_parameters['ribbon_width']
+        LineWidth = (ribbon_width*10000/abs(self.glCore.dist_cam_zrp)/2)  #40/abs(self.glCore.dist_cam_zrp)
         GL.glLineWidth(LineWidth)
 
 
@@ -739,7 +748,7 @@ class DotsRepresentation (Representation):
         self.glCore             = glCore
         
         
-        
+
         
         
         # representation 	
