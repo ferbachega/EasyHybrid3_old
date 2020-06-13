@@ -1434,7 +1434,7 @@ class SurfaceRepresentation (Representation):
             line2 = line.split()
             
             if len(line2) == 6:
-                print (line2)
+                #print (line2)
                 self.coords2.append(float(line2[0]))
                 self.coords2.append(float(line2[1]))
                 self.coords2.append(float(line2[2]))
@@ -1549,10 +1549,10 @@ class SurfaceRepresentation (Representation):
             different trajectory sizes to be manipulated at the same time within the 
             glArea'''
             #self._set_coordinates_to_buffer (coord_vbo = True, sel_coord_vbo = False)
-            #GL.glDrawElements(GL.GL_POINTS, int(len(self.indices2)), GL.GL_UNSIGNED_INT, None)
+            GL.glDrawElements(GL.GL_POINTS, int(len(self.indices2)), GL.GL_UNSIGNED_INT, None)
             #GL.glDrawElements(GL.GL_LINE_LOOP, int(len(self.coords2)), GL.GL_UNSIGNED_INT, None)
             #GL.glDrawElements(GL.GL_LINE_STRIP, int(len(self.indices2)), GL.GL_UNSIGNED_INT, None)
-            GL.glDrawElements(GL.GL_TRIANGLES, int(len(self.indices2)), GL.GL_UNSIGNED_INT, None)
+            #GL.glDrawElements(GL.GL_TRIANGLES, int(len(self.indices2)), GL.GL_UNSIGNED_INT, None)
 
         #GL.glBindVertexArray(0)
         #GL.glLineWidth(1)
