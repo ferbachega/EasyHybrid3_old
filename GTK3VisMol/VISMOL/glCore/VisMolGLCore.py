@@ -622,7 +622,6 @@ class VisMolGLCore():
                                                                 spheresShaders.fragment_shader_spheres)
 
 
-	
     def _create_impostor_shaders (self):
         """ Function doc """
         # G L U M P Y
@@ -631,6 +630,35 @@ class VisMolGLCore():
         self.shader_programs['glumpy_sel'] = self.load_shaders(glumpyShaders.vertex_shader_glumpy,
                                                     glumpyShaders.fragment_shader_glumpy)
 
+
+
+    def _surface_dot_shaders (self, _type = 0):
+        """ Function doc """
+        #self.shader_programs['dots']     = self.load_shaders(dotsShaders.vertex_shader_dot_sphere  ,
+        #                                                     dotsShaders.fragment_shader_dot_sphere
+        #                                                     )
+        #
+        #self.shader_programs['dots_sel'] = self.load_shaders(dotsShaders.vertex_shader_dot_sphere  ,
+        #                                                     dotsShaders.fragment_shader_dot_sphere
+        #                                                     )
+        #dot_type = self.vConfig.gl_parameters['dot_type']  vertex_shader_spheres 
+        '''
+        self.shader_programs['surface']     = self.load_shaders(dotsShaders.shader_type[0]['vertex_shader'  ],
+                                                                dotsShaders.shader_type[0]['fragment_shader']
+                                                                )
+        
+        self.shader_programs['surface_sel'] = self.load_shaders(dotsShaders.shader_type[0]['sel_vertex_shader'  ],
+                                                                dotsShaders.shader_type[0]['sel_fragment_shader']
+                                                                )
+        '''
+
+        self.shader_programs['surface']     = self.load_shaders(spheresShaders.vertex_shader_spheres, 
+                                                                spheresShaders.fragment_shader_spheres)
+                                              
+                                              
+        self.shader_programs['surface_sel'] = self.load_shaders(spheresShaders.vertex_shader_spheres,  
+                                                                spheresShaders.fragment_shader_spheres)
+                                              
 
 
 
@@ -663,7 +691,12 @@ class VisMolGLCore():
         self._create_impostor_shaders()
         #-------------------------------------------------------------------------------------
 
+        #-------------------------------------------------------------------------------------
+        self._surface_dot_shaders ()
+        #-------------------------------------------------------------------------------------
 
+        
+        
         ## P I C K 
         self.picked_program = self.load_shaders(pickedShaders.vertex_shader_picked, 
                                                 pickedShaders.fragment_shader_picked)

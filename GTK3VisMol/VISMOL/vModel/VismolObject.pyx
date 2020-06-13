@@ -498,7 +498,7 @@ class VismolObject:
         c_alpha_atoms = []
         for chain in self.chains:
             for residue in self.chains[chain].residues:
-                print ('chain', chain ,'name', residue.resn, 'index',residue.resi)
+                #print ('chain', chain ,'name', residue.resn, 'index',residue.resi)
                 for atom in residue.atoms:
                     if atom.name == 'CA':
                         #print ('index',atom.index,'name', atom.name,'chain', atom.chain)
@@ -515,13 +515,13 @@ class VismolObject:
             atom   = c_alpha_atoms[n]
             resi   = atom.resi
             index  = self.atoms.index(atom)
-            print (index_before, 
-                   resi_before , 
-                   'chain', atom_before.chain ,
-                   'and',
-                   index , 
-                   resi, 
-                   'chain', atom.chain )
+            #print (index_before, 
+            #       resi_before , 
+            #       'chain', atom_before.chain ,
+            #       'and',
+            #       index , 
+            #       resi, 
+            #       'chain', atom.chain )
             
             if resi == resi_before + 1:
                 #print ('bond: ',index_before, resi_before ,'and',index , resi )
