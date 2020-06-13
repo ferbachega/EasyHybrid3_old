@@ -53,7 +53,7 @@ from VISMOL.vModel.Representations   import SticksRepresentation
 from VISMOL.vModel.Representations   import DotsRepresentation
 from VISMOL.vModel.Representations   import SpheresRepresentation
 from VISMOL.vModel.Representations   import GlumpyRepresentation
-
+from VISMOL.vModel.Representations   import RibbonsRepresentation
 
 
 
@@ -202,7 +202,7 @@ class ShowHideVisMol:
         
         
         for vobject in self.selections[self.current_selection].selected_objects:
-            print("Vobject.name:",vobject.name)
+            #print("Vobject.name:",vobject.name)
 
             if _type in ['lines','sticks','ribbons']:
                 #----------------------------------------------------------------   
@@ -228,13 +228,13 @@ class ShowHideVisMol:
                 #----------------------------------------------------------------   
                 
                 if vobject.representations[_type] is None:
-                    print(vobject.representations[_type])
+                    #print(vobject.representations[_type])
                     #if indices_bonds == []:
                     #    pass
                     #
                     #
                     #else:
-                    print(indices_bonds)
+                    #print(indices_bonds)
                     rep  = SticksRepresentation    (name    = _type, 
                                                     active  = True, 
                                                     _type   = 'mol', 
@@ -243,7 +243,7 @@ class ShowHideVisMol:
                                                     indices = indices_bonds)
                                                     
                     vobject.representations[rep.name] = rep 
-                    print(vobject.representations[_type])
+                    #print(vobject.representations[_type])
                 
                 else:
 
@@ -253,7 +253,7 @@ class ShowHideVisMol:
                     
                     else:
                         indices_bonds = np.array(indices_bonds, dtype=np.uint32)
-                        print (indices_bonds)
+                        #print (indices_bonds)
                         vobject.representations[_type].define_new_indices_to_VBO ( indices_bonds)
                         vobject.representations[_type].active = True
                 
@@ -263,6 +263,64 @@ class ShowHideVisMol:
             else:   
                 
                 indices = []
+                if _type == 'dots':
+                    indices = []
+                    
+                    for atom in vobject.atoms:
+                        
+                        if atom.dots:
+                            index = vobject.atoms.index(atom)
+                            indices.append(index)
+                        else:
+                            pass
+
+                    if vobject.representations[_type] is None:
+                        #print(vobject.representations[_type])
+                        rep  = DotsRepresentation    (name    = _type, 
+                                                      active  = True, 
+                                                      _type   = 'mol', 
+                                                      visObj  = vobject, 
+                                                      glCore  = self.glwidget.vm_widget,
+                                                      indices = indices)
+                                                        
+                        vobject.representations[rep.name] = rep 
+                    
+                    else:
+
+                        if indices  == []:
+                            vobject.representations[_type].active = False
+                            pass
+                        
+                        else:
+                            indices = np.array(indices, dtype=np.uint32)
+                            #print (indices)
+                            vobject.representations[_type].define_new_indices_to_VBO ( indices)
+                            vobject.representations[_type].active = True
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    
+                
+                
+                
+                
+                
                 if _type == 'nonbonded':
                     pass
                 
@@ -281,7 +339,7 @@ class ShowHideVisMol:
 
 
                     if vobject.representations['spheres'] is None:
-                        print(vobject.representations[_type])
+                        #print(vobject.representations[_type])
  
                         rep  = SpheresRepresentation    (name    = _type, 
                                                          active  = True, 
@@ -291,11 +349,11 @@ class ShowHideVisMol:
                                                          atoms   = atoms2spheres
                                                          )
                         
-                        print ('len', len(atoms2spheres))
+                        #print ('len', len(atoms2spheres))
                         rep._create_sphere_data()                                
                         vobject.representations[rep.name] = rep 
                         
-                        print(vobject.representations[_type])
+                        #print(vobject.representations[_type])
                     else:
                         if atoms2spheres == []:
                             vobject.representations[_type].active = False
@@ -466,7 +524,8 @@ class VisMolSession (ShowHideVisMol):
         if infile[-3:] == 'xyz':
             self._load_xyz_file(infile = infile)
 
-        
+        #for atom in self.vismol_objects[-1].atoms2:
+        #    print (atom)
         self.vismol_objects[-1].active = True
         #self.vismol_objects[-1].generate_default_representations (reps_list = self.default_rep)
         #print (self.vismol_objects[-1].representations)
@@ -483,9 +542,12 @@ class VisMolSession (ShowHideVisMol):
         #rep  = GlumpyRepresentation (name = 'glumpy', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
         #self.vismol_objects[-1].representations[rep.name] = rep
         
-        rep  = DotsRepresentation (name = 'dots', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        self.vismol_objects[-1].representations[rep.name] = rep
+        #rep  = DotsRepresentation (name = 'dots', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        #self.vismol_objects[-1].representations[rep.name] = rep
         
+        rep =  RibbonsRepresentation(name = 'ribbons', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        self.vismol_objects[-1].representations[rep.name] = rep
+
         #self.glwidget.queue_draw()
        
         #if self.backend == 'gtk3':

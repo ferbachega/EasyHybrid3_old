@@ -25,7 +25,7 @@ import os
 import time
 import multiprocessing
 import numpy as np
-import VISMOL.vModel.atom_types as at 
+#import VISMOL.vModel.atom_types as at 
 import VISMOL.vModel.cDistances as cdist
 from   VISMOL.vModel import VismolObject
 
@@ -112,6 +112,7 @@ USER_CHARGES
 def load_xyz_file (infile = None, VMSession =  None, gridsize = 3):
     """ Function doc """
     print ('\nstarting: parse_mol2')
+    at  =  VMSession.vConfig.atom_types
 
     #initial = time.time()
 
@@ -133,7 +134,7 @@ def load_xyz_file (infile = None, VMSession =  None, gridsize = 3):
         frame0           = xyz_lines[2: model_size]
         
         
-        atoms, frames    = get_atom_list_from_xyz_frame (raw_atoms= frame0, frame = True, gridsize = 3)
+        atoms, frames    = get_atom_list_from_xyz_frame (raw_atoms= frame0, frame = True, gridsize = 3, at = at)
         
         models     = []
         
@@ -194,7 +195,7 @@ def load_xyz_file (infile = None, VMSession =  None, gridsize = 3):
 
 
 
-def get_atom_list_from_xyz_frame (raw_atoms, frame = True, gridsize = 3):
+def get_atom_list_from_xyz_frame (raw_atoms, frame = True, gridsize = 3, at = None):
     """ Function doc """
     #nCPUs =  multiprocessing.cpu_count()
     #pool  = multiprocessing.Pool(nCPUs)

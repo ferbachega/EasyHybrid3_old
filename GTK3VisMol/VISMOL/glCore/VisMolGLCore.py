@@ -494,7 +494,7 @@ class VisMolGLCore():
             if visObj.selection_dots_vao is None:
                 shapes._make_gl_selection_dots(self.picking_dots_program, vismol_object = visObj)
             indices = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]
-            GL.glPointSize(1*self.height/(abs(self.dist_cam_zrp))/2)
+            GL.glPointSize(0.5*self.height/(abs(self.dist_cam_zrp))/2)
             #print ('line 522')
             #GL.glPointSize(15)
             GL.glUseProgram(self.picking_dots_program)
@@ -572,6 +572,22 @@ class VisMolGLCore():
                                                                 linesShaders.shader_type[line_type]['sel_geometry_shader'])
                                                                       
 
+    def _create_ribbon_shaders (self, _type = 0):
+        # L I N E S 
+        
+        line_type = self.vConfig.gl_parameters['line_type']
+
+        self.shader_programs['ribbons']      = self.load_shaders(linesShaders.shader_type[line_type]['vertex_shader'  ], 
+                                                                 linesShaders.shader_type[line_type]['fragment_shader'], 
+                                                                 linesShaders.shader_type[line_type]['geometry_shader'])
+        
+      
+
+        self.shader_programs['ribbons_sel']  = self.load_shaders( linesShaders.shader_type[line_type]['sel_vertex_shader'  ],
+                                                                  linesShaders.shader_type[line_type]['sel_fragment_shader'],
+                                                                  linesShaders.shader_type[line_type]['sel_geometry_shader'])
+                                                                      
+
 
 
     def _create_nonbonded_shaders (self, _type = 0):
@@ -638,6 +654,7 @@ class VisMolGLCore():
         #-------------------------------------------------------------------------------------
         self._create_line_shaders()
         self._create_nonbonded_shaders()
+        self._create_ribbon_shaders ()
         #-------------------------------------------------------------------------------------
 
         #-------------------------------------------------------------------------------------
@@ -944,7 +961,7 @@ class VisMolGLCore():
     def _draw_picking_dots(self, visObj = None,  indices = False):  # not used !!!
         """ Function doc
         """
-        print (100/abs(self.dist_cam_zrp))
+        #print (100/abs(self.dist_cam_zrp))
         GL.glPointSize(100/abs(self.dist_cam_zrp))
         if visObj.picking_dots_vao is not None:
             GL.glBindVertexArray(visObj.picking_dots_vao)

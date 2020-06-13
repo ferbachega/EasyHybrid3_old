@@ -134,7 +134,7 @@ fragment_shader_picking_dots = """
 in vec3 index_color;
 
 void main(){
-    gl_FragColor = vec4(index_color,1);
+    gl_FragColor = vec4(index_color,0.5);
 }
 
 """

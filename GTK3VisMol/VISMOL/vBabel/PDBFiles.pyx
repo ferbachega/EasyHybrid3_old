@@ -2,7 +2,7 @@ import os
 import time
 import multiprocessing
 import numpy as np
-import VISMOL.vModel.atom_types as at 
+#import VISMOL.vModel.atom_types as at 
 import VISMOL.vModel.cDistances as cdist
 from   VISMOL.vModel import VismolObject
 from pprint import pprint
@@ -25,11 +25,12 @@ cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None):
     #-------------------------------------------------------------------------------------------
     #                                P D B     P A R S E R 
     #-------------------------------------------------------------------------------------------
+    at  =  VMSession.vConfig.atom_types
     with open(infile, 'r') as pdb_file:
         pdbtext = pdb_file.read()
 
         rawframes = pdbtext.split('ENDMDL')
-        atoms     = get_list_of_atoms_from_rawframe(rawframes[0], gridsize)
+        atoms     = get_list_of_atoms_from_rawframe(rawframes[0], gridsize, at =  at)
         frames    = get_list_of_frames_from_pdb_rawframes (rawframes = rawframes)
     #-------------------------------------------------------------------------------------------
     
@@ -68,7 +69,7 @@ cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None):
     
     
     
-cpdef get_list_of_atoms_from_rawframe(rawframe, gridsize = 3):
+cpdef get_list_of_atoms_from_rawframe(rawframe, gridsize = 3, at =  None):
     """ Function doc 
 
 ATOM      1  N   THR A   1      -1.820  24.919  -5.344  1.00  0.00           N  

@@ -1,4 +1,4 @@
-import VISMOL.vModel.atom_types as at 
+#import VISMOL.vModel.atom_types as at 
 
 #GTK3EasyMol/VISMOL/Model/atom_types.py
 class Atom:
@@ -32,6 +32,7 @@ class Atom:
         self.chain   = chain   #
         self.Vobject = Vobject
         self.residue = residue    
+        at = Vobject.vismol_session.vConfig.atom_types
 
         self.atom_id = atom_id        # An unique number
         self.color   = at.get_color    (name)

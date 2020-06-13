@@ -418,47 +418,47 @@ class GtkGLAreaWidget(Gtk.GLArea):
             visObj = self.vismolSession.vismol_objects[-1]
             self.vismolSession.glwidget.vm_widget.center_on_coordinates(visObj, visObj.mass_center)
 
-        if k_name == 'r':
-            #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
-            visObj = self.vismolSession.vismol_objects[0]
-            #visObj.ribbons_active =  True
-            if visObj.ribbons_active:
-                visObj.ribbons_active =  False
-            else:
-                visObj.ribbons_active =  True
+        #if k_name == 'r':
+        #    #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
+        #    visObj = self.vismolSession.vismol_objects[0]
+        #    #visObj.ribbons_active =  True
+        #    if visObj.ribbons_active:
+        #        visObj.ribbons_active =  False
+        #    else:
+        #        visObj.ribbons_active =  True
 
 
 
 
 
-        if k_name == 'f':
-            #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
-            visObj = self.vismolSession.vismol_objects[0]
-            
-            if visObj.spheres_ON_THE_FLY_active:
-                visObj.spheres_ON_THE_FLY_active =  False
-            else:
-                visObj.spheres_ON_THE_FLY_active =  True
-            #self.vismolSession.show (_type = 'lines', Vobjects =  [])
+        #if k_name == 'f':
+        #    #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
+        #    visObj = self.vismolSession.vismol_objects[0]
+        #    
+        #    if visObj.spheres_ON_THE_FLY_active:
+        #        visObj.spheres_ON_THE_FLY_active =  False
+        #    else:
+        #        visObj.spheres_ON_THE_FLY_active =  True
+        #    #self.vismolSession.show (_type = 'lines', Vobjects =  [])
 
 
 
 
-        if k_name == 't':
-            #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
-            for visObj in self.vismolSession.vismol_objects:
-                
-                if visObj.sticks_active:
-                    print (visObj.sticks_active)
-                    print("visObj.representations['sticks'].active =  True")
-                    visObj.representations['sticks'].active =  False
-                else:
-                    print (visObj.sticks_active)
-                    indices = np.array([0,1,0,2,1,2], dtype=np.uint32)
-                    visObj.representations['sticks'].indices = indices
-                    
-                    print("visObj.representations['sticks'].active =  False")
-                    visObj.representations['sticks'].active =  True
+        #if k_name == 't':
+        #    #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
+        #    for visObj in self.vismolSession.vismol_objects:
+        #        
+        #        if visObj.sticks_active:
+        #            print (visObj.sticks_active)
+        #            print("visObj.representations['sticks'].active =  True")
+        #            visObj.representations['sticks'].active =  False
+        #        else:
+        #            print (visObj.sticks_active)
+        #            indices = np.array([0,1,0,2,1,2], dtype=np.uint32)
+        #            visObj.representations['sticks'].indices = indices
+        #            
+        #            print("visObj.representations['sticks'].active =  False")
+        #            visObj.representations['sticks'].active =  True
 
         #if k_name == 'd':
         #    self.vismolSession.show(_type = 'dots', Vobjects =  [self.vismolSession.vismol_objects[-1]])
@@ -490,6 +490,13 @@ class GtkGLAreaWidget(Gtk.GLArea):
             self.vismolSession.show_or_hide( _type = 'lines', show = True)    
         if k_name == 'a':
             self.vismolSession.show_or_hide( _type = 'lines', show = False)
+
+
+        if k_name == 'r':
+            self.vismolSession.show_or_hide( _type = 'dots', show = True)    
+        if k_name == 'f':
+            self.vismolSession.show_or_hide( _type = 'dots', show = False)
+
 
        
         if k_name == 'z':

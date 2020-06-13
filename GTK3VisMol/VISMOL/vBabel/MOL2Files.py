@@ -25,7 +25,7 @@ import os
 import time
 import multiprocessing
 import numpy as np
-import VISMOL.vModel.atom_types as at 
+#import VISMOL.vModel.atom_types as at 
 import VISMOL.vModel.cDistances as cdist
 from   VISMOL.vModel import VismolObject
 
@@ -114,6 +114,7 @@ def load_mol2_files (infile = None, VMSession =  None, gridsize = 3):
     print ('\nstarting: parse_mol2')
 
     #initial = time.time()
+    at  =  VMSession.vConfig.atom_types
 
     with open(infile, 'r') as mol2_file:
         pdbtext = mol2_file.read()
@@ -130,7 +131,7 @@ def load_mol2_files (infile = None, VMSession =  None, gridsize = 3):
     bonds     = bonds.split('\n')
 
 
-    atoms, frames = get_atom_list_from_mol2_frame(raw_atoms = raw_atoms, frame = True,  gridsize = gridsize)
+    atoms, frames = get_atom_list_from_mol2_frame(raw_atoms = raw_atoms, frame = True,  gridsize = gridsize,  at = at)
     
     #-------------------------------------------------------------------------------------------
     #                                Bonded and NB lists 
@@ -169,7 +170,7 @@ def load_mol2_files (infile = None, VMSession =  None, gridsize = 3):
 
 
 
-def get_atom_list_from_mol2_frame (raw_atoms, frame = True, gridsize = 3):
+def get_atom_list_from_mol2_frame (raw_atoms, frame = True, gridsize = 3, at =  None):
     """ Function doc """
     #nCPUs =  multiprocessing.cpu_count()
     #pool  = multiprocessing.Pool(nCPUs)
