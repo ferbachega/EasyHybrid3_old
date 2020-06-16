@@ -656,12 +656,112 @@ out vec4 out_color;
 
 void main()
 {
+    float dist = length(gl_PointCoord.xy - vec2(0.5,0.5));
+    if (dist > 0.5)
+        discard;
     out_color = vec4(v_color, 1.0);
 }
 """
 
 
+vertex_shader_dot_simple2  = """
+# version 330
 
+uniform mat4 model_mat;
+uniform mat4 view_mat;
+uniform mat4 proj_mat;
+
+
+in vec3 vert_coord;
+in vec3 vert_color;
+out vec3 v_color;
+
+void main()
+{
+    gl_Position = proj_mat * view_mat * model_mat * vec4(vert_coord, 1.0);
+    v_color     = vert_color; 
+}
+"""
+
+fragment_shader_dot_simple2  = """
+# version 330
+
+in vec3 v_color;
+out vec4 out_color;
+
+void main()
+{
+    float dist = length(gl_PointCoord.xy - vec2(0.5,0.5));
+    if (dist > 0.5)
+        discard;
+
+	float ligth_dist = length(gl_PointCoord - vec2(0.3, 0.3));
+	out_color = mix(vec4(v_color, 1), vec4(0, 0, 0, 1), sqrt(ligth_dist)*.78);
+
+    //out_color = vec4(v_color, 1.0);
+}
+"""
+
+
+
+
+vertex_shader_dot_simple3  = """
+# version 330
+
+uniform mat4 model_mat;
+uniform mat4 view_mat;
+uniform mat4 proj_mat;
+
+
+in vec3 vert_coord;
+in vec3 vert_color;
+out vec3 v_color;
+out vec4 frag_pos;
+
+void main()
+{
+	frag_pos = view_mat * model_mat * vec4(vert_coord, 1.0);
+    gl_Position = proj_mat * view_mat * model_mat * vec4(vert_coord, 1.0);
+    v_color     = vert_color; 
+}
+"""
+
+fragment_shader_dot_simple3  = """
+# version 330
+uniform mat4 proj_mat;
+
+in vec3 v_color;
+in vec4 frag_pos;
+out vec4 out_color;
+
+void main()
+{
+
+    vec2 P = gl_PointCoord.xy - vec2(0.5,0.5);
+    float point_size = 5.0;
+    float distance = length(P);
+    vec2 texcoord = gl_PointCoord* 2.0 - vec2(1.0);
+    float x = texcoord.x;
+    float y = texcoord.y;
+    float d = 1.0 - x*x - y*y;
+    if (d <= 0.0)
+        discard;
+    float z = sqrt(d);
+    vec4 pos = frag_pos;
+    pos.z += z;
+    pos = proj_mat * pos;
+    gl_FragDepth = 0.5*(pos.z / pos.w)+0.5;
+
+    float dist = length(gl_PointCoord.xy - vec2(0.5,0.5));
+    if (dist > 0.5)
+        discard;
+
+	float ligth_dist = length(gl_PointCoord - vec2(0.3, 0.3));
+	out_color = mix(vec4(v_color, 1), vec4(0, 0, 0, 1), sqrt(ligth_dist)*.78);
+
+    //out_color = vec4(v_color, 1.0);
+}
+"""
 
 
 
@@ -677,12 +777,19 @@ shader_type ={
 			   },
 			
 			
-			1: {'vertex_shader'      : vertex_shader_dot_sphere_backup    ,
-			    'fragment_shader'    : fragment_shader_dot_sphere_backup  ,
+			1: {'vertex_shader'      : vertex_shader_dot_simple2   ,
+			    'fragment_shader'    : fragment_shader_dot_simple2 ,
+			    'sel_vertex_shader'  : vertex_shader_dot_simple           ,
+			    'sel_fragment_shader': fragment_shader_dot_simple
+				},
+
+
+
+			2: {'vertex_shader'      : vertex_shader_dot_simple3  ,
+			    'fragment_shader'    : fragment_shader_dot_simple3,
 			    'sel_vertex_shader'  : vertex_shader_dot_simple           ,
 			    'sel_fragment_shader': fragment_shader_dot_simple
 				}
-
 
 }
 

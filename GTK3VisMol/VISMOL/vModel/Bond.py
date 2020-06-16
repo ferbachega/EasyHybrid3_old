@@ -37,3 +37,18 @@ class Bond:
 		self.line_active  = True
 		self.stick_active = False
 		pass
+	
+	def distance (self, frame = 0):
+		""" Function doc """
+		
+		coords_i = self.atom_i.coords (frame)
+		coords_j = self.atom_j.coords (frame)
+		
+		dX2  = (coords_i[0] - coords_j[0])**2
+		dY2  = (coords_i[1] - coords_j[1])**2
+		dZ2  = (coords_i[2] - coords_j[2])**2
+		
+		distance = (dX2 + dY2 + dZ2)**0.5
+		return distance
+		
+		

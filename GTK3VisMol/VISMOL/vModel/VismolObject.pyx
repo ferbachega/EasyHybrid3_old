@@ -136,49 +136,44 @@ class VismolObject:
         self.mass_center = None
         #-----------------------------------------------------------------
 
-       
+		
+		#-------------------------#
+		#    R A W    L I S T     #
+		#-------------------------#
+		
         #-----------------------------------------------------------------
         self.atoms2             = atoms # this is a raw list : [0, 'C5', 0.77, array([ 0.295,  2.928, -0.407]), 1, 'GLC', ' ', 'C ', [1, 12, 8, 10], [0, 0, 0]]
-        
+        #-----------------------------------------------------------------
+
         self.atoms              = []    # this a list ao atom objects!
-        
         self.residues           = {}
         self.chains             = {}
-        #self.chains             = []
-        
-        self.bonds              = []                        
-        self.c_alpha_bonds      = []           
-        
         self.frames             = trajectory
         self.atom_unique_id_dic = {}
-        
+
+
+
         #-----------------------#
         #         Bonds         #
         #-----------------------#
         self.index_bonds        = []
-       
+        self.bonds              = []                        
+
+        #-----------------------#
+        #    Calpha  Ribbons    #
+        #-----------------------#
+        self.c_alpha_bonds      = []           
+        
         
         #-----------------------#
         #       Nonbonded       #
         #-----------------------#
         self.non_bonded_atoms   = []
         
-        #-----------------------#
-        #    Calpha  Ribbons    #
-        #-----------------------#
-        self.ribbons_Calpha_pairs_full  = []
-        self.ribbons_Calpha_pairs_rep   = []
-        self.ribbons_Calpha_indices_rep = []
-        #-----------------------------------------------------------------
-        
-        #-----------------------#
-        #      True Spheres     #
-        #-----------------------#
-        self.sphere_vertices_full  = []
-        self.sphere_triangles_full = []
-        self.sphere_rep = None
 
-        
+		#-----------------------------------------#
+		#      R E P R E S E N T A T I O N S      #
+        #-----------------------------------------#
         self.representations = {'nonbonded' : None,
                                 'lines'     : None,
                                 'dots'      : None,
@@ -189,45 +184,7 @@ class VismolObject:
                                 'glumpy'    : None,
                                 }
         
-        
-        self.sel_sphere_rep = None
-
         #-----------------------------------------------------------------
-        #                O p e n G L   a t t r i b u t e s
-        #-----------------------------------------------------------------                
-        
-        """   L I N E S   """
-        self.lines_active       = True
-        #self.lines_show_list     = False
-
-        """   D O T S   """
-        self.dots_active = False
-
-        """   R I B B O N S   """
-        self.ribbons_active = False
-        
-        """   N O N  B O N D E D   """
-        self.non_bonded_active = True
-        
-        """   S T I C K S   """
-        self.sticks_active = False
-        
-        """   S P H E R E S   """
-        self.spheres_active = False
-        #self.spheres_ON_THE_FLY_active = False
-        """   D O T S  S U R F A C E   """
-        self.dots_surface_active = False
-        
-        """   T E X T   """
-        self.text_active = False
-        
-        """   G L U M P Y   """
-        self.glumpy_active = False
-        
-
-        
-        
-        self.dot_indices             = None
         self.selection_dots_vao      = None
         self.selection_dot_buffers   = None
         
@@ -437,13 +394,31 @@ class VismolObject:
         (2) This method builds the "colors" np array that will 
         be sent to the GPU and which contains the RGB values 
         for each atom of the system.
-        
-        
+       
         """
+        
+        size       = len(self.atoms)
+        half       = int(size/2)
+        quarter    = int(size/4)
+        color_step = 1.0/(size/4)
+        red   = 0.0
+        green = 0.0
+        blue  = 1.0 
+        print (size,half, quarter, color_step )
+        
+        
+        
+        
         self.color_indices  = []
         self.colors         = []        
+        self.color_rainbow  = []
+
         self.vdw_dot_sizes  = []
         self.cov_dot_sizes  = []
+        
+        counter = 0
+        temp_counter = 0
+        
         for atom in self.atoms:
             #-------------------------------------------------------
             # (1)                  ID Colors
@@ -474,11 +449,48 @@ class VismolObject:
             #-------------------------------------------------------
             self.vdw_dot_sizes.append(atom.vdw_rad*3)
             self.cov_dot_sizes.append(atom.cov_rad)
+        
+            #-------------------------------------------------------
+            # (4)                Rainbow colors
+            #-------------------------------------------------------
+            if counter <= 1*quarter:
+                self.color_rainbow.append(red   )
+                self.color_rainbow.append(green )
+                self.color_rainbow.append(blue  )
+                
+                green += color_step
+
+            if counter >= 1*quarter  and counter <= 2*quarter:
+                self.color_rainbow.append(red   )
+                self.color_rainbow.append(green )
+                self.color_rainbow.append(blue  )
+
+                blue -= color_step
+
+            if counter >= 2*quarter  and counter <= 3*quarter:
+                
+                self.color_rainbow.append(red   )
+                self.color_rainbow.append(green )
+                self.color_rainbow.append(blue  )
+
+                red += color_step
+
+            if counter >= 3*quarter  and counter <= 4*quarter:
+                
+                self.color_rainbow.append(red   )
+                self.color_rainbow.append(green )
+                self.color_rainbow.append(blue  )
+                green -= color_step
+            
+            print(red, green, blue,counter )
+            counter += 1
+            #-------------------------------------------------------
 
         self.color_indices = np.array(self.color_indices, dtype=np.float32)
         self.colors        = np.array(self.colors       , dtype=np.float32)    
         self.vdw_dot_sizes = np.array(self.vdw_dot_sizes, dtype=np.float32)
         self.cov_dot_sizes = np.array(self.cov_dot_sizes, dtype=np.float32)
+        self.colors_rainbow = np.array(self.color_rainbow, dtype=np.float32) 
 
     def set_model_matrix(self, mat):
         """ Function doc
@@ -525,58 +537,19 @@ class VismolObject:
             
             if resi == resi_before + 1:
                 #print ('bond: ',index_before, resi_before ,'and',index , resi )
+                
                 bond =  Bond( atom_i       = atom_before, 
                               atom_index_i = index_before,
                               atom_j       = atom        ,
                               atom_index_j = index       ,
                               )
                 
-                self.c_alpha_bonds.append(bond)
-            
-        
-        
-        '''
-        for chain in self.chains.values():
-            #bonds_indices = [] 
-            chain_list    = []
-
-            resi       = None
-            atomi      = None
-            
-            for atom in chain.backbone:
-                
-                if resi is None:
-                    resi  = atom.resi
-                    atomi = atom.index
-                    chain_list.append([atom.resi, atom.index])
-                
+                distance = bond.distance()
+                if distance  >= 4.0:
+                    pass
                 else:
-                    
-                    if resi == atom.resi-1:
-                        
-                        bonds_pairs.append([atomi,atom.index])
-                        bonds_indices.append(atomi)
-                        bonds_indices.append(atom.index)
+                    self.c_alpha_bonds.append(bond)
 
-                        chain_list.append([atom.resi, atom.index])
-                        
-                        resi  = atom.resi
-                        atomi = atom.index
-                    
-                    else:
-                        
-                        chain_list.append([atom.resi, atom.index])
-                        resi  = atom.resi
-                        atomi = atom.index
-                
-                chains_list.append(chain_list)
-
-        
-        bonds_indices = np.array(bonds_indices, dtype=np.uint32)
-        self.ribbons_Calpha_pairs_full  = bonds_pairs
-        self.ribbons_Calpha_pairs_rep   = bonds_pairs
-        self.ribbons_Calpha_indices_rep = bonds_indices
-        '''
     
     def import_bonds (self, bonds_list = [] ):
         """ Function doc """

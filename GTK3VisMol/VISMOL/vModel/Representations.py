@@ -6,6 +6,43 @@ import time
 import VISMOL.glCore.sphere_data as sphd
 import VISMOL.glCore.cylinder_data as cyd
 import VISMOL.glCore.matrix_operations as mop
+#from   VISMOL.glCore.sphere_representation import _create_frame_sphere_data
+
+
+'''
+def _create_frame_sphere_data (frame, atoms ,offset, elems, scale, level,qtty ):
+    """ Function doc """
+    coords  = sphd.sphere_vertices[level]*qtty
+    centers = sphd.sphere_vertices[level]*qtty
+    for a, atom in enumerate(atoms):
+        pos = atom.coords (frame)
+        centers[a*offset:(a+1)*offset] = [pos[0],pos[1],pos[2]]*elems
+        
+        for i in range(elems):
+            coords[a*offset+i*3]   *= atom.radius * scale
+            coords[a*offset+i*3+1] *= atom.radius * scale
+            coords[a*offset+i*3+2] *= atom.radius * scale
+            coords[a*offset+i*3]   += pos[0]
+            coords[a*offset+i*3+1] += pos[1]
+            coords[a*offset+i*3+2] += pos[2]
+    
+    coords  = np.array(coords, dtype=np.float32)
+    centers = np.array(centers, dtype=np.float32)
+    
+    return coords, centers
+    
+    
+    #self.centers_list.append(self.centers)
+    #self.frames.append(self.coords)
+'''
+
+
+
+
+
+
+
+
 
 
 class Representation:
@@ -219,7 +256,8 @@ class LinesRepresentation (Representation):
         
         indices = np.array(self.visObj.index_bonds,dtype=np.uint32)
         coords  = self.visObj.frames[0]
-        colors  = self.visObj.colors
+        #colors  = self.visObj.colors
+        colors  = self.visObj.colors_rainbow
 
         self._make_gl_representation_vao_and_vbos (indices    = indices,
                                                    coords     = coords ,
@@ -502,7 +540,7 @@ class RibbonsRepresentation (Representation):
         for bond in self.visObj.c_alpha_bonds:
             i = bond.atom_index_i
             j = bond.atom_index_j
-            print (i, j)
+            #print (i, j)
             indices.append(i)
             indices.append(j)
             
@@ -513,7 +551,8 @@ class RibbonsRepresentation (Representation):
             indices = np.array(indices,dtype=np.uint32)
 
             coords  = self.visObj.frames[0]
-            colors  = self.visObj.colors
+            #colors  = self.visObj.colors
+            colors  = self.visObj.colors_rainbow
 
             self._make_gl_representation_vao_and_vbos (indices    = indices,
                                                        coords     = coords ,
@@ -799,7 +838,6 @@ class DotsRepresentation (Representation):
         colors  = self.visObj.colors
 
 
-
         self._make_gl_representation_vao_and_vbos (indices    = indices,
                                                    coords     = coords ,
                                                    colors     = colors ,
@@ -822,7 +860,7 @@ class DotsRepresentation (Representation):
         GL.glUseProgram(self.shader_program)
         #1*self.height dot_size
         #GL.glLineWidth(40/abs(self.glCore.dist_cam_zrp))
-        GL.glPointSize(0.1*height/abs(self.glCore.dist_cam_zrp)) # dot size not included yet
+        GL.glPointSize(0.3*height/abs(self.glCore.dist_cam_zrp)) # dot size not included yet
         self.glCore.load_matrices(self.shader_program, self.visObj.model_mat)
         self.glCore.load_fog(self.shader_program)
         GL.glBindVertexArray(self.vao)
@@ -994,8 +1032,10 @@ class SpheresRepresentation (Representation):
                 coords[a*offset+i*3+2] += pos[2]
             indices[a*inds_e:(a+1)*inds_e] += a*elems
         end = time.time()
-        
         print('Time used creating nucleus, vertices and colors:', end-init)
+
+
+
         self.coords  = np.array(coords, dtype=np.float32)
         self.frames.append(self.coords)
         self.centers = np.array(centers, dtype=np.float32)
@@ -1005,9 +1045,53 @@ class SpheresRepresentation (Representation):
         
         self.triangles = int(len(self.indices))
 
-        
+        init = time.time()
+
         if len(self.visObj.frames) > 1:
+            '''
+            import concurrent.futures
+            with concurrent.futures.ProcessPoolExecutor() as executor:
+                
+                frames  = self.visObj.frames[1:]
+                nframes = len(frames)
+                
+                atoms   = [self.atoms]*nframes
+                offsets = [offset]*nframes
+                Elems   = [elems]*nframes                
+                
+                scales  = [self.scale]*nframes
+                levels  = [self.level]*nframes
+                qttys   = [qtty]*nframes
+                
+                results = executor.map(_create_frame_sphere_data, frames, atoms, offsets, Elems, scales, levels, qttys)
             
+            for result in results:
+                self.frames.append(result[0])
+                self.centers_list.append(result[1])
+            
+            #'''
+
+            '''
+            for frame in range(1,len(self.visObj.frames)-1):
+                
+                coords, centers = _create_frame_sphere_data (frame      , 
+                                                             self.atoms ,
+                                                             offset     , 
+                                                             elems      , 
+                                                             self.scale , 
+                                                             self.level ,
+                                                             qtty       )
+                self.frames.append(coords)
+                self.centers = np.array(centers, dtype=np.float32)
+                self.centers_list.append(centers)
+            
+            
+            
+            
+            
+            #'''
+            
+            #'''
             for frame in range(1,len(self.visObj.frames)-1):
                 coords  = sphd.sphere_vertices[self.level]*qtty
                 centers = sphd.sphere_vertices[self.level]*qtty
@@ -1026,7 +1110,12 @@ class SpheresRepresentation (Representation):
                 self.frames.append(self.coords)
                 self.centers = np.array(centers, dtype=np.float32)
                 self.centers_list.append(self.centers)
+            #'''
+        end = time.time()
+        print('Time used creating nucleus, vertices and colors:', end-init)
+    
         return True
+    
     '''
     def _create_sel_sphere_data(self, level):
         """ Function doc """
@@ -1191,13 +1280,6 @@ class SpheresRepresentation (Representation):
                                                        dot_sizes  = None       ,
                                                        )
 
-
-
-
-
-
-
-
     def draw_representation (self):
         """ Function doc """
         self._check_VAO_and_VBOs ()
@@ -1242,6 +1324,18 @@ class SpheresRepresentation (Representation):
     def draw_background_sel_representation  (self):
         """ Function doc """
         pass
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1610,136 +1704,6 @@ class SurfaceRepresentation (Representation):
 
 
 
-
-
-
-
-
-
-
-class SpheresRepresentation_old (Representation): # impostors
-    """ Class doc """
-    
-    def __init__ (self, name = 'spheres', active = True, _type = 'mol', visObj = None, glCore = None):
-        """ Class initialiser """
-        self.name               = name
-        self.active             = active
-        self.type               = _type
-
-        self.visObj             = visObj
-        self.glCore             = glCore
-
-        # representation 	
-        self.vao            = None
-        self.ind_vbo        = None
-        self.coord_vbo      = None
-        self.col_vbo        = None
-        self.size_vbo       = None
-           
-
-        # bgrd selection   
-        self.sel_vao        = None
-        self.sel_ind_vbo    = None
-        self.sel_coord_vbo  = None
-        self.sel_col_vbo    = None
-        self.sel_size_vbo   = None
-
-
-        #     S H A D E R S
-        self.shader_program     = None
-        self.sel_shader_program = None
-
-
-    def _make_gl_vao_and_vbos (self, indices    = True ,
-                                     coords     = True ,
-                                     colors     = True ,
-                                     dot_sizes  = False,
-                                     ):
-        """ Function doc """
-        
-        self.shader_program     = self.glCore.shader_programs[self.name]
-        self.sel_shader_program = self.glCore.shader_programs[self.name+'_sel']
-
-        coords    = self.visObj.frames[0]
-        colors    = self.visObj.colors
-        dot_sizes = self.visObj.vdw_dot_sizes
-        
-        dot_qtty  = int(len(coords)/3)
-        indices = []
-        for i in range(dot_qtty):
-            indices.append(i)
-        indices = np.array(indices,dtype=np.uint32)
-        
-        self._make_gl_representation_vao_and_vbos (indices    = indices  ,
-                                                   coords     = coords   ,
-                                                   colors     = colors   ,
-                                                   dot_sizes  = dot_sizes,
-                                                   )
-        colors_idx = self.visObj.color_indices
-        self._make_gl_sel_representation_vao_and_vbos (indices    = indices    ,
-                                                       coords     = coords     ,
-                                                       colors     = colors_idx ,
-                                                       dot_sizes  = dot_sizes  ,
-                                                       )
-
-
-
-    def draw_representation (self):
-      
-        """ Function doc """
-        #self._check_VAO_and_VBOs ()
-        #
-        #GL.glUseProgram(self.shader_program)
-        #GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
-        #self.glCore.load_matrices(self.shader_program, self.visObj.model_mat)
-        #
-        #GL.glBindVertexArray(self.vao)
-        #if self.glCore.modified_view:
-        #    pass
-        #
-        #else:
-        #
-        #    '''
-        #    This function checks if the number of the called frame will not exceed 
-        #    the limit of frames that each object has. Allowing two objects with 
-        #    different trajectory sizes to be manipulated at the same time within the 
-        #    glArea'''
-        #    self._set_coordinates_to_buffer ()
-        #    GL.glDrawElements(GL.GL_POINTS, int(len(self.visObj.atoms)), GL.GL_UNSIGNED_INT, None)
-        #    #GL.glDrawArrays(GL.GL_POINTS, 0, int(len(self.visObj.atoms)))
-        #    print ('SpheresRepresentation')
-        #
-        ##"""
-        #GL.glBindVertexArray(0)
-        #GL.glDisable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
-        #GL.glUseProgram(0)
-        #GL.glDisable(GL.GL_DEPTH_TEST)
-        
-            
-    def draw_background_sel_representation  (self):
-        """ Function doc """
-        
-        #self._check_VAO_and_VBOs ()
-        #print ('draw_background_sel_representation')
-        #GL.glEnable(GL.GL_DEPTH_TEST)
-        #GL.glUseProgram(self.sel_shader_program)
-        #GL.glLineWidth(20)
-        #
-        #self.glCore.load_matrices(self.sel_shader_program, self.visObj.model_mat)
-        #GL.glBindVertexArray(self.sel_vao)
-        #
-        #if self.glCore.modified_view:
-        #    pass
-        #
-        #else:
-        #    '''
-        #    This function checks if the number of the called frame will not exceed 
-        #    the limit of frames that each object has. Allowing two objects with 
-        #    different trajectory sizes to be manipulated at the same time within the 
-        #    glArea
-        #    '''
-        #    self._set_coordinates_to_buffer ()
-        #    GL.glDrawElements(GL.GL_POINTS, int(len(self.visObj.non_bonded_atoms)), GL.GL_UNSIGNED_INT, None)
 
 
 

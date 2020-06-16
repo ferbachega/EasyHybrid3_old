@@ -167,7 +167,7 @@ class VisMolConfig:
                                                                                          
                                                                                          
                                   'dot_size'                   : 5                    ,  
-                                  'dot_type'                   : 0                    ,  # 0 - square    1 - rounded
+                                  'dot_type'                   : 2                    ,  # 0 - square    1 - rounded
                                                                                          
                                   'line_width'                 : 10                    ,  
                                   'line_width_selection'       : 40                   ,  

@@ -134,6 +134,9 @@ fragment_shader_picking_dots = """
 in vec3 index_color;
 
 void main(){
+    float dist = length(gl_PointCoord.xy - vec2(0.5,0.5));
+    if (dist > 0.6)
+        discard;
     gl_FragColor = vec4(index_color,0.5);
 }
 
