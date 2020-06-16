@@ -651,6 +651,11 @@ void main()
 fragment_shader_dot_simple  = """
 # version 330
 
+uniform vec4 fog_color;
+uniform float fog_start;
+//uniform float fog_end;
+
+
 in vec3 v_color;
 out vec4 out_color;
 
@@ -659,6 +664,15 @@ void main()
     float dist = length(gl_PointCoord.xy - vec2(0.5,0.5));
     if (dist > 0.5)
         discard;
+    
+    
+    //if(dist>=fog_start){
+    //    float fog_factor = (fog_end-dist)/(fog_end-fog_start);
+    //    out_color = mix(fog_color, vec4(v_color, 1.0), fog_factor);
+    //}
+    //else{
+    //   out_color = vec4(v_color, 1.0);    
+    //}
     out_color = vec4(v_color, 1.0);
 }
 """

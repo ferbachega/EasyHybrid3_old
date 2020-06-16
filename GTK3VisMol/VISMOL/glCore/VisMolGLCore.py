@@ -494,7 +494,10 @@ class VisMolGLCore():
             if visObj.selection_dots_vao is None:
                 shapes._make_gl_selection_dots(self.picking_dots_program, vismol_object = visObj)
             indices = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]
-            GL.glPointSize(0.5*self.height/(abs(self.dist_cam_zrp))/2)
+            
+            size =  self.vConfig.gl_parameters['dot_sel_size']
+            GL.glPointSize(size*self.height/(abs(self.dist_cam_zrp))/2)
+            
             #print ('line 522')
             #GL.glPointSize(15)
             GL.glUseProgram(self.picking_dots_program)
@@ -622,13 +625,16 @@ class VisMolGLCore():
                                                                 spheresShaders.fragment_shader_spheres)
 
 
-    def _create_impostor_shaders (self):
+    def _create_impostor_shaders (self, _type = 0):
         """ Function doc """
         # G L U M P Y
-        self.shader_programs['glumpy'] = self.load_shaders(glumpyShaders.vertex_shader_glumpy,
-                                                glumpyShaders.fragment_shader_glumpy)
-        self.shader_programs['glumpy_sel'] = self.load_shaders(glumpyShaders.vertex_shader_glumpy,
-                                                    glumpyShaders.fragment_shader_glumpy)
+        
+        _type = self.vConfig.gl_parameters['impostor_type']
+        
+        self.shader_programs['glumpy']     = self.load_shaders(glumpyShaders.shader_type[_type]['sel_vertex_shader'  ],
+                                                               glumpyShaders.shader_type[_type]['sel_fragment_shader'])
+        self.shader_programs['glumpy_sel'] = self.load_shaders(glumpyShaders.shader_type[_type]['sel_vertex_shader'  ],
+                                                               glumpyShaders.shader_type[_type]['sel_fragment_shader'])
 
 
 
@@ -698,8 +704,8 @@ class VisMolGLCore():
         
         
         ## P I C K 
-        self.picked_program = self.load_shaders(pickedShaders.vertex_shader_picked, 
-                                                pickedShaders.fragment_shader_picked)
+        #self.picked_program = self.load_shaders(pickedShaders.vertex_shader_picked, 
+        #                                        pickedShaders.fragment_shader_picked)
         
         self.picking_dots_program = self.load_shaders(pickedShaders.vertex_shader_picking_dots, 
                                                       pickedShaders.fragment_shader_picking_dots)
@@ -717,7 +723,7 @@ class VisMolGLCore():
         #self.shader_programs['ribbons']          = self.ribbons_program
 
 
-        self.shader_programs['picked']           = self.picked_program
+        #self.shader_programs['picked']           = self.picked_program
         self.shader_programs['picking_dots']     = self.picking_dots_program
         self.shader_programs['freetype']         = self.freetype_program
 

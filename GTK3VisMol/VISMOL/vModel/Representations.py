@@ -256,8 +256,8 @@ class LinesRepresentation (Representation):
         
         indices = np.array(self.visObj.index_bonds,dtype=np.uint32)
         coords  = self.visObj.frames[0]
-        #colors  = self.visObj.colors
-        colors  = self.visObj.colors_rainbow
+        colors  = self.visObj.colors
+        #colors  = self.visObj.colors_rainbow
 
         self._make_gl_representation_vao_and_vbos (indices    = indices,
                                                    coords     = coords ,
@@ -1406,7 +1406,7 @@ class GlumpyRepresentation (Representation):
         height = self.visObj.vismol_session.glwidget.vm_widget.height
         dist_cam_zrp = self.visObj.vismol_session.glwidget.vm_widget.dist_cam_zrp
         
-        GL.glPointSize(1*height/(abs(dist_cam_zrp)))
+        GL.glPointSize((50*height/(abs(dist_cam_zrp)))**0.5)
         #GL.glPointSize(55)
         self.glCore.load_matrices(self.shader_program, self.visObj.model_mat)
         self.glCore.load_fog(self.shader_program)

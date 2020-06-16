@@ -725,7 +725,3 @@ cpdef generete_full_NB_and_Bonded_lists(atoms):
     #-----------------------------------------------------------------------------------------------------------------------------------------------
 
     return atoms, bonds_full_indices, bonds_pair_of_indices, NB_indices_list
-
-
-
-

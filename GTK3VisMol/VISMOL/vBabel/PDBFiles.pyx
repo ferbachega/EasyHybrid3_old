@@ -57,9 +57,10 @@ cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None):
     vismol_object._generate_atomtree_structure()
     vismol_object._generate_atom_unique_color_id()
     vismol_object.index_bonds       = bonds_full_indices
-    vismol_object.index_bonds_pairs = bonds_pair_of_indices
     vismol_object.import_bonds(bonds_pair_of_indices)
-    vismol_object.generate_dot_indices()
+
+    #vismol_object.index_bonds_pairs = bonds_pair_of_indices
+    #vismol_object.generate_dot_indices()
     #vismol_object.get_backbone_indices()
     #-------------------------------------------------------------------------------------------
     return vismol_object

@@ -164,11 +164,18 @@ class VismolObject:
         #-----------------------#
         self.c_alpha_bonds      = []           
         
-        
         #-----------------------#
         #       Nonbonded       #
         #-----------------------#
         self.non_bonded_atoms   = []
+        
+        self.residues_in_protein = []
+        self.residues_in_solvent = []
+        self.residues_ligands    = []
+        
+        self.atoms_in_protein = [] # a list of atoms belonging to a protein
+        self.atoms_in_solvent = []
+        
         
 
 		#-----------------------------------------#
@@ -232,20 +239,20 @@ class VismolObject:
                                         
                 self.representations[rep_name] = new_rep
         '''
-
-    def generate_dot_indices(self):
-        """ Function doc
-        """
-        #self.dot_indices = []
-        self.dot_indices =range(0, len(self.atoms))
-        
-        #for i in range(int(len(self.atoms))):
-        #    self.dot_indices.append(i)
-        self.dot_indices = np.array(self.dot_indices, dtype=np.uint32)
-        
-        for index in self.non_bonded_atoms:
-            #print (index, self.atoms[index].name, )
-            self.atoms[index].nonbonded = True
+    
+    #def generate_dot_indices(self):
+    #    """ Function doc
+    #    """
+    #    #self.dot_indices = []
+    #    self.dot_indices =range(0, len(self.atoms))
+    #    
+    #    #for i in range(int(len(self.atoms))):
+    #    #    self.dot_indices.append(i)
+    #    self.dot_indices = np.array(self.dot_indices, dtype=np.uint32)
+    #    
+    #    for index in self.non_bonded_atoms:
+    #        #print (index, self.atoms[index].name, )
+    #        self.atoms[index].nonbonded = True
         
 		
     def _generate_atomtree_structure (self):
@@ -292,22 +299,7 @@ class VismolObject:
             atom.atom_id   = self.vismol_session.atom_id_counter
             atom.Vobject   = self
             atom.connected2 = connections
-            '''
-            if atom.chain == parser_chn:# and at_res_n == parser_resn:
-                atom.residue = ch.residues[-1]
-                ch.residues[-1].atoms.append(atom)
-                #frame.append([atom.pos[0].,atom.pos[1],atom.pos[2]])
 
-            else:
-                residue = Residue(name=atom.resn, index=atom.resi, chain=atom.chain)
-                atom.residue     = residue
-                residue.atoms.append(atom)
-                
-                ch.residues.append(residue)
-                #frame.append([atom.pos[0],atom.pos[1],atom.pos[2]])
-                parser_resi  = atom.resi
-                parser_resn  = atom.resn
-            '''
             
             if atom.chain in self.chains.keys():
                 ch = self.chains[atom.chain]
@@ -316,18 +308,38 @@ class VismolObject:
                 ch = Chain(name = atom.chain, label = 'UNK')
                 self.chains[atom.chain] = ch
             
+            
+            '''This step checks if a residue has already been created and adds it to the respective chain.'''
             if atom.resi == parser_resi:# and at_res_n == parser_resn:
                 atom.residue = ch.residues[-1]
                 ch.residues[-1].atoms.append(atom)
                 #frame.append([atom.pos[0].,atom.pos[1],atom.pos[2]])
 
             else:
-                residue = Residue(name=atom.resn, index=atom.resi, chain=atom.chain)
+                residue = Residue(name=atom.resn, 
+                                 index=atom.resi, 
+                                 chain=atom.chain,
+                                 Vobject = self)
+                                    
                 atom.residue     = residue
                 residue.atoms.append(atom)
                 self.residues[atom.resi] = residue
                 ch.residues.append(residue)
-                #frame.append([atom.pos[0],atom.pos[1],atom.pos[2]])
+                
+                
+                #'Checks whether RESN belongs to the solvent or protein'
+                #---------------------------------------------------------
+                if residue.isProtein:
+                    self.residues_in_protein.append(residue)
+                
+                elif residue.isSolvent:
+                    self.residues_in_solvent.append(residue)
+                
+                else:
+                    self.residues_ligands.append(residue)
+                    pass
+                #---------------------------------------------------------
+
                 parser_resi  = atom.resi
                 parser_resn  = atom.resn
 
@@ -356,30 +368,30 @@ class VismolObject:
         self.get_backbone_indices()
         return True
 
-
+    '''
     def _get_name (self, name):
         """ Function doc """
         self.name  = os.path.basename(name)
-
-    def _generate_non_bonded_list (self):
-        """ Function doc """
-        self.non_bonded_atoms   =  []
-        initial = time.time()
-        #
-        ##for i in range(0, len(self.atoms)):
-        ##    if i in self.index_bonds:
-        ##        pass
-        ##    else:
-        ##        self.non_bonded_atoms.append(i)
-        #
-        #for atom in self.atoms:
-        #    if atom.connected != []:
-        #        pass
-        #    else:
-        #        self.non_bonded_atoms.append(atom.index -1)
-        self.non_bonded_atoms = np.array(self.non_bonded_atoms, dtype=np.uint32)
-        final = time.time()    
-        print ('Cython PARALLEL _generate_non_bonded_list total time: ', final - initial, '\n') 
+    '''
+    #def _generate_non_bonded_list (self):
+    #    """ Function doc """
+    #    self.non_bonded_atoms   =  []
+    #    initial = time.time()
+    #    #
+    #    ##for i in range(0, len(self.atoms)):
+    #    ##    if i in self.index_bonds:
+    #    ##        pass
+    #    ##    else:
+    #    ##        self.non_bonded_atoms.append(i)
+    #    #
+    #    #for atom in self.atoms:
+    #    #    if atom.connected != []:
+    #    #        pass
+    #    #    else:
+    #    #        self.non_bonded_atoms.append(atom.index -1)
+    #    self.non_bonded_atoms = np.array(self.non_bonded_atoms, dtype=np.uint32)
+    #    final = time.time()    
+    #    print ('Cython PARALLEL _generate_non_bonded_list total time: ', final - initial, '\n') 
         
     def _generate_atom_unique_color_id (self):
         """ Function doc 
@@ -482,7 +494,7 @@ class VismolObject:
                 self.color_rainbow.append(blue  )
                 green -= color_step
             
-            print(red, green, blue,counter )
+            #print(red, green, blue,counter )
             counter += 1
             #-------------------------------------------------------
 
@@ -550,6 +562,10 @@ class VismolObject:
                 else:
                     self.c_alpha_bonds.append(bond)
 
+        
+        #for res in self.residues_in_protein:
+        #    res.get_phi_and_psi ()
+    
     
     def import_bonds (self, bonds_list = [] ):
         """ Function doc """

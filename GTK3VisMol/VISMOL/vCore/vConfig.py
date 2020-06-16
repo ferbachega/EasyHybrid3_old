@@ -37,6 +37,51 @@ class VisMolConfig:
 
         self.vSession = vSession 
         
+        self.solvent_dictionary  = {
+                                    'WAT': 'O', 
+                                    'SOL': 'O', 
+                                    'HOH': 'O', 
+                                    }
+        
+        self.residues_dictionary = {'CYS': 'C', 
+                                    'ASP': 'D', 
+                                    'SER': 'S', 
+                                    'GLN': 'Q', 
+                                    'LYS': 'K',
+                                    'ILE': 'I', 
+                                    'PRO': 'P', 
+                                    'THR': 'T', 
+                                    'PHE': 'F', 
+                                    'ASN': 'N', 
+                                    'GLY': 'G', 
+                                    'HIS': 'H', 
+                                    
+                                    # amber
+                                    "HID": "H",
+                                    "HIE": "H",
+                                    "HIP": "H",
+                                    "ASH": "D",
+                                    "GLH": "E",
+                                    "CYX": "C",
+                                    
+                                    # charmm
+                                    "HSD": "H", 
+                                    "HSE": "H", 
+                                    "HSP": "H", 
+                                    
+                                    
+                                    'LEU': 'L', 
+                                    'ARG': 'R', 
+                                    'TRP': 'W', 
+                                    'ALA': 'A', 
+                                    'VAL': 'V', 
+                                    'GLU': 'E', 
+                                    'TYR': 'Y', 
+                                    'MET': 'M'}
+        
+        
+        
+        
         self.ATOM_TYPES = {
                     'H'  : [ 1,   [0.900000, 0.900000, 0.900000], [204, 204, 204], [250,  22, 145],  0.230000 , 0.330000 , 1.200000 ],#                                                          0.53, 1.20, 0.37 ],	
                     'He' : [ 2,   [0.850000, 1.000000, 1.000000], [140, 140, 180], [255, 255, 255],  0.930000 , 0.700000 , 1.400000 ],#                                                          0.31, 1.40, 0.32 ],	
@@ -167,9 +212,10 @@ class VisMolConfig:
                                                                                          
                                                                                          
                                   'dot_size'                   : 5                    ,  
-                                  'dot_type'                   : 2                    ,  # 0 - square    1 - rounded
+                                  'dot_type'                   : 0                    ,  # 0 - square    1 - rounded
+                                  'dot_sel_size'               : 1.5                  , 
                                                                                          
-                                  'line_width'                 : 10                    ,  
+                                  'line_width'                 : 10                   ,  
                                   'line_width_selection'       : 40                   ,  
 
                                   'line_type'                  : 0                    ,  # 0 - no detail       1 - Charlitos'style
@@ -187,6 +233,7 @@ class VisMolConfig:
                                   'sphere_type'                : 0                    ,  # 0 - real spheres    1 - impostors 
                                   'sphere_scale'               : 0.85                 ,  # Scale size for real spheres
                                   'sphere_quality'             : 1                    ,  # Quality for real spheres - 1 if default
+                                  'impostor_type'              : 1                    ,  # Quality for real spheres - 1 if default
                                                                                          
                                                                                          
                                   'Stick_radius'               : 1.5                  ,  
