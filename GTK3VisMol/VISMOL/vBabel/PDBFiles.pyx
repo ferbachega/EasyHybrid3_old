@@ -3,7 +3,7 @@ import time
 import multiprocessing
 import numpy as np
 #import VISMOL.vModel.atom_types as at 
-import VISMOL.vModel.cDistances as cdist
+#import VISMOL.vModel.cDistances as cdist
 from   VISMOL.vModel import VismolObject
 from pprint import pprint
 
@@ -34,12 +34,18 @@ cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None):
         frames    = get_list_of_frames_from_pdb_rawframes (rawframes = rawframes)
     #-------------------------------------------------------------------------------------------
     
-    
-    
+    name = os.path.basename(infile)
+    vismol_object  = VismolObject.VismolObject(name        = name, 
+                                               atoms       = atoms, 
+                                               VMSession   = VMSession, 
+                                               trajectory  = frames)
+    '''
     #-------------------------------------------------------------------------------------------
     #                                Bonded and NB lists 
     #-------------------------------------------------------------------------------------------
-    atoms, bonds_full_indices, bonds_pair_of_indices, NB_indices_list = cdist.generete_full_NB_and_Bonded_lists(atoms)
+    
+    #atoms, bonds_full_indices, bonds_pair_of_indices, NB_indices_list = cdist.generete_full_NB_and_Bonded_lists(atoms)
+    
     #-------------------------------------------------------------------------------------------
     #print (bonds_pair_of_indices, NB_indices_list )
     #for atom in atoms:
@@ -47,21 +53,15 @@ cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None):
     #-------------------------------------------------------------------------------------------
     #                         Building   V I S M O L    O B J
     #-------------------------------------------------------------------------------------------
-    name = os.path.basename(infile)
-    vismol_object  = VismolObject.VismolObject(name        = name, 
-                                               atoms       = atoms, 
-                                               VMSession   = VMSession, 
-                                               trajectory  = frames)
-    
-    vismol_object.non_bonded_atoms  = NB_indices_list
-    vismol_object._generate_atomtree_structure()
-    vismol_object._generate_atom_unique_color_id()
-    vismol_object.index_bonds       = bonds_full_indices
-    vismol_object.import_bonds(bonds_pair_of_indices)
 
-    #vismol_object.index_bonds_pairs = bonds_pair_of_indices
-    #vismol_object.generate_dot_indices()
-    #vismol_object.get_backbone_indices()
+    
+    #vismol_object.non_bonded_atoms  = NB_indices_list
+    #vismol_object._generate_atomtree_structure()
+    #vismol_object._generate_atom_unique_color_id()
+    #vismol_object.index_bonds       = bonds_full_indices
+    #vismol_object.import_bonds(bonds_pair_of_indices)
+	'''
+
     #-------------------------------------------------------------------------------------------
     return vismol_object
     
@@ -112,37 +112,33 @@ iCode = ""
                                                 ( 78, 80, None , ""   ) )
 
     """
-    #nCPUs = multiprocessing.cpu_count()
-    #pool  = multiprocessing.Pool(nCPUs)
-    #gridsize = 3
+
     pdb_file_lines  = rawframe.split('\n')   
     atoms           = []
     cdef int index           = 0
     for line in pdb_file_lines:
         if line[:4] == 'ATOM' or line[:6] == 'HETATM':
             
-            at_name  = line[12:16].strip()
-            at_pos   = np.array([float(line[30:38]), float(line[38:46]), float(line[46:54])])
-            at_resi  = int(line[22:27])
-            at_resn  = line[17:20].strip()
-            at_ch    = line[21]             
-            at_symbol= line[76:78]
+            at_name    = line[12:16].strip()
+            at_pos     = np.array([float(line[30:38]), float(line[38:46]), float(line[46:54])])
+            at_resi    = int(line[22:27])
+            at_resn    = line[17:20].strip()
+            at_ch      = line[21]             
+            at_symbol  = line[76:78]
+            at_occup   = float(line[54:60])   #occupancy
+            at_bfactor = float(line[60:66])
+            at_charge  = 0.0
+            
             cov_rad  = at.get_cov_rad (at_name)
             gridpos  = [int(at_pos[0]/gridsize), int(at_pos[1]/gridsize), int(at_pos[2]/gridsize)]
-                            #0      1      2           3       4        5        6       7       8
-            atoms.append([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos ])
-            #atoms.append([index, at_name, cov_rad, at_resi, at_resn, at_ch, at_symbol])
+            #ocupan   = float(line[54:60])
+            #bfactor  = float(line[60:66])
+            
+                            #0      1        2        3       4        5        6       7       8       9       10          11        12      
+            atoms.append([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge ])
             index += 1
-            #atom     = Atom(name      =  at_name, 
-            #                #index    =  index, 
-            #                pos       =  at_pos, 
-            #                resi      =  at_res_i, 
-            #                resn      =  at_res_n, 
-            #                chain     =  at_ch, 
-            #                #atom_id  =  counter, 
-            #                )
-            #atoms.append(atom)
-    return atoms#, coords
+
+    return atoms
 
 
 

@@ -304,7 +304,7 @@ class GtkGLAreaWidget(Gtk.GLArea):
         self.connect("button-release-event", self.mouse_released)
         self.connect("motion-notify-event", self.mouse_motion)
         self.connect("scroll-event", self.mouse_scroll)
-        #self.set_size_request(width, height)
+        #self.set_size_request(600, 600)
         self.grab_focus()
         self.set_events( self.get_events() | Gdk.EventMask.SCROLL_MASK
                        | Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK

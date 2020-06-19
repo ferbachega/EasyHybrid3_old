@@ -1606,8 +1606,14 @@ class SurfaceRepresentation (Representation):
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glEnable(GL.GL_CULL_FACE)
         GL.glCullFace(GL.GL_BACK)
+        view = self.glCore.glcamera.view_matrix
         
-        GL.glUseProgram          (self.shader_program )
+        GL.glUseProgram(self.shader_program )
+        
+        #print (self.visObj.model_mat,view)
+        
+        m_normal = np.array(np.matrix(np.dot(view, self.visObj.model_mat)).I.T)
+        
         self.glCore.load_matrices(self.shader_program , self.visObj.model_mat)
         self.glCore.load_lights  (self.shader_program )
         self.glCore.load_fog     (self.shader_program )
@@ -1643,10 +1649,10 @@ class SurfaceRepresentation (Representation):
             different trajectory sizes to be manipulated at the same time within the 
             glArea'''
             #self._set_coordinates_to_buffer (coord_vbo = True, sel_coord_vbo = False)
-            GL.glDrawElements(GL.GL_POINTS, int(len(self.indices2)), GL.GL_UNSIGNED_INT, None)
+            #GL.glDrawElements(GL.GL_POINTS, int(len(self.indices2)), GL.GL_UNSIGNED_INT, None)
             #GL.glDrawElements(GL.GL_LINE_LOOP, int(len(self.coords2)), GL.GL_UNSIGNED_INT, None)
             #GL.glDrawElements(GL.GL_LINE_STRIP, int(len(self.indices2)), GL.GL_UNSIGNED_INT, None)
-            #GL.glDrawElements(GL.GL_TRIANGLES, int(len(self.indices2)), GL.GL_UNSIGNED_INT, None)
+            GL.glDrawElements(GL.GL_TRIANGLES, int(len(self.indices2)), GL.GL_UNSIGNED_INT, None)
 
         #GL.glBindVertexArray(0)
         #GL.glLineWidth(1)

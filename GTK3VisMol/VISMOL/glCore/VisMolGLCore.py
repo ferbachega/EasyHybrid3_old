@@ -41,6 +41,8 @@ import VISMOL.glCore.shaders.sticks             as sticksShaders
 #import VISMOL.glCore.shaders.new_lines          as linesShaders
 import VISMOL.glCore.shaders.lines              as linesShaders
 import VISMOL.glCore.shaders.spheres            as spheresShaders
+import VISMOL.glCore.shaders.surface            as surfacesShaders
+
 import VISMOL.glCore.shaders.dots               as dotsShaders
 import VISMOL.glCore.shaders.freetype           as freetypeShaders
 import VISMOL.glCore.shaders.picked_and_picking as pickedShaders
@@ -268,7 +270,7 @@ class VisMolGLCore():
                     if self.atom_picked is not None:
 
                         # Getting the information about the atom that was identified in the click
-                        print(self.atom_picked.chain,self.atom_picked.resn, self.atom_picked.resi, self.atom_picked.name, self.atom_picked.index, self.atom_picked.connected2)
+                        print(self.atom_picked.chain,self.atom_picked.resn, self.atom_picked.resi, self.atom_picked.name, self.atom_picked.index, self.atom_picked.bonds_indices)
                         #for bond in self.atom_picked.bonds:
                         #    print (bond.atom_index_i, bond.atom_index_j)
                         self.atom_picked = None
@@ -660,6 +662,8 @@ class VisMolGLCore():
 
         self.shader_programs['surface']     = self.load_shaders(spheresShaders.vertex_shader_spheres, 
                                                                 spheresShaders.fragment_shader_spheres)
+        #self.shader_programs['surface']     = self.load_shaders(surfacesShaders.vertex  , 
+        #                                                        surfacesShaders.fragment)
                                               
                                               
         self.shader_programs['surface_sel'] = self.load_shaders(spheresShaders.vertex_shader_spheres,  
@@ -873,7 +877,7 @@ class VisMolGLCore():
         GL.glUniform4fv(fog_c, 1, self.bckgrnd_color)
         return True
         
-    def load_matrices(self, program, model_mat):
+    def load_matrices(self, program = None, model_mat = None, normal = None):
         """ Load the matrices to OpenGL.
             
             model_mat -- transformation matrix for the objects rendered
@@ -886,10 +890,10 @@ class VisMolGLCore():
         GL.glUniformMatrix4fv(view, 1, GL.GL_FALSE, self.glcamera.view_matrix)
         proj = GL.glGetUniformLocation(program, 'proj_mat')
         GL.glUniformMatrix4fv(proj, 1, GL.GL_FALSE, self.glcamera.projection_matrix)
-        
-        ## not sure if is necessary
-        #norm = GL.glGetUniformLocation(program, 'normal_mat')
-        #GL.glUniformMatrix3fv(norm, 1, GL.GL_FALSE, self.normal_mat)
+       
+        # not sure if is necessary
+        norm = GL.glGetUniformLocation(program, 'normal_mat')
+        GL.glUniformMatrix3fv(norm, 1, GL.GL_FALSE, self.normal_mat)
         
         return True
     

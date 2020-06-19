@@ -41,29 +41,8 @@ from VISMOL.vModel.Representations   import DotsRepresentation
 from VISMOL.vModel.Representations   import SpheresRepresentation
 from VISMOL.vModel.Representations   import GlumpyRepresentation
 
-#class Representation:
-#    """ Class doc """
-#
-#    def __init__ (self, name = 'lines', active = True, vao = None, buffers = None, _type = 'mol', visObj = None ):
-#        """ Class initialiser """
-#        self.name               = name
-#        self.active             = active
-#        self.vao                = vao
-#        self.buffers            = buffers
-#        self.type               = _type
-#        self.visObj             = visObj
-#        self.sel_vao            = None
-#        self.sel_buffers        = None
-#        self.shader_program     = None 
-#        self.sel_shader_program = None 
-#        
-#        if name == 'lines':
-#            self.indices = self.visObj.index_bonds
-#        if name == 'sticks':
-#            self.indices = self.visObj.index_bonds
-#        if name == 'nonbonded':
-#            self.indices = self.visObj.non_bonded_atoms
-#
+import VISMOL.vModel.cDistances as cdist
+
 
 
 
@@ -131,7 +110,7 @@ class VismolObject:
         self.Type           = 'molecule'    # Not used yet
         self.name           = name          # 
         self.vm_font        = vmf.VisMolFont()
-        
+
         #-----------------------------------------------------------------
         self.mass_center = None
         #-----------------------------------------------------------------
@@ -205,8 +184,8 @@ class VismolObject:
         self.picking_dots_vao      = None
         self.picking_dot_buffers   = None
         #-----------------------------------------------------------------
-    
-    
+        self.find_bonded_and_nonbonded_atoms(atoms)
+
     def generate_default_representations (self, reps_list = {}) :
         """ Function doc """
         pass
@@ -240,21 +219,7 @@ class VismolObject:
                 self.representations[rep_name] = new_rep
         '''
     
-    #def generate_dot_indices(self):
-    #    """ Function doc
-    #    """
-    #    #self.dot_indices = []
-    #    self.dot_indices =range(0, len(self.atoms))
-    #    
-    #    #for i in range(int(len(self.atoms))):
-    #    #    self.dot_indices.append(i)
-    #    self.dot_indices = np.array(self.dot_indices, dtype=np.uint32)
-    #    
-    #    for index in self.non_bonded_atoms:
-    #        #print (index, self.atoms[index].name, )
-    #        self.atoms[index].nonbonded = True
-        
-		
+	
     def _generate_atomtree_structure (self):
         """ Function doc """
         
@@ -277,7 +242,6 @@ class VismolObject:
         sum_z = 0.0 
         
         for atom2 in self.atoms2:
-            #[index, at_name, cov_rad,  at_pos], at_res_i, at_res_n, at_ch]
             index       = atom2[0]
             at_name     = atom2[1]
             cov_rad     = atom2[2]
@@ -285,20 +249,22 @@ class VismolObject:
             at_res_i    = atom2[4]
             at_res_n    = atom2[5]
             at_ch       = atom2[6]
-            connections = atom2[8]
-            atom        = Atom(name      =  at_name, 
-                               index     =  index+1, 
-                               pos       =  at_pos, 
-                               resi      =  at_res_i, 
-                               resn      =  at_res_n, 
-                               chain     =  at_ch, 
-                               #atom_id  =  counter, 
-                               Vobject   =  self
+            #bonds_idxes = atom2[8]
+            atom        = Atom(name          =  at_name, 
+                               index         =  index+1, 
+                               pos           =  at_pos, 
+                               resi          =  at_res_i, 
+                               resn          =  at_res_n, 
+                               chain         =  at_ch, 
+                               atom_id       =  self.vismol_session.atom_id_counter  , 
+                                             
+                               occupancy     = atom2[10],
+                               bfactor       = atom2[11],
+                               charge        = atom2[12],
+                               bonds_indices = atom2[8],
+                               Vobject       =  self
                                )
-            
-            atom.atom_id   = self.vismol_session.atom_id_counter
-            atom.Vobject   = self
-            atom.connected2 = connections
+
 
             
             if atom.chain in self.chains.keys():
@@ -313,7 +279,6 @@ class VismolObject:
             if atom.resi == parser_resi:# and at_res_n == parser_resn:
                 atom.residue = ch.residues[-1]
                 ch.residues[-1].atoms.append(atom)
-                #frame.append([atom.pos[0].,atom.pos[1],atom.pos[2]])
 
             else:
                 residue = Residue(name=atom.resn, 
@@ -368,31 +333,7 @@ class VismolObject:
         self.get_backbone_indices()
         return True
 
-    '''
-    def _get_name (self, name):
-        """ Function doc """
-        self.name  = os.path.basename(name)
-    '''
-    #def _generate_non_bonded_list (self):
-    #    """ Function doc """
-    #    self.non_bonded_atoms   =  []
-    #    initial = time.time()
-    #    #
-    #    ##for i in range(0, len(self.atoms)):
-    #    ##    if i in self.index_bonds:
-    #    ##        pass
-    #    ##    else:
-    #    ##        self.non_bonded_atoms.append(i)
-    #    #
-    #    #for atom in self.atoms:
-    #    #    if atom.connected != []:
-    #    #        pass
-    #    #    else:
-    #    #        self.non_bonded_atoms.append(atom.index -1)
-    #    self.non_bonded_atoms = np.array(self.non_bonded_atoms, dtype=np.uint32)
-    #    final = time.time()    
-    #    print ('Cython PARALLEL _generate_non_bonded_list total time: ', final - initial, '\n') 
-        
+
     def _generate_atom_unique_color_id (self):
         """ Function doc 
         
@@ -510,7 +451,6 @@ class VismolObject:
         self.model_mat = np.copy(mat)
         return True
     
-
     def get_backbone_indices (self):
         """ Function doc """
         chains_list   = []
@@ -562,11 +502,6 @@ class VismolObject:
                 else:
                     self.c_alpha_bonds.append(bond)
 
-        
-        #for res in self.residues_in_protein:
-        #    res.get_phi_and_psi ()
-    
-    
     def import_bonds (self, bonds_list = [] ):
         """ Function doc """
         
@@ -593,101 +528,23 @@ class VismolObject:
             self.atoms[index_i].bonds.append(bond)
             self.atoms[index_j].bonds.append(bond)
         
-        #print bonds_list
+
+
+    def find_bonded_and_nonbonded_atoms(self, atoms):
+        """ Function doc """
+        bonds_full_indices, bonds_pair_of_indices, NB_indices_list = cdist.generete_full_NB_and_Bonded_lists(atoms)
         
-        #for bond in self.bonds:
-        #    print (bond.atom_index_i, bond.atom_index_j)
-            
-    
-    
-'''
-def determine_the_paired_atomic_grid_elements_parallel(atomic_grid):
-    """
-    There is also an array vOff that specifies the offsets of each of the 14 neighbor
-    cells. The array covers half the neighboring cells, together with the cell itself; its
-    size and contents are specified as
-    
-    {{0,0,0}, {1,0,0}, {1,1,0}, {0,1,0}, {-1,1,0}, {0,0,1},
-    {1,0,1}, {1,1,1}, {0,1,1}, {-1,1,1}, {-1,0,1},
-    {-1,-1,1}, {0,-1,1}, {1,-1,1}}
-    
-    """
-    initial = time.time()
-    pair_of_sectors2 = []
-    grid_offset = [[ 0, 0, 0], 
-                   [ 1, 0, 0], 
-                   [ 1, 1, 0], 
-                   [ 0, 1, 0], 
-                   [-1, 1, 0], 
-                   [ 0, 0, 1],
-                   [ 1, 0, 1], 
-                   [ 1, 1, 1], 
-                   [ 0, 1, 1], 
-                   [-1, 1, 1], 
-                   [-1, 0, 1],
-                   [-1,-1, 1], 
-                   [ 0,-1, 1], 
-                   [ 1,-1, 1]
-                   ]
-    
-    for element in atomic_grid.keys():
-        for offset_element in  grid_offset:              
-            
-            element1  = (element[0]                  , element[1]                  , element[2]                  ) 
-            element2  = (element[0]+offset_element[0], element[1]+offset_element[1], element[2]+offset_element[2]) 
-                    
-            if element2 in atomic_grid:                        
-                pair_of_sectors2.append([self.atomic_grid[element1],
-                                         self.atomic_grid[element2]])
-
-    
-    final = time.time()    
-    print ('Pairwise grid elements time : ', final - initial, '\n')  
-    return pair_of_sectors2
-'''
+        self.non_bonded_atoms  = NB_indices_list
+        
+        self._generate_atomtree_structure()
+        
+        self._generate_atom_unique_color_id()
+        
+        self.index_bonds       = bonds_full_indices
+        
+        self.import_bonds(bonds_pair_of_indices)
 
 
 
-'''
-Contains all pairs of neighboring sectors that will be used to 
-calculate distances between atoms from  different sectors (this 
-list does not contain any pairs of repeated sectors)
-#--------------------------------------------------------------
 
 
-#-----------------------------------------------------------------
-self.full_grid_offset = [
-                       [ 1, 1, 1], # top level
-                       [ 0, 1, 1], # top level
-                       [-1, 1, 1], # top level
-                       [-1, 0, 1], # top level
-                       [ 0, 0, 1], # top level
-                       [ 1, 0, 1], # top level
-                       [-1,-1, 1], # top level
-                       [ 0,-1, 1], # top level
-                       [ 1,-1, 1], # top level
-                       
-                       #-------------------------
-                       [ 1, 1, 0], # middle level 
-                       [ 0, 1, 0], # middle level 
-                       [-1, 0, 0], # middle level 
-                       [-1, 1, 0], # middle level 
-                      #[ 0, 0, 0], # middle level 
-                       [ 1, 0, 0], # middle level 
-                       [-1,-1, 0], # middle level 
-                       [ 0,-1, 0], # middle level 
-                       [ 1,-1, 0], # middle level 
-                       #-------------------------
-                       
-                       [ 1, 1,-1], # ground level
-                       [ 0, 1,-1], # ground level
-                       [-1, 1,-1], # ground level
-                       [-1, 0,-1], # ground level
-                       [ 0, 0,-1], # ground level
-                       [ 1, 0,-1], # ground level
-                       [-1,-1,-1], # ground level
-                       [ 0,-1,-1], # ground level
-                       [ 1,-1,-1], # ground level
-                       ]
-#-----------------------------------------------------------------
-'''

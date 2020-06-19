@@ -1,26 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-#
-#  vis_parser.py
-#  
-#  Copyright 2016 Carlos Eduardo Sequeiros Borja <casebor@gmail.com>
-#  
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#  
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#  
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
-#  
-#  
 import os
 import time
 import multiprocessing
@@ -113,13 +90,11 @@ def load_mol2_files (infile = None, VMSession =  None, gridsize = 3):
     """ Function doc """
     print ('\nstarting: parse_mol2')
 
-    #initial = time.time()
     at  =  VMSession.vConfig.atom_types
-
     with open(infile, 'r') as mol2_file:
-        pdbtext = mol2_file.read()
+        filetext = mol2_file.read()
 
-        molecules     =  pdbtext.split('@<TRIPOS>MOLECULE')
+        molecules     =  filetext.split('@<TRIPOS>MOLECULE')
         firstmolecule =  molecules[1].split('@<TRIPOS>ATOM')
         header        =  firstmolecule[0]
         firstmolecule =  firstmolecule[1].split('@<TRIPOS>BOND')
@@ -132,14 +107,7 @@ def load_mol2_files (infile = None, VMSession =  None, gridsize = 3):
 
 
     atoms, frames = get_atom_list_from_mol2_frame(raw_atoms = raw_atoms, frame = True,  gridsize = gridsize,  at = at)
-    
-    #-------------------------------------------------------------------------------------------
-    #                                Bonded and NB lists 
-    #-------------------------------------------------------------------------------------------
-    atoms, bonds_full_indexes, bonds_pair_of_indexes, NB_indexes_list = cdist.generete_full_NB_and_Bonded_lists(atoms)
-    #-------------------------------------------------------------------------------------------
-    
-    
+
     #-------------------------------------------------------------------------------------------
     #                         Building   V I S M O L    O B J
     #-------------------------------------------------------------------------------------------
@@ -148,15 +116,6 @@ def load_mol2_files (infile = None, VMSession =  None, gridsize = 3):
                                                atoms       = atoms, 
                                                VMSession   = VMSession, 
                                                trajectory  = frames)
-    
-    
-    vismol_object._generate_atomtree_structure()
-    vismol_object._generate_atom_unique_color_id()
-    vismol_object.index_bonds       = bonds_full_indexes
-    vismol_object.index_bonds_pairs = bonds_pair_of_indexes
-    vismol_object.import_bonds(bonds_pair_of_indexes)
-
-    vismol_object.non_bonded_atoms  = NB_indexes_list
     #-------------------------------------------------------------------------------------------
     return vismol_object
 
@@ -193,10 +152,16 @@ def get_atom_list_from_mol2_frame (raw_atoms, frame = True, gridsize = 3, at =  
             
             at_resi = int(line[6])
             
-            at_resn = line[6]
-            
+            at_resn = line[7]
+
+
             at_ch   = 'X'          
-            
+
+            at_occup   = 0.0     #occupancy
+            at_bfactor = 0.0
+            at_charge  = float(line[8])
+
+
 
             at_symbol= line[5].split('.')
             at_symbol= at_symbol[0]
@@ -205,8 +170,8 @@ def get_atom_list_from_mol2_frame (raw_atoms, frame = True, gridsize = 3, at =  
 
 
             gridpos  = [int(at_pos[0]/gridsize), int(at_pos[1]/gridsize), int(at_pos[2]/gridsize)]
-            
-            atoms.append([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos ])
+            #atoms.append([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge ])
+            atoms.append([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge ])
 
 
 
@@ -226,7 +191,7 @@ def get_atom_list_from_mol2_frame (raw_atoms, frame = True, gridsize = 3, at =  
     frame_coordinates = np.array(frame_coordinates, dtype=np.float32)
     frames.append(frame_coordinates)
     #print (frames)
-    print (atoms)
+    #print (atoms)
     return atoms, frames#, coords
 
 def get_bonds (raw_bonds):
@@ -236,7 +201,7 @@ def get_bonds (raw_bonds):
     index_bonds_pairs_orders = []
     
     #print (raw_bonds)
-    print ('Obtain bonds from original MOL2 file')
+    #print ('Obtain bonds from original MOL2 file')
     for line in raw_atoms:
         line = line.split()
         if len(line) == 4:

@@ -10,28 +10,38 @@ class Atom:
                         pos          = None, 
                         resi         = None, 
                         resn         = None, 
-                        chain        = '', 
-                        atom_id      = 0, 
+                        chain        = ''  , 
+                        atom_id      = 0   , 
                         residue      = None,
-                        #Vobject_id   = None, 
-                        #Vobject_name = '', 
+                        
+                        occupancy    = 0.0,
+                        bfactor      = 0.0, 
+                        charge       = 0.0,
+						bonds_indices= [] ,
                         Vobject      = None):
  
         if pos is None:
             pos = np.array([0.0, 0.0, 0.0])
 		
         
-        self.pos     = pos     # - coordinates of the first frame
-        self.index   = index   # - Remember that the "index" attribute refers to the numbering of atoms 
-                               # (it is not a zero base, it starts at 1 for the first atom)
-
-        self.name    = name    #
-        self.symbol  = symbol  #
-        self.resi    = resi    #
-        self.resn    = resn    #
-        self.chain   = chain   #
-        self.Vobject = Vobject
-        self.residue = residue    
+        self.pos        = pos     # - coordinates of the first frame
+        self.index      = index   # - Remember that the "index" attribute refers to the numbering of atoms 
+                                  # (it is not a zero base, it starts at 1 for the first atom)
+					    
+        self.name       = name    #
+        self.symbol     = symbol  #
+        self.resi       = resi    #
+        self.resn       = resn    #
+        self.chain      = chain   #
+        self.Vobject    = Vobject
+        self.residue    = residue    
+        
+        
+        self.occupancy  = occupancy
+        self.bfactor    = bfactor  
+        self.charge     = charge   
+        
+        
         at = Vobject.vismol_session.vConfig.atom_types
 
         self.atom_id = atom_id        # An unique number
@@ -53,7 +63,7 @@ class Atom:
         self.sticks         = False
         self.spheres        = False
         self.surface        = False
-        self.connected2     = []
+        self.bonds_indices  = bonds_indices
         self.bonds          = []
     
     def coords (self, frame = None):

@@ -1,32 +1,9 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-#
-#  vis_parser.py
-#  
-#  Copyright 2016 Carlos Eduardo Sequeiros Borja <casebor@gmail.com>
-#  
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#  
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#  
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
-#  
-#  
 import os
 import time
 import multiprocessing
 import numpy as np
 #import VISMOL.vModel.atom_types as at 
-import VISMOL.vModel.cDistances as cdist
+#import VISMOL.vModel.cDistances as cdist
 from   VISMOL.vModel import VismolObject
 
 
@@ -163,7 +140,7 @@ def load_xyz_file (infile = None, VMSession =  None, gridsize = 3):
     #-------------------------------------------------------------------------------------------
     #                                Bonded and NB lists 
     #-------------------------------------------------------------------------------------------
-    atoms, bonds_full_indexes, bonds_pair_of_indexes, NB_indexes_list = cdist.generete_full_NB_and_Bonded_lists(atoms)
+    #atoms, bonds_full_indexes, bonds_pair_of_indexes, NB_indexes_list = cdist.generete_full_NB_and_Bonded_lists(atoms)
     #-------------------------------------------------------------------------------------------
     
     
@@ -177,11 +154,11 @@ def load_xyz_file (infile = None, VMSession =  None, gridsize = 3):
                                                trajectory  = frames)
     
     
-    vismol_object._generate_atomtree_structure()
-    vismol_object._generate_atom_unique_color_id()
-    vismol_object.index_bonds       = bonds_full_indexes
-    vismol_object.index_bonds_pairs = bonds_pair_of_indexes
-    vismol_object.non_bonded_atoms  = NB_indexes_list
+    #vismol_object._generate_atomtree_structure()
+    #vismol_object._generate_atom_unique_color_id()
+    #vismol_object.index_bonds       = bonds_full_indexes
+    #vismol_object.index_bonds_pairs = bonds_pair_of_indexes
+    #vismol_object.non_bonded_atoms  = NB_indexes_list
     #-------------------------------------------------------------------------------------------
     return vismol_object
 
@@ -223,16 +200,20 @@ def get_atom_list_from_xyz_frame (raw_atoms, frame = True, gridsize = 3, at = No
             
             at_ch   = 'X'          
             
+            at_occup   = 0.0     #occupancy
+            at_bfactor = 0.0
+            at_charge  = 0.0
+            
 
             #at_symbol = line[5].split('.')
             at_symbol = at_name
             cov_rad   = at.get_cov_rad (at_name)
-
-
-
             gridpos  = [int(at_pos[0]/gridsize), int(at_pos[1]/gridsize), int(at_pos[2]/gridsize)]
             
-            atoms.append([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos ])
+            #atoms.append([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge ])
+
+            atoms.append([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge ])
+            
             index += 1
 
             frame_coordinates.append(float(line[1]))
@@ -243,7 +224,7 @@ def get_atom_list_from_xyz_frame (raw_atoms, frame = True, gridsize = 3, at = No
     frames.append(frame_coordinates)
     
     #print (frames)
-    print (atoms)
+    #print (atoms)
     return atoms, frames#, coords
 
 def get_bonds (raw_bonds):
@@ -253,7 +234,7 @@ def get_bonds (raw_bonds):
     index_bonds_pairs_orders = []
     
     #print (raw_bonds)
-    print ('Obtain bonds from original MOL2 file')
+    #print ('Obtain bonds from original MOL2 file')
     for line in raw_atoms:
         line = line.split()
         if len(line) == 4:

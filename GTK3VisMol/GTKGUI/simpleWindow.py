@@ -40,7 +40,7 @@ class VismolGTK3Session():
         # - - - - - - - - -  GTK STUFFS  - - - - - - - - -               
         self.window = Gtk.Window(title="VisMol window")                  
         #filechooser = FileChooser()                                     
-                                         
+        self.window.set_default_size(600, 600)                          
         self.container = Gtk.Box (orientation = Gtk.Orientation.VERTICAL)
         # - - - - - - - - - - - -  - - - - - - - - - - - -               
                                          
@@ -53,9 +53,9 @@ class VismolGTK3Session():
         self.window.connect("key-release-event", self.vismolSession.glwidget.key_released) 
         self.window.add(self.container)                                                    
         #------------------------------------------------------------------------
-        #self.entry = Gtk.Entry()
+        self.entry = Gtk.Entry()
         
-        #self.container.pack_start(self.entry, False, False, 0)
+        self.container.pack_start(self.entry, False, False, 0)
         #--------------------------------------------------------------------------- #
         self.window.connect("delete-event",    Gtk.main_quit)                             #
         self.window.show_all()                                                            #

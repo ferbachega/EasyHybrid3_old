@@ -416,7 +416,7 @@ class VisMolSession (ShowHideVisMol):
                 #from VISMOL.glWidget import gtk3 as VisMolGLWidget
                 from VISMOL.glWidget import VisMolGLWidget
                 self.glwidget   = VisMolGLWidget.GtkGLAreaWidget(self)
-            
+                self.glwidget.vm_widget.queue_draw()
             if backend == 'qt4':
                 self.glwidget   = VisMolGLWidget.QtGLWidget(self)
         else:
@@ -552,8 +552,8 @@ class VisMolSession (ShowHideVisMol):
         rep =  RibbonsRepresentation(name = 'ribbons', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
         self.vismol_objects[-1].representations[rep.name] = rep
         
-        #rep =  SurfaceRepresentation(name = 'surface', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        #self.vismol_objects[-1].representations[rep.name] = rep
+        rep =  SurfaceRepresentation(name = 'surface', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        self.vismol_objects[-1].representations[rep.name] = rep
 
         #self.glwidget.queue_draw()
        
