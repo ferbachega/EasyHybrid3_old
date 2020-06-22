@@ -118,65 +118,64 @@
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">GTKGUI/old/icon_new_project.png</property>
+    <property name="pixbuf">icons/icon_new_project.png</property>
   </object>
   <object class="GtkImage" id="image10">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">GTKGUI/old/icon_player_play.png</property>
+    <property name="pixbuf">icons/icon_player_play.png</property>
   </object>
   <object class="GtkImage" id="image11">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">GTKGUI/old/icon_terminal.png</property>
+    <property name="pixbuf">icons/icon_terminal.png</property>
   </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">GTKGUI/old/icon_open.png</property>
+    <property name="pixbuf">icons/icon_open.png</property>
   </object>
   <object class="GtkImage" id="image3">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">GTKGUI/old/icon_save.png</property>
+    <property name="pixbuf">icons/icon_save.png</property>
   </object>
   <object class="GtkImage" id="image4">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">GTKGUI/old/icon_save_as.png</property>
+    <property name="pixbuf">icons/icon_save_as.png</property>
   </object>
   <object class="GtkImage" id="image5">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">GTKGUI/old/icon_PMF.png</property>
+    <property name="pixbuf">icons/icon_PMF.png</property>
   </object>
   <object class="GtkImage" id="image6">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">GTKGUI/old/icon_show_sequence_24x24.png</property>
+    <property name="pixbuf">icons/icon_show_sequence_24x24.png</property>
   </object>
   <object class="GtkImage" id="image7">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">GTKGUI/old/icon_show_cell_pb.png</property>
+    <property name="pixbuf">icons/icon_show_cell_pb.png</property>
   </object>
   <object class="GtkImage" id="image8">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">GTKGUI/old/icon_measure.png</property>
+    <property name="pixbuf">icons/icon_measure.png</property>
   </object>
   <object class="GtkImage" id="image9">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">GTKGUI/old/icon_system_check.png</property>
+    <property name="pixbuf">icons/icon_system_check.png</property>
   </object>
   <object class="GtkWindow" id="window1">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">VisMol Main Window</property>
     <property name="default_width">600</property>
     <property name="default_height">400</property>
-    <property name="icon">GTKGUI/old/icon_3.png</property>
-    <signal name="realize" handler="on_resize" swapped="no"/>
+    <property name="icon">icons/icon_3.png</property>
     <child>
       <placeholder/>
     </child>
@@ -215,7 +214,6 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <signal name="activate" handler="on_file_open_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -395,7 +393,6 @@
                     <property name="label" translatable="yes">save</property>
                     <property name="use_underline">True</property>
                     <property name="icon_widget">image3</property>
-                    <signal name="clicked" handler="on_button_pDynamo" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -409,7 +406,6 @@
                     <property name="label" translatable="yes">save as</property>
                     <property name="use_underline">True</property>
                     <property name="icon_widget">image4</property>
-                    <signal name="clicked" handler="test" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -423,7 +419,6 @@
                     <property name="label" translatable="yes">Command line</property>
                     <property name="use_underline">True</property>
                     <property name="icon_widget">image11</property>
-                    <signal name="toggled" handler="on_terminal_button" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -447,7 +442,6 @@
                     <property name="label" translatable="yes">toolbutton13</property>
                     <property name="use_underline">True</property>
                     <property name="icon_widget">image10</property>
-                    <signal name="clicked" handler="on_main_toolbar_open_animate_trajectory" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -618,8 +612,6 @@
             <property name="can_focus">True</property>
             <property name="valign">baseline</property>
             <property name="orientation">vertical</property>
-            <property name="position_set">True</property>
-            <property name="wide_handle">True</property>
             <child>
               <placeholder/>
             </child>

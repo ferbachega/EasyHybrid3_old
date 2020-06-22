@@ -375,12 +375,12 @@ class ShowHideVisMol:
 class VisMolSession (ShowHideVisMol):
     """ Class doc """
 
-    def __init__ (self, glwidget = False, backend = 'gtk3', main_session = None):
+    def __init__ (self, glwidget = False, toolkit = 'gtk3', main_session = None):
         """ Class initialiser """
         #self.vismol_objects         = [] # self.vismol_objects
         #self.vismol_objects_dic     = {} # self.vismol_objects_dic   
         self.main_session = None
-        
+        self.toolkit = toolkit
         
         self.vismol_objects     = [] # old Vobjects
         self.vismol_objects_dic = {}
@@ -410,14 +410,14 @@ class VisMolSession (ShowHideVisMol):
 				      }
         '''
         
-        self.backend = backend
+        self.toolkit = toolkit
         if glwidget:
-            if backend == 'gtk3':
+            if toolkit == 'gtk3':
                 #from VISMOL.glWidget import gtk3 as VisMolGLWidget
                 from VISMOL.glWidget import VisMolGLWidget
                 self.glwidget   = VisMolGLWidget.GtkGLAreaWidget(self)
                 self.glwidget.vm_widget.queue_draw()
-            if backend == 'qt4':
+            if toolkit == 'qt4':
                 self.glwidget   = VisMolGLWidget.QtGLWidget(self)
         else:
             self.glwidget = None
@@ -525,9 +525,13 @@ class VisMolSession (ShowHideVisMol):
         if infile[-3:] == 'xyz':
             self._load_xyz_file(infile = infile)
 
-        #for atom in self.vismol_objects[-1].atoms2:
-        #    print (atom)
         self.vismol_objects[-1].active = True
+        
+        if self.toolkit == 'gtk':
+            
+            print(self.vismol_objects)
+        
+        
         #self.vismol_objects[-1].generate_default_representations (reps_list = self.default_rep)
         #print (self.vismol_objects[-1].representations)
 
@@ -552,12 +556,12 @@ class VisMolSession (ShowHideVisMol):
         rep =  RibbonsRepresentation(name = 'ribbons', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
         self.vismol_objects[-1].representations[rep.name] = rep
         
-        rep =  SurfaceRepresentation(name = 'surface', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        self.vismol_objects[-1].representations[rep.name] = rep
+        #rep =  SurfaceRepresentation(name = 'surface', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        #self.vismol_objects[-1].representations[rep.name] = rep
 
         #self.glwidget.queue_draw()
        
-        #if self.backend == 'gtk3':
+        #if self.toolkit == 'gtk3':
         #    self.refresh_gtk(widget)
         #visObj = vismolSession.vismol_objects[-1]
         if autocenter:
@@ -598,16 +602,22 @@ class VisMolSession (ShowHideVisMol):
         self.picking_selections = [None]*4        
         self.vismol_objects.pop(index)
         #self.glwidget.updateGL()
-    ''' 
+    #''' 
     
     def select (self, obj =  None, indices = []):
         """ Function doc """
 
     def orient (self, obj =  None):
         """ Function doc """  
+    
+    def center (self, visObj):
+        """ Function doc """
+        self.glwidget.vm_widget.center_on_coordinates(visObj, visObj.mass_center)
+
 
     def center_by_index(self, Vobject =  None, index = None):
         """ Function doc """  
+        
         mass_center = self.vismol_objects[index].mass_center
         #self.glwidget.center_on_atom(mass_center)
 
@@ -696,7 +706,7 @@ class VisMolSession (ShowHideVisMol):
         # - - - - - - - - - - - -  - - - - - - - - - - - -               
                                        
         #---------------------------------------------------------------------------  
-        #self.vismolSession  =  VisMolSession(glwidget = True, backend = 'gtk3')       
+        #self.vismolSession  =  VisMolSession(glwidget = True, toolkit = 'gtk3')       
         self.container.pack_start(self.glwidget, True, True, 0)         
                                          
         self.window.connect("key-press-event"  , self.glwidget.key_pressed)  

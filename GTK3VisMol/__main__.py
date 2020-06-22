@@ -28,15 +28,15 @@ from gi.repository import Gtk, Gdk
 #import os
 
 from VISMOL.vCore.VismolSession  import VisMolSession
-from GTKGUI  import gtkgui
+from GTKGUI  import VismolMain 
 
 
 def main():
     
-    vismolSession  =  VisMolSession(glwidget = True, backend = 'gtk3')
+    vismolSession  =  VisMolSession(glwidget = True, toolkit = 'gtk3')
     #vismolSession.insert_glmenu()
     
-    gui            = gtkgui.GTKGUI(vismolSession)
+    gui            = VismolMain.VismolMainWindow(vismolSession)
     return 0
 
 if __name__ == '__main__':
