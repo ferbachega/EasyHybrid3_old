@@ -109,13 +109,7 @@ class VismolMainWindow ( ):
 
         Gtk.main()
 
-    def on_changed(self, selection):
-        # get the model and the iterator that points at the data in the model
-        (model, iter) = selection.get_selected()
-        # set the label to a new value depending on the selection
-        self.label.set_text("\n %s %s %s" %
-                            (model[iter][0],  model[iter][1], model[iter][2]))
-        return True
+
 
     def test (self, widget):
         """ Function doc """
@@ -241,6 +235,117 @@ class GtkMainTreeView(Gtk.TreeView):
         if event.button == 1:
             print ('event.button == 1:')
     
+
+class TreeViewMenu:
+    """ Class doc """
+    
+    def __init__ (self, treeview):
+        """ Class initialiser """
+        pass
+        self.treeview = treeview
+        
+        functions = {
+                'test':self.f1 ,
+                'f1': self.f1,
+                'f2': self.f2,
+                'delete': self.f3,
+        }
+        self.build_glmenu(functions)
+
+
+
+    def f1 (self):
+        """ Function doc """
+        print('f1')
+        
+    def f2 (self):
+        """ Function doc """
+        print('f2')
+        self._show_lines(visObj = self.vismol_objects[0], indices = [0,1,2,3,4] )
+    
+    def f3 (self, visObj = None):
+        """ Function doc """
+        
+        selection     = self.treeview.get_selection()
+        (model, iter) = selection.get_selected()
+
+
+        self.selectedID  = int(model.get_value(iter, 1))  # @+
+        
+        
+        
+        #visObj = self.treeview.vismolSession.vismol_objects[self.selectedID]
+        visObj = self.treeview.vismolSession.vismol_objects.pop(self.selectedID)
+        
+        self.treeview.store .clear()
+        #n = 0
+        #i = 1
+        for vis_object in self.treeview.vismolSession.vismol_objects:
+            print ('\n\n',vis_object.name,'\n\n')
+
+            data = [vis_object.active          , 
+                    str(self.treeview.vismolSession.vismol_objects.index(vis_object)),
+                    vis_object.name            , 
+                    str(len(vis_object.atoms)) , 
+                    str(len(vis_object.frames)),
+                   ]
+            model.append(data)
+        self.treeview.vismolSession.glwidget.queue_draw()
+            #i +=1
+            #n = n + 1
+        
+        
+        #self.treeview.vismolSession.center(visObj)
+
+        
+        print('f3')
+
+    def build_glmenu (self, menu_items = None):
+        """ Function doc """
+        self.glMenu = Gtk.Menu()
+        for label in menu_items:
+            mitem = Gtk.MenuItem(label)
+            mitem.connect('activate', menu_items[label])
+            self.glMenu.append(mitem)
+            mitem = Gtk.SeparatorMenuItem()
+            self.glMenu.append(mitem)
+
+        self.glMenu.show_all()
+
+    def open_menu (self, visObj = None):
+        """ Function doc """
+        print (visObj)
+        
+        
+        self.glMenu.popup(None, None, None, None, 0, 0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
     
 
@@ -488,98 +593,6 @@ class GtkMainTreeView_old(Gtk.TreeView):
             visObj.dots_actived      = False
             self.vismolSession.glwidget.vm_widget.queue_draw()
         
-
-
-
-
-class TreeViewMenu:
-    """ Class doc """
-    
-    def __init__ (self, treeview):
-        """ Class initialiser """
-        pass
-        self.treeview = treeview
-        
-        functions = {
-                'test':self.f1 ,
-                'f1': self.f1,
-                'f2': self.f2,
-                'delete': self.f3,
-        }
-        self.build_glmenu(functions)
-
-
-
-    def f1 (self):
-        """ Function doc """
-        print('f1')
-        
-    def f2 (self):
-        """ Function doc """
-        print('f2')
-        self._show_lines(visObj = self.vismol_objects[0], indices = [0,1,2,3,4] )
-    
-    def f3 (self, visObj = None):
-        """ Function doc """
-        
-        selection     = self.treeview.get_selection()
-        (model, iter) = selection.get_selected()
-
-
-        self.selectedID  = int(model.get_value(iter, 1))  # @+
-        
-        
-        
-        #visObj = self.treeview.vismolSession.vismol_objects[self.selectedID]
-        visObj = self.treeview.vismolSession.vismol_objects.pop(self.selectedID)
-        
-        self.treeview.store .clear()
-        #n = 0
-        #i = 1
-        for vis_object in self.treeview.vismolSession.vismol_objects:
-            print ('\n\n',vis_object.name,'\n\n')
-
-            data = [vis_object.active          , 
-                    str(self.treeview.vismolSession.vismol_objects.index(vis_object)),
-                    vis_object.name            , 
-                    str(len(vis_object.atoms)) , 
-                    str(len(vis_object.frames)),
-                   ]
-            model.append(data)
-        self.treeview.vismolSession.glwidget.queue_draw()
-            #i +=1
-            #n = n + 1
-        
-        
-        #self.treeview.vismolSession.center(visObj)
-
-        
-        print('f3')
-
-    def build_glmenu (self, menu_items = None):
-        """ Function doc """
-        self.glMenu = Gtk.Menu()
-        for label in menu_items:
-            mitem = Gtk.MenuItem(label)
-            mitem.connect('activate', menu_items[label])
-            self.glMenu.append(mitem)
-            mitem = Gtk.SeparatorMenuItem()
-            self.glMenu.append(mitem)
-
-        self.glMenu.show_all()
-
-    def open_menu (self, visObj = None):
-        """ Function doc """
-        print (visObj)
-        
-        
-        self.glMenu.popup(None, None, None, None, 0, 0)
-
-
-
-
-
-
 
 
 
