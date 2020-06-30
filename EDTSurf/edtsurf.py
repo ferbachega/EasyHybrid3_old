@@ -47,11 +47,16 @@ class Triangle(Structure):
 # inner or outer surface for output, 1-inner and outer 2-outer 3-inner (default is 2)
 # scale factor, float point in (0,20.0] (default is 4.0)
 #
-# Return [list_of_vertices, list_of_triangles] similar to the OFF (Object File
-# Format) description, where
+# Return
+# [list_of_vertices, list_of_triangles, list_of_vertices_gpu, list_of_triangles_gpu],
+# where:
 #     list_of_vertices is [[x0, y0, z0], [x1, y1, z1], ...]
 # and list_of_triangles is [[a0, b0, c0], [a1, b1, c1], ...]
+# (similar to the OFF (Object File Format) description
 #
+# list_of_vertices_gpu is [x0, y0, z0, x1, y1, z1, ...]
+# and list_of_triangles_gpu is [a0, b0, c0, a1, b1, c1, ...]
+
 # Indexing in list_of_triangles is 0-based as usual
 #
 # If an error occurs, an Exception is raised
@@ -108,15 +113,30 @@ def calc_surface(pdbfname, triangulation_type=2, surface_type=3, color_mode=2, p
 	pyverts = [[0.0] * 3 for i in range(nvertices.value)]
 	pytris  = [[0]   * 3 for i in range(ntriangles.value)]
 
+	# create also lists to hold the same data but in a format more convenient
+	# for GPU processing: a single list containing all vertex coordinates in
+	# sequence
+	pyverts_gpu = [[0.0] for i in range(3*nvertices.value)]
+	pytris_gpu  = [[0]   for i in range(3*ntriangles.value)]
+
+
 	for i in range(len(pyverts)): # use i and range to avoid append()
 		pyverts[i][0] = vert_array[i].x
 		pyverts[i][1] = vert_array[i].y
 		pyverts[i][2] = vert_array[i].z
 
+		pyverts_gpu[i*3 + 0] = vert_array[i].x
+		pyverts_gpu[i*3 + 1] = vert_array[i].y
+		pyverts_gpu[i*3 + 2] = vert_array[i].z
+
 	for i in range(len(pytris)):
 		pytris[i][0] = tri_array[i].a
 		pytris[i][1] = tri_array[i].b
 		pytris[i][2] = tri_array[i].c
+
+		pytris_gpu[i*3 + 0] = tri_array[i].a
+		pytris_gpu[i*3 + 1] = tri_array[i].b
+		pytris_gpu[i*3 + 2] = tri_array[i].c
 
 	print('free EDTSurf arrays')
 	lib.freelists.argtypes = [c_point_p, c_tri_p]
@@ -124,7 +144,7 @@ def calc_surface(pdbfname, triangulation_type=2, surface_type=3, color_mode=2, p
 
 	lib.freelists(vertices, triangles)
 
-	return [pyverts, pytris]
+	return [pyverts, pytris, pyverts_gpu, pytris_gpu]
 
 
 
@@ -137,7 +157,7 @@ if __name__ == '__main__':
 
 	try:
 		# todos os argumentos após pdbfname possuem valores padrão
-		[verts, tris] = calc_surface(pdbfname)
+		[verts, tris, verts_gpu, tris_gpu] = calc_surface(pdbfname)
 
 		# talvez scale_factor seja um argumento a se ajustar
 		#[verts, tris] = calc_surface(pdbfname, scale_factor=1.0)
@@ -146,5 +166,9 @@ if __name__ == '__main__':
 	else:
 		print('len(verts) =', len(verts), ', [0] =', verts[0])
 		print('len(tris) =', len(tris), ', [0] =', tris[0])
+
+		print('len(verts_gpu) =', len(verts_gpu), ', [0] =', verts_gpu[0], verts_gpu[1], verts_gpu[2])
+		print('len(tris_gpu) =',  len(tris_gpu),  ', [0] =', tris_gpu[0], tris_gpu[1], tris_gpu[2])
+
 
 		print('Done')
