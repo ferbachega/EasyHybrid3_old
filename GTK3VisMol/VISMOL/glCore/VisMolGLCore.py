@@ -271,19 +271,28 @@ class VisMolGLCore():
 
                         # Getting the information about the atom that was identified in the click
                         print(self.atom_picked.chain,self.atom_picked.resn, self.atom_picked.resi, self.atom_picked.name, self.atom_picked.index, self.atom_picked.bonds_indices)
+                        label = '{} / {} / {}({}) / {}({})'.format( self.atom_picked.Vobject.name,
+																    self.atom_picked.chain,
+                                                                    self.atom_picked.resn, 
+                                                                    self.atom_picked.resi, 
+                                                                    self.atom_picked.name, 
+                                                                    self.atom_picked.index)
                         #for bond in self.atom_picked.bonds:
                         #    print (bond.atom_index_i, bond.atom_index_j)
                         self.atom_picked = None
                     else:
+                        
                         # When no atom is identified in the click (user clicked on a point in the background)
                         print ('self.atom_picked is None')
                         print ('selection is not active')
                 else:
                     print('selection is  active')
                     self.vismolSession.selections[self.vismolSession.current_selection].get_selection_info()
-                #self.parent_widget.glMenu.#open_gl_menu(event = event)
                 
-                self.parent_widget.glMenu.popup(None, None, None, None, 0, 0)  
+                #self.parent_widget.glMenu.#open_gl_menu(event = event)
+                #self.parent_widget.menu_header.set_label(label)
+                #self.parent_widget.glMenu.popup(None, None, None, None, 0, 0)  
+                self.parent_widget.show_gl_menu()
         return True
     
     def mouse_motion(self, mouse_x, mouse_y):

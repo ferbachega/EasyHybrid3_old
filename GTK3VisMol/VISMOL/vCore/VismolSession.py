@@ -125,13 +125,18 @@ class ShowHideVisMol:
 
 
 
-    def show_or_hide (self, _type = 'lines', sel_objects = [] , atoms = [], show = True ):
+    def show_or_hide (self, _type = 'lines', selection = None,  show = True ):
         """ Function doc """
-        #self._selected_atoms_change_attributes(_type = _type, 
-        #                                       atoms = atoms, 
-        #                                        show = show )
+
+        
+        if selection:
+            pass
+        else:
+            selection = self.selections[self.current_selection]
+        
+        
         self.change_attributes_for_selected_atoms (_type = _type , 
-                                                   atoms = self.selections[self.current_selection].selected_atoms,  
+                                                   atoms = selection.selected_atoms,  
                                                     show = show)
         '''
         for atom in self.selections[self.current_selection].selected_atoms:
@@ -202,7 +207,7 @@ class ShowHideVisMol:
         
         
         
-        for vobject in self.selections[self.current_selection].selected_objects:
+        for vobject in selection.selected_objects:
             #print("Vobject.name:",vobject.name)
 
             if _type in ['lines','sticks','ribbons']:
@@ -299,29 +304,6 @@ class ShowHideVisMol:
                             vobject.representations[_type].active = True
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    
-                
-                
-                
-                
-                
                 if _type == 'nonbonded':
                     pass
                 
@@ -451,27 +433,118 @@ class VisMolSession (ShowHideVisMol):
         self.picking_selections =  vPick()
         
     
-        def f1 (_):
+    
+    
+    
+    
+    
+    
+        def menu_show_lines (_):
             """ Function doc """
-            print('f1')
-            
-        def f2 (_):
-            """ Function doc """
-            print('f2')
-            self._show_lines(visObj = self.vismol_objects[0], indices = [0,1,2,3,4] )
+            self.show_or_hide( _type = 'lines', show = True)
         
-        def f3 (_):
+        def menu_hide_lines (_):
             """ Function doc """
-            print('f3')
-            
-            
+            self.show_or_hide( _type = 'lines', show = False)
 
-        functions = {
-                'f1': f1,
-                'f2': f2,
-                'f3': f3,
-        }
-        self.insert_glmenu(functions)
+        def menu_show_sticks (_):
+            """ Function doc """
+            self.show_or_hide( _type = 'sticks', show = True)
+        
+        def menu_hide_sticks (_):
+            """ Function doc """
+            self.show_or_hide( _type = 'sticks', show = False)
+    
+        def menu_show_spheres (_):
+            """ Function doc """
+            self.show_or_hide( _type = 'spheres', show = True)
+        
+        def menu_hide_spheres (_):
+            """ Function doc """
+            self.show_or_hide( _type = 'spheres', show = False)
+        
+
+            
+    
+    
+    
+     
+        menu = { 
+                'header' : ['MenuItem', None],
+                
+                
+                'separator1':['separator', None],
+                
+                
+                'show'   : [
+                            'submenu' ,{
+                                        
+                                        'lines'    : ['MenuItem', menu_show_lines],
+                                        'sticks'   : ['MenuItem', menu_show_sticks],
+                                        'spheres'  : ['MenuItem', menu_show_spheres],
+                                        'separator2':['separator', None],
+                                        'nonbonded': ['MenuItem', None],
+                
+                                       }
+                           ],
+                
+                
+                'hide'   : [
+                            'submenu',  {
+                                        'lines'    : ['MenuItem', menu_hide_lines],
+                                        'sticks'   : ['MenuItem', menu_hide_sticks],
+                                        'spheres'  : ['MenuItem', menu_hide_spheres],
+                                        'nonbonded': ['MenuItem', None],
+                                        }
+                            ],
+                
+                
+                'separator2':['separator', None],
+
+                
+                
+                'label':  ['submenu' , {
+                                        'Atom'         : [
+                                                           'submenu', {
+                                                                       'lines'    : ['MenuItem', None],
+                                                                       'sticks'   : ['MenuItem', None],
+                                                                       'spheres'  : ['MenuItem', None],
+                                                                       'nonbonded': ['MenuItem', None],
+                                                                       }
+                                                          ],
+                                        
+                                        'Atom index'   : ['MenuItem', None],
+                                        'residue name' : ['MenuItem', None],
+                                        'residue_index': ['MenuItem', None],
+                                       },
+                           ]
+                }
+
+        self.insert_glmenu(menu)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         self.default_rep = {'nonbonded' : False,
                               'lines'   : True,
@@ -481,9 +554,9 @@ class VisMolSession (ShowHideVisMol):
                               'surface' : False,
                               }
 
-    def insert_glmenu (self, menu_items = None):
+    def insert_glmenu (self, menu  = None):
 	    """ Function doc """
-	    self.glwidget.build_glmenu(menu_items = menu_items)
+	    self.glwidget.build_glmenu(menu  = menu )
 
     def command_line (self, entry = None):
         """ Function doc """
@@ -553,11 +626,11 @@ class VisMolSession (ShowHideVisMol):
         #rep  = SpheresRepresentation (name = 'spheres', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
         #self.vismol_objects[-1].representations[rep.name] = rep
         
-        rep =  RibbonsRepresentation(name = 'ribbons', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        self.vismol_objects[-1].representations[rep.name] = rep
-        
-        #rep =  SurfaceRepresentation(name = 'surface', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        #rep =  RibbonsRepresentation(name = 'ribbons', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
         #self.vismol_objects[-1].representations[rep.name] = rep
+        
+        rep =  SurfaceRepresentation(name = 'surface', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        self.vismol_objects[-1].representations[rep.name] = rep
 
         #self.glwidget.queue_draw()
        

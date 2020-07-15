@@ -29,7 +29,7 @@ from gi.repository import Gtk, Gdk
 #import threading
 
 from VISMOL.vCore.VismolSession  import VisMolSession
-from GTKGUI  import gtkgui
+#from GTKGUI  import gtkgui
 
 class VismolGTK3Session():
     """ Class doc """
@@ -46,7 +46,7 @@ class VismolGTK3Session():
                                          
                                          
         #---------------------------------------------------------------------------  
-        self.vismolSession  =  VisMolSession(glwidget = True, backend = 'gtk3')       
+        self.vismolSession  =  VisMolSession(glwidget = True, toolkit = 'gtk3')       
         self.container.pack_start(self.vismolSession.glwidget, True, True, 0)         
                                          
         self.window.connect("key-press-event"  , self.vismolSession.glwidget.key_pressed)  

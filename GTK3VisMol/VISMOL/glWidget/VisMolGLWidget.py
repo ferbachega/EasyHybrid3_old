@@ -44,86 +44,84 @@ from OpenGL import GL
 from OpenGL.GL import shaders
 
 
-class GLMenu:
+class GLMenus :
     """ Class doc """
-    def __init__ (self, glWidget):
-        """ Class initialiser """
-        xml = '''
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
-<interface>
-  <requires lib="gtk+" version="3.20"/>
-  <object class="GtkMenu" id="menu1">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <child>
-      <object class="GtkMenuItem" id="menuItem1">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes">__glade_unnamed_2</property>
-        <property name="use_underline">True</property>
-      </object>
-    </child>
-  </object>
-        '''
-        self.builder = Gtk.Builder()
-        self.builder.add_from_string(xml)
-        #self.builder.connect_signals(self)
-        #self.glWidget = glWidget
-
-        #self.menuzao = Gtk.Menu()
-        self.menuzao = self.builder.get_object('menu1')
+    def __init__ (self, glWidget, menu_items):
         
-        self.file_new  = Gtk.MenuItem("New")
-        self.file_open = Gtk.MenuItem("Open")
-        self.file_exit = Gtk.MenuItem("Exit")
-        self.builder.get_object('menuItem1').set_label('Tche!!')
         
-        #self.builder.get_object('menu1').append(self.file_new)
-        self.menuzao.append(self.file_open)
-        self.menuzao.append(Gtk.SeparatorMenuItem())
-        self.menuzao.append(self.file_exit)
+        #---------------------------------------------------------
+        self.menu1 = Gtk.Menu()
+        self.menu1_item_label          = Gtk.MenuItem('label'       )
+        self.menu1_separator1         = Gtk.SeparatorMenuItem()
+        self.menu1_item_eneble        = Gtk.MenuItem('enable'       )
+        self.menu1_item_disable       = Gtk.MenuItem('disable'      )
+        self.menu1_separator2         = Gtk.SeparatorMenuItem()
+        self.menu1_item_delete_all    = Gtk.MenuItem('delete all'   )
+        self.menu1_item_reinitialize  = Gtk.MenuItem('reinitialize' )
+        #---------------------------------------------------------
+        self.menu1.append(self.menu1_item_label       )
+        self.menu1.append(self.menu1_separator1       )
+        self.menu1.append(self.menu1_item_eneble      )
+        self.menu1.append(self.menu1_item_disable     )
+        self.menu1.append(self.menu1_separator2       )
+        self.menu1.append(self.menu1_item_delete_all  )
+        self.menu1.append(self.menu1_item_reinitialize)
+        #---------------------------------------------------------
+        
+    
+               
         
 
+
+
+        #---------------------------------------------------------
+        self.menu2 = Gtk.Menu()
+        self.menu2_item_label         = Gtk.MenuItem('label')
+        self.menu2_separator1         = Gtk.SeparatorMenuItem()
+        self.menu2_item_atom          = Gtk.MenuItem('atom')
+        self.menu2_item_residue       = Gtk.MenuItem('residue')
+        self.menu2_item_chain         = Gtk.MenuItem('chain')
+        self.menu2_separator2         = Gtk.SeparatorMenuItem()
+        self.menu2_item_molecule      = Gtk.MenuItem('molecule')
+        self.menu2_separator3         = Gtk.SeparatorMenuItem()
+        #---------------------------------------------------------
+        self.menu2.append(self.menu2_item_label   )
+        self.menu2.append(self.menu2_separator1   )
+        self.menu2.append(self.menu2_item_atom    )
+        self.menu2.append(self.menu2_item_residue )
+        self.menu2.append(self.menu2_item_chain   )
+        self.menu2.append(self.menu2_separator2   )
+        self.menu2.append(self.menu2_item_molecule)
+        self.menu2.append(self.menu2_separator3   )
+        #---------------------------------------------------------
+
+
+
+        self.menu3 = Gtk.Menu()
+        self.menu3_item_label = Gtk.MenuItem('label')
+        for label in menu_items:
+            mitem = Gtk.MenuItem(label)
+            mitem.connect('activate', menu_items[label])
+            self.glMenu.append(mitem)
+
+   
+        
     
-    def open_gl_menu(self, event = None):
+    def build_glmenu (self, menu_items = None):
         """ Function doc """
+        self.glMenu = Gtk.Menu()
         
-        # Check if right mouse button was preseed
-        if event.button == 3:
+        self.menu_header = Gtk.MenuItem('')
+        #mitem.connect('activate', menu_items[label])
+        self.glMenu.append(self.menu_header)
         
-        #self.popup.popup(None, None, None, None, event.button, event.time)
-        #return True # event has been handled        
-            print('clickei no menu2')
-            widget = self.menuzao#.get_object('menu1')
-            widget.popup(None, None, None, None, event.button, event.time)        
-            pass
-    
-    def menuItem_function (self, widget, data):
-        """ Function doc """
-        #print ('Charlitos, seu lindo')
-        if widget == self.builder.get_object('menuitem1'):
-            self.glWidget.test_hide()
-        
-        if widget == self.builder.get_object('menuitem4'):
-            self.glWidget.test_show()
-        
-        if widget == self.builder.get_object('menuitem5'):
-        
-            print ('Charlitos, el diablo')
-        
-        if widget == self.builder.get_object('menuitem6'):
-            print ('Charlitos, el locotto del Andes')
-        
-        if widget == self.builder.get_object('menuitem7'):
-            print ('Charlitos, seu lindo2')
-        
-        if widget == self.builder.get_object('menuitem8'):
-            print ('Charlitos, seu lindo3')
-        
-        if widget == self.builder.get_object('menuitem9'):
-            print ('Charlitos, seu lindo4')
-            
+        for label in menu_items:
+            mitem = Gtk.MenuItem(label)
+            mitem.connect('activate', menu_items[label])
+            self.glMenu.append(mitem)
+			
+        self.glMenu.show_all()
+     
 
 
 class GLMenu2:
@@ -316,48 +314,71 @@ class GtkGLAreaWidget(Gtk.GLArea):
         
         #self.glMenu = GLMenu(self)
     
-    def build_glmenu (self, menu_items = None):
+    
+    def build_submenus_from_dicts (self, menu_dict):
         """ Function doc """
-        self.glMenu = Gtk.Menu()
-        for label in menu_items:
-            mitem = Gtk.MenuItem(label)
-            mitem.connect('activate', menu_items[label])
-            self.glMenu.append(mitem)
-        self.glMenu.show_all()
+        menu = Gtk.Menu()
+         
+        for key in menu_dict:
+            mitem = Gtk.MenuItem(key)
+            
+            if menu_dict[key][0] == 'submenu':
+                menu2 = self.build_submenus_from_dicts (menu_dict[key][1])
+                mitem.set_submenu(menu2)
+            
+            
+            elif menu_dict[key][0] == 'separator':
+                mitem = Gtk.SeparatorMenuItem()
+                #menu2 = self.build_submenus_from_dicts (menu_dict[key][1])
+                #mitem.set_submenu(menu2)
+            
+            
+            else:
+                if menu_dict[key][1] != None:
+                    mitem.connect('activate', menu_dict[key][1])
+                else:
+                    pass
+            menu.append(mitem)
+        
+        return menu
+        #menu.show_all()
      
-        
-        #return menu        
-        
-        
-        #if menu_items:
-        #    print('building a new glMenu, diferent from default')
-        #else:
-        #    self.glMenu = GLMenu2(self)
-            ##main_menu_bar = Gtk.MenuBar()
-            ##self.gl_menu = self.glMenu.builder.get_object('menu1')
-            ## Drop down menu
-            #file_menu = Gtk.Menu()
-            #file_menu_dropdown = Gtk.MenuItem("File")
-            #
-            ## File menu items
-            #file_new = Gtk.MenuItem("New")
-            #file_open = Gtk.MenuItem("Open")
-            #file_exit = Gtk.MenuItem("Exit")
-            #
-            ## File button has dropdown
-            ##self.gl_menu.set_submenu(file_menu)
-            #
-            ## Add menu items
-            #self.gl_menu.append(file_new)
-            #self.gl_menu.append(file_open)
-            #self.gl_menu.append(Gtk.SeparatorMenuItem())
-            #self.gl_menu.append(file_exit)
-            #
-            ## Add to main menu bar
-            ##main_menu_bar.append(file_menu_dropdown)
-            ##self.gl_menu.gl_menu.append()
+    def show_gl_menu (self, signals = None):
+        """ Function doc """
+        self.glMenu.popup(None, None, None, None, 0, 0)
+    
+    def build_glmenu (self, menu = None):
+        """ Function doc """
 
+        #self.glMenu = Gtk.Menu()
+        #
+        #self.menu_header = Gtk.MenuItem('')
+        ##mitem.connect('activate', menu_items[label])
+        #self.glMenu.append(self.menu_header)
+        #
+        #for label in menu_items:
+        #    mitem = Gtk.MenuItem(label)
+        #    mitem.connect('activate', menu_items[label])
+        #    self.glMenu.append(mitem)
+		#	
+        #
+        #self.glMenu_show = Gtk.Menu()
+        #self.menu_item1 = Gtk.MenuItem('test')
+        #self.glMenu_show.append(self.menu_item1)
+        #
+        #
+        #
+        #self.menu_show = Gtk.MenuItem('show')
+        #self.menu_show.set_submenu(self.glMenu_show)
+        ##mitem.connect('activate', menu_items[label])
+        #self.glMenu.append(self.menu_show)
+        #    
+        #    
+        #self.glMenu.show_all()
 
+        
+        self.glMenu = self.build_submenus_from_dicts (menu)
+        self.glMenu.show_all()
 
 
     def initialize(self, widget):

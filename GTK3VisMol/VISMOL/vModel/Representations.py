@@ -8,7 +8,7 @@ import VISMOL.glCore.cylinder_data as cyd
 import VISMOL.glCore.matrix_operations as mop
 #from   VISMOL.glCore.sphere_representation import _create_frame_sphere_data
 
-
+import EDTSurf.edtsurf as  edtsurf
 '''
 def _create_frame_sphere_data (frame, atoms ,offset, elems, scale, level,qtty ):
     """ Function doc """
@@ -1515,33 +1515,45 @@ class SurfaceRepresentation (Representation):
     
     def read_surface_data(self):
         """ Function doc """
-        rawdata = open('../EasyHybrid3/Coords/pdbs/1l2y.ply', 'r')
-        lines  = rawdata.readlines()
+        from random import random 
         
-        self.coords2 = []
-        self.colors2 = []
-        self.indices2 = []
+        [verts, tris, verts_gpu, tris_gpu] = edtsurf.calc_surface('/home/fernando/programs/EasyHybrid3/Coords/pdbs/1bx4_H.pdb')
+        self.coords2  = verts_gpu
+        self.indices2 = tris_gpu
+        self.colors2  = []
         
         
+        size = len( self.coords2 )
+        for i in range(size):
+            self.colors2.append(float(i/size) + random())
         
-        for line in lines:
-            line2 = line.split()
-            
-            if len(line2) == 6:
-                #print (line2)
-                self.coords2.append(float(line2[0]))
-                self.coords2.append(float(line2[1]))
-                self.coords2.append(float(line2[2]))
-                                                  
-                self.colors2.append(float(line2[3]))
-                self.colors2.append(float(line2[4]))
-                self.colors2.append(float(line2[5]))
-            
-            if len(line2) == 7:
-                
-                self.indices2.append(int(line2[1]))
-                self.indices2.append(int(line2[2]))
-                self.indices2.append(int(line2[3]))
+        ##rawdata = open('../EasyHybrid3/Coords/pdbs/1l2y.ply', 'r')
+        #lines  = rawdata.readlines()
+        #
+        #self.coords2 = []
+        #self.colors2 = []
+        #self.indices2 = []
+        #
+        #
+        #
+        #for line in lines:
+        #    line2 = line.split()
+        #    
+        #    if len(line2) == 6:
+        #        #print (line2)
+        #        self.coords2.append(float(line2[0]))
+        #        self.coords2.append(float(line2[1]))
+        #        self.coords2.append(float(line2[2]))
+        #                                          
+        #        self.colors2.append(float(line2[3]))
+        #        self.colors2.append(float(line2[4]))
+        #        self.colors2.append(float(line2[5]))
+        #    
+        #    if len(line2) == 7:
+        #        
+        #        self.indices2.append(int(line2[1]))
+        #        self.indices2.append(int(line2[2]))
+        #        self.indices2.append(int(line2[3]))
                 
                 
                 
