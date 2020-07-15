@@ -8,7 +8,7 @@ import VISMOL.glCore.cylinder_data as cyd
 import VISMOL.glCore.matrix_operations as mop
 #from   VISMOL.glCore.sphere_representation import _create_frame_sphere_data
 
-import EDTSurf.edtsurf as  edtsurf
+#import EDTSurf.edtsurf as  edtsurf
 '''
 def _create_frame_sphere_data (frame, atoms ,offset, elems, scale, level,qtty ):
     """ Function doc """
@@ -1569,6 +1569,7 @@ class SurfaceRepresentation (Representation):
         #indices = []
         #for i in range(dot_qtty):
         #    indices.append(i)
+        
         
 
         self.shader_program     = self.glCore.shader_programs[self.name]
