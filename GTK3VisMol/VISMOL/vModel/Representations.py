@@ -1527,7 +1527,7 @@ class SurfaceRepresentation (Representation):
         #for i in range(size):
         #    self.colors2.append(float(i/size) + random())
         
-        rawdata = open('../EasyHybrid3/Coords/pdbs/1bx4.ply', 'r')
+        rawdata = open('../EasyHybrid3/Coords/pdbs/1l2y.ply', 'r')
         lines  = rawdata.readlines()
         
         self.coords2 = []
@@ -1545,9 +1545,9 @@ class SurfaceRepresentation (Representation):
                 self.coords2.append(float(line2[1]))
                 self.coords2.append(float(line2[2]))
                                                   
-                self.colors2.append(float(line2[3]))
-                self.colors2.append(float(line2[4]))
-                self.colors2.append(float(line2[5]))
+                self.colors2.append(float(line2[3])/255)
+                self.colors2.append(float(line2[4])/255)
+                self.colors2.append(float(line2[5])/255)
             
             if len(line2) == 7:
                 
@@ -1569,7 +1569,6 @@ class SurfaceRepresentation (Representation):
         #indices = []
         #for i in range(dot_qtty):
         #    indices.append(i)
-        
         
 
         self.shader_program     = self.glCore.shader_programs[self.name]
@@ -1661,7 +1660,7 @@ class SurfaceRepresentation (Representation):
             the limit of frames that each object has. Allowing two objects with 
             different trajectory sizes to be manipulated at the same time within the 
             glArea'''
-            #self._set_coordinates_to_buffer (coord_vbo = True, sel_coord_vbo = False)
+            # self._set_coordinates_to_buffer(coord_vbo = True, sel_coord_vbo = False)
             #GL.glDrawElements(GL.GL_POINTS, int(len(self.indices2)), GL.GL_UNSIGNED_INT, None)
             #GL.glDrawElements(GL.GL_LINE_LOOP, int(len(self.coords2)), GL.GL_UNSIGNED_INT, None)
             #GL.glDrawElements(GL.GL_LINE_STRIP, int(len(self.indices2)), GL.GL_UNSIGNED_INT, None)

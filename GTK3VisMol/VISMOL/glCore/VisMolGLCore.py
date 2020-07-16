@@ -669,10 +669,11 @@ class VisMolGLCore():
                                                                 )
         '''
 
-        self.shader_programs['surface']     = self.load_shaders(spheresShaders.vertex_shader_spheres, 
-                                                                spheresShaders.fragment_shader_spheres)
-        #self.shader_programs['surface']     = self.load_shaders(surfacesShaders.vertex  , 
-        #                                                        surfacesShaders.fragment)
+        # self.shader_programs['surface']     = self.load_shaders(spheresShaders.vertex_shader_spheres, 
+        #                                                         spheresShaders.fragment_shader_spheres)
+        self.shader_programs['surface']     = self.load_shaders(surfacesShaders.vertex_shader_surface,
+                                                                surfacesShaders.fragment_shader_surface,
+                                                                surfacesShaders.geometry_shader_surface,)
                                               
                                               
         self.shader_programs['surface_sel'] = self.load_shaders(spheresShaders.vertex_shader_spheres,  
