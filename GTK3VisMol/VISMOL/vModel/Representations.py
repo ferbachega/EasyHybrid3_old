@@ -1452,30 +1452,6 @@ class GlumpyRepresentation (Representation):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class SurfaceRepresentation (Representation):
     """ Class doc """
     
@@ -1705,23 +1681,104 @@ class SurfaceRepresentation (Representation):
 
 
 
+class WiresRepresentation (Representation):
+    """ Class doc """
+    
+    def __init__ (self, name = 'wires', active = True, _type = 'mol', visObj = None, glCore = None, indices = []):
+        """ Class initialiser """
+        self.name               = name
+        self.active             = active
+        self.type               = _type
+        self.visObj             = visObj
+        self.glCore             = glCore
+        
+        # representation    
+        self.vao            = None
+        self.ind_vbo        = None
+        self.coord_vbo      = None
+        self.col_vbo        = None
+        self.size_vbo       = None
+        
+        # bgrd selection   
+        self.sel_vao        = None
+        self.sel_ind_vbo    = None
+        self.sel_coord_vbo  = None
+        self.sel_col_vbo    = None
+        self.sel_size_vbo   = None
 
+        #     S H A D E R S
+        self.shader_program     = None
+        self.sel_shader_program = None
+        self.read_surface_data()
+    
+    def read_surface_data(self):
+        """ Function doc """
+        rawdata = open('../EasyHybrid3/Coords/pdbs/1l2y.ply', 'r')
+        lines  = rawdata.readlines()
+        
+        self.coords2 = []
+        self.colors2 = []
+        self.indices2 = []
+        
+        for line in lines:
+            line2 = line.split()
+            if len(line2) == 6:
+                self.coords2.append(float(line2[0]))
+                self.coords2.append(float(line2[1]))
+                self.coords2.append(float(line2[2]))
+                self.colors2.append(float(line2[3])/255)
+                self.colors2.append(float(line2[4])/255)
+                self.colors2.append(float(line2[5])/255)
+            if len(line2) == 7:
+                self.indices2.append(int(line2[1]))
+                self.indices2.append(int(line2[2]))
+                self.indices2.append(int(line2[3]))
 
+    def _make_gl_vao_and_vbos (self, indices = None):
+        """ Function doc """
+        self.shader_program     = self.glCore.shader_programs[self.name]
+        self.sel_shader_program = self.glCore.shader_programs[self.name+'_sel']
+        coords  = np.array(self.coords2, dtype=np.float32)
+        colors  = np.zeros(len(self.colors2))
+        indices = np.array(self.indices2, dtype=np.uint32)
+        self._make_gl_representation_vao_and_vbos (indices    = indices,
+                                                   coords     = coords ,
+                                                   colors     = colors ,
+                                                   dot_sizes  = None   ,
+                                                   )
+        colors_idx = self.visObj.color_indices
+        self._make_gl_sel_representation_vao_and_vbos (indices    = indices    ,
+                                                       coords     = coords     ,
+                                                       colors     = colors_idx ,
+                                                       dot_sizes  = None       ,
+                                                       )
 
+    def draw_representation (self):
+        """ Function doc """
+        self._check_VAO_and_VBOs ()
+        GL.glEnable(GL.GL_DEPTH_TEST)
+        GL.glEnable(GL.GL_CULL_FACE)
+        GL.glCullFace(GL.GL_BACK)
+        view = self.glCore.glcamera.view_matrix
+        GL.glUseProgram(self.shader_program )
+        m_normal = np.array(np.matrix(np.dot(view, self.visObj.model_mat)).I.T)
+        self.glCore.load_matrices(self.shader_program , self.visObj.model_mat)
+        self.glCore.load_lights  (self.shader_program )
+        self.glCore.load_fog     (self.shader_program )
+        GL.glBindVertexArray(self.vao)
+        if self.glCore.modified_view:
+            pass
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        else:
+            '''
+            This function checks if the number of the called frame will not exceed 
+            the limit of frames that each object has. Allowing two objects with 
+            different trajectory sizes to be manipulated at the same time within the 
+            glArea'''
+            # self._set_coordinates_to_buffer(coord_vbo = True, sel_coord_vbo = False)
+            GL.glDrawElements(GL.GL_TRIANGLES, int(len(self.indices2)), GL.GL_UNSIGNED_INT, None)
+        GL.glDisable(GL.GL_DEPTH_TEST)
+        
+    def draw_background_sel_representation  (self):
+        """ Function doc """
+        pass

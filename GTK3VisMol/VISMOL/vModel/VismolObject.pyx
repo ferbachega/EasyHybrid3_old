@@ -40,6 +40,7 @@ from VISMOL.vModel.Representations   import SticksRepresentation
 from VISMOL.vModel.Representations   import DotsRepresentation
 from VISMOL.vModel.Representations   import SpheresRepresentation
 from VISMOL.vModel.Representations   import GlumpyRepresentation
+from VISMOL.vModel.Representations   import WiresRepresentation
 
 import VISMOL.vModel.cDistances as cdist
 
@@ -167,6 +168,7 @@ class VismolObject:
                                 'sticks'    : None,
                                 'ribbons'   : None,
                                 'surface'   : None,
+                                'wires'     : None,
                                 'glumpy'    : None,
                                 }
         

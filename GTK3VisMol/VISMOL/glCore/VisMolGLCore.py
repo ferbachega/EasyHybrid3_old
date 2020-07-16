@@ -42,6 +42,7 @@ import VISMOL.glCore.shaders.sticks             as sticksShaders
 import VISMOL.glCore.shaders.lines              as linesShaders
 import VISMOL.glCore.shaders.spheres            as spheresShaders
 import VISMOL.glCore.shaders.surface            as surfacesShaders
+import VISMOL.glCore.shaders.wires              as wiresShaders
 
 import VISMOL.glCore.shaders.dots               as dotsShaders
 import VISMOL.glCore.shaders.freetype           as freetypeShaders
@@ -673,11 +674,19 @@ class VisMolGLCore():
         #                                                         spheresShaders.fragment_shader_spheres)
         self.shader_programs['surface']     = self.load_shaders(surfacesShaders.vertex_shader_surface,
                                                                 surfacesShaders.fragment_shader_surface,
-                                                                surfacesShaders.geometry_shader_surface,)
-                                              
-                                              
+                                                                surfacesShaders.geometry_shader_surface)
         self.shader_programs['surface_sel'] = self.load_shaders(spheresShaders.vertex_shader_spheres,  
                                                                 spheresShaders.fragment_shader_spheres)
+        
+    
+
+
+    def _wires_dot_shaders (self, _type = 0):
+        self.shader_programs['wires']     = self.load_shaders(wiresShaders.vertex_shader_wires,
+                                                              wiresShaders.fragment_shader_wires,
+                                                              wiresShaders.geometry_shader_wires)
+        self.shader_programs['wires_sel'] = self.load_shaders(spheresShaders.vertex_shader_spheres,  
+                                                              spheresShaders.fragment_shader_spheres)
                                               
 
 
@@ -713,6 +722,7 @@ class VisMolGLCore():
 
         #-------------------------------------------------------------------------------------
         self._surface_dot_shaders ()
+        self._wires_dot_shaders ()
         #-------------------------------------------------------------------------------------
 
         

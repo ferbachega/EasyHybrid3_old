@@ -55,6 +55,7 @@ from VISMOL.vModel.Representations   import SpheresRepresentation
 from VISMOL.vModel.Representations   import GlumpyRepresentation
 from VISMOL.vModel.Representations   import RibbonsRepresentation
 from VISMOL.vModel.Representations   import SurfaceRepresentation
+from VISMOL.vModel.Representations   import WiresRepresentation
 
 
 
@@ -630,6 +631,9 @@ class VisMolSession (ShowHideVisMol):
         #self.vismol_objects[-1].representations[rep.name] = rep
         
         rep =  SurfaceRepresentation(name = 'surface', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        self.vismol_objects[-1].representations[rep.name] = rep
+
+        rep =  WiresRepresentation(name = 'wires', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
         self.vismol_objects[-1].representations[rep.name] = rep
 
         #self.glwidget.queue_draw()
