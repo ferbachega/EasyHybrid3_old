@@ -271,7 +271,7 @@ class VisMolGLCore():
                     if self.atom_picked is not None:
 
                         # Getting the information about the atom that was identified in the click
-                        print(self.atom_picked.chain,self.atom_picked.resn, self.atom_picked.resi, self.atom_picked.name, self.atom_picked.index, self.atom_picked.bonds_indices)
+                        print(self.atom_picked.chain,self.atom_picked.resn, self.atom_picked.resi, self.atom_picked.name, self.atom_picked.index, self.atom_picked.bonds_indexes)
                         label = '{} / {} / {}({}) / {}({})'.format( self.atom_picked.Vobject.name,
 																    self.atom_picked.chain,
                                                                     self.atom_picked.resn, 
@@ -501,14 +501,21 @@ class VisMolGLCore():
         for visObj in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
             '''
             Here are represented the blue 
-            dots referring to the selections of atoms
+            dots referring to the atom's selections 
             '''
             if visObj.selection_dots_vao is None:
                 shapes._make_gl_selection_dots(self.picking_dots_program, vismol_object = visObj)
-            indices = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]
+            
+            '''#Extracting the indexes for each vismol_object that was selected'''
+            indexes = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]
+            
+            #print(indexes)
+            #print(type(self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]))
+            #print(self.vismolSession.selections[self.vismolSession.current_selection].selected_objects)
             
             size =  self.vConfig.gl_parameters['dot_sel_size']
             GL.glPointSize(size*self.height/(abs(self.dist_cam_zrp))/2)
+            #print (visObj, visObj.non_bonded_atoms)
             
             #print ('line 522')
             #GL.glPointSize(15)
@@ -517,26 +524,99 @@ class VisMolGLCore():
             self.load_matrices(self.picking_dots_program, visObj.model_mat)
             #print ('line510')
 
-            #self._draw_picking_dots(visObj = visObj, indices = False)
+            #self._draw_picking_dots(visObj = visObj, indexes = False)
             GL.glBindVertexArray(visObj.selection_dots_vao)
             
             GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.selection_dot_buffers[0])
-            GL.glBufferData(GL.GL_ARRAY_BUFFER, indices.itemsize*int(len(indices)), 
-                            indices, GL.GL_STATIC_DRAW)
+            GL.glBufferData(GL.GL_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), 
+                            indexes, GL.GL_STATIC_DRAW)
             
             frame = self._safe_frame_exchange(visObj)
             GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.selection_dot_buffers[1])
             GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.itemsize*int(len(frame)), 
                             frame, GL.GL_STATIC_DRAW)
 
-            #GL.glDrawElements(GL.GL_POINTS, int(len(indices)), GL.GL_UNSIGNED_INT, None)
-            GL.glDrawElements(GL.GL_POINTS, int(len(indices)), GL.GL_UNSIGNED_INT, None)
+            #GL.glDrawElements(GL.GL_POINTS, int(len(indexes)), GL.GL_UNSIGNED_INT, None)
+            GL.glDrawElements(GL.GL_POINTS, int(len(indexes)), GL.GL_UNSIGNED_INT, None)
             GL.glBindVertexArray(0)
             
             GL.glDisable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
             GL.glPointSize(1)
             GL.glUseProgram(0)
             GL.glDisable(GL.GL_DEPTH_TEST)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        '''
+        indexes = self.vismolSession.picking_selections.picking_selections_list
+        
+        #print(indexes)
+        #print(type(self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]))
+        #print(self.vismolSession.selections[self.vismolSession.current_selection].selected_objects)
+        
+        size =  self.vConfig.gl_parameters['dot_sel_size']
+        GL.glPointSize(size*self.height/(abs(self.dist_cam_zrp))/2)
+        
+        #print ('line 522')
+        #GL.glPointSize(15)
+        GL.glUseProgram(self.picking_dots_program)
+        GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
+        self.load_matrices(self.picking_dots_program, visObj.model_mat)
+        #print ('line510')
+
+        #self._draw_picking_dots(visObj = visObj, indexes = False)
+        GL.glBindVertexArray(visObj.selection_dots_vao)
+        
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.selection_dot_buffers[0])
+        GL.glBufferData(GL.GL_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), 
+                        indexes, GL.GL_STATIC_DRAW)
+        
+        frame = self._safe_frame_exchange(visObj)
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.selection_dot_buffers[1])
+        GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.itemsize*int(len(frame)), 
+                        frame, GL.GL_STATIC_DRAW)
+
+        #GL.glDrawElements(GL.GL_POINTS, int(len(indexes)), GL.GL_UNSIGNED_INT, None)
+        GL.glDrawElements(GL.GL_POINTS, int(len(indexes)), GL.GL_UNSIGNED_INT, None)
+        GL.glBindVertexArray(0)
+        
+        GL.glDisable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
+        GL.glPointSize(1)
+        GL.glUseProgram(0)
+        GL.glDisable(GL.GL_DEPTH_TEST)
+        '''
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        # picking 1 2 3 4 atoms -  special way to select atoms
+        #for index in self.vismolSession.picking_selections.picking_selections_list:  #selections[self.vismolSession.current_selection].selected_objects:
+        #    if index != None:
+        #        pass
+                #print(visObj.index)
+            #index = visObj
+        
+        
+        
         #'''
         if self.show_selection_box and self.shift:
             if self.selection_box.vao is None:
@@ -806,7 +886,7 @@ class VisMolGLCore():
                 GL.glUseProgram(self.picking_dots_program)
                 GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
                 self.load_matrices(self.picking_dots_program, visObj.model_mat)
-                self._draw_picking_dots(visObj = visObj, indices = False)
+                self._draw_picking_dots(visObj = visObj, indexes = False)
                 GL.glDisable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
                 GL.glUseProgram(0)
                 GL.glDisable(GL.GL_DEPTH_TEST)
@@ -1021,7 +1101,7 @@ class VisMolGLCore():
 
 
 
-    def _draw_picking_dots(self, visObj = None,  indices = False):  # not used !!!
+    def _draw_picking_dots(self, visObj = None,  indexes = False):  # not used !!!
         """ Function doc
         """
         #print (100/abs(self.dist_cam_zrp))
@@ -1032,8 +1112,8 @@ class VisMolGLCore():
             if self.modified_view:
                 pass
             #    GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, visObj.dot_buffers[0])
-            #    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, visObj.dot_indices.itemsize*int(len(visObj.dot_indices)), visObj.dot_indices, GL.GL_DYNAMIC_DRAW)
-            #    GL.glDrawElements(GL.GL_POINTS, int(len(visObj.dot_indices)), GL.GL_UNSIGNED_INT, None)
+            #    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, visObj.dot_indexes.itemsize*int(len(visObj.dot_indexes)), visObj.dot_indexes, GL.GL_DYNAMIC_DRAW)
+            #    GL.glDrawElements(GL.GL_POINTS, int(len(visObj.dot_indexes)), GL.GL_UNSIGNED_INT, None)
             #    GL.glBindVertexArray(0)
             #    GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0)
             #    self.modified_view = False
@@ -1043,9 +1123,9 @@ class VisMolGLCore():
                 GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.picking_dot_buffers[1])
                 GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.itemsize*int(len(frame)), 
                                 frame, GL.GL_STATIC_DRAW)
-                if indices:
+                if indexes:
                     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.picking_dot_buffers[2])
-                    GL.glBufferData(GL.GL_ARRAY_BUFFER, visObj.color_indices.itemsize*int(len(visObj.color_indices)), visObj.color_indices, GL.GL_STATIC_DRAW)
+                    GL.glBufferData(GL.GL_ARRAY_BUFFER, visObj.color_indexes.itemsize*int(len(visObj.color_indexes)), visObj.color_indexes, GL.GL_STATIC_DRAW)
                 GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
         GL.glBindVertexArray(0)
     
@@ -1100,7 +1180,7 @@ class VisMolGLCore():
         """ Function doc
         """
         #self.vismolSession._hide_lines (visObj = self.vismolSession.vismol_objects[0], 
-        #                               indices = range(0,20))
+        #                               indexes = range(0,20))
         self.ctrl = True
         return True
     
@@ -1114,7 +1194,7 @@ class VisMolGLCore():
         """ Function doc
         """
         #self.vismolSession._show_lines (visObj = self.vismolSession.vismol_objects[0], 
-        #                               indices = range(0,20))
+        #                               indexes = range(0,20))
         self.shift = True
         return True
     
@@ -1205,9 +1285,9 @@ class VisMolGLCore():
 
 
 
-#    def _draw_dots(self, visObj = None,  color_indices = False):
+#    def _draw_dots(self, visObj = None,  color_indexes = False):
 #        """ Function doc"""
-#        #indices  = np.array(indices, dtype=np.uint32)
+#        #indexes  = np.array(indexes, dtype=np.uint32)
 #
 #
 #
@@ -1226,8 +1306,8 @@ class VisMolGLCore():
 #            if self.modified_view:
 #                pass
 #            #    GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, visObj.dot_buffers[0])
-#            #    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, visObj.dot_indices.itemsize*int(len(visObj.dot_indices)), visObj.dot_indices, GL.GL_DYNAMIC_DRAW)
-#            #    GL.glDrawElements(GL.GL_POINTS, int(len(visObj.dot_indices)), GL.GL_UNSIGNED_INT, None)
+#            #    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, visObj.dot_indexes.itemsize*int(len(visObj.dot_indexes)), visObj.dot_indexes, GL.GL_DYNAMIC_DRAW)
+#            #    GL.glDrawElements(GL.GL_POINTS, int(len(visObj.dot_indexes)), GL.GL_UNSIGNED_INT, None)
 #            #    GL.glBindVertexArray(0)
 #            #    GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0)
 #            #    self.modified_view = False
@@ -1240,11 +1320,11 @@ class VisMolGLCore():
 #                    frame,
 #                    GL.GL_STATIC_DRAW)
 #
-#                if  color_indices:
+#                if  color_indexes:
 #                    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.dots_buffers[2])
 #                    GL.glBufferData(GL.GL_ARRAY_BUFFER, 
-#                            visObj.color_indices.itemsize*int(len(visObj.color_indices)), 
-#                            visObj.color_indices, 
+#                            visObj.color_indexes.itemsize*int(len(visObj.color_indexes)), 
+#                            visObj.color_indexes, 
 #                            GL.GL_STATIC_DRAW)
 #            
 #        GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
@@ -1253,7 +1333,7 @@ class VisMolGLCore():
 #        GL.glUseProgram(0)
 #        GL.glDisable(GL.GL_DEPTH_TEST)
 #
-#    def _draw_sphere_dots (self, visObj = None, indices = False):
+#    def _draw_sphere_dots (self, visObj = None, indexes = False):
 #        """ Function doc """
 #        GL.glEnable(GL.GL_DEPTH_TEST)
 #        GL.glUseProgram(self.spheres_dots_program)
@@ -1268,8 +1348,8 @@ class VisMolGLCore():
 #            if self.modified_view:
 #                pass
 #            #    GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, visObj.dot_buffers[0])
-#            #    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, visObj.dot_indices.itemsize*int(len(visObj.dot_indices)), visObj.dot_indices, GL.GL_DYNAMIC_DRAW)
-#            #    GL.glDrawElements(GL.GL_POINTS, int(len(visObj.dot_indices)), GL.GL_UNSIGNED_INT, None)
+#            #    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, visObj.dot_indexes.itemsize*int(len(visObj.dot_indexes)), visObj.dot_indexes, GL.GL_DYNAMIC_DRAW)
+#            #    GL.glDrawElements(GL.GL_POINTS, int(len(visObj.dot_indexes)), GL.GL_UNSIGNED_INT, None)
 #            #    GL.glBindVertexArray(0)
 #            #    GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0)
 #            #    self.modified_view = False
@@ -1284,11 +1364,11 @@ class VisMolGLCore():
 #                    
 #                GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_dots)), GL.GL_UNSIGNED_INT, None)
 #                #GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
-#                #if  color_indices:
+#                #if  color_indexes:
 #                #    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, sphere_dots_buffers.dot_buffers[2])
 #                #    GL.glBufferData(GL.GL_ARRAY_BUFFER, 
-#                #            visObj.color_indices.itemsize*int(len(visObj.color_indices)), 
-#                #            visObj.color_indices, 
+#                #            visObj.color_indexes.itemsize*int(len(visObj.color_indexes)), 
+#                #            visObj.color_indexes, 
 #                #            GL.GL_STATIC_DRAW)
 #            
 #        #GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
@@ -1299,7 +1379,7 @@ class VisMolGLCore():
 
 
     
-#    def _draw_sel_dots(self, visObj = None,  indices = False):
+#    def _draw_sel_dots(self, visObj = None,  indexes = False):
 #        """ Function doc
 #        """
 #        GL.glEnable(GL.GL_DEPTH_TEST)
@@ -1325,7 +1405,7 @@ class VisMolGLCore():
 #        GL.glUseProgram(0)
 #        GL.glDisable(GL.GL_DEPTH_TEST)
 #    
-#   def _draw_sel_dots_surface(self, visObj = None,  indices = False):
+#   def _draw_sel_dots_surface(self, visObj = None,  indexes = False):
 #       """ Function doc
 #       """
 #       GL.glEnable(GL.GL_DEPTH_TEST)
@@ -1347,7 +1427,7 @@ class VisMolGLCore():
 #       GL.glUseProgram(0)
 #       GL.glDisable(GL.GL_DEPTH_TEST)
 #   
-#   def _draw_sel_spheres(self, visObj = None,  indices = False):
+#   def _draw_sel_spheres(self, visObj = None,  indexes = False):
 #       """ Function doc
 #       """
 #       GL.glEnable(GL.GL_DEPTH_TEST)
@@ -1370,7 +1450,7 @@ class VisMolGLCore():
 #   
 #   
 
-#   def _draw_spheres(self, visObj = None,  indices = False):
+#   def _draw_spheres(self, visObj = None,  indexes = False):
 #       """ Function doc
 #       """
 #       GL.glEnable(GL.GL_DEPTH_TEST)
@@ -1392,16 +1472,16 @@ class VisMolGLCore():
 #               GL.glBufferData(GL.GL_ARRAY_BUFFER, visObj.sphere_rep.coords.itemsize*int(len(visObj.sphere_rep.coords)), 
 #                                                   visObj.sphere_rep.coords, GL.GL_STATIC_DRAW)
 #               
-#               #if  indices:
+#               #if  indexes:
 #               #    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.spheres_buffers[2])
-#               #    GL.glBufferData(GL.GL_ARRAY_BUFFER, visObj.color_indices.itemsize*int(len(visObj.color_indices)), visObj.color_indices, GL.GL_STATIC_DRAW)
+#               #    GL.glBufferData(GL.GL_ARRAY_BUFFER, visObj.color_indexes.itemsize*int(len(visObj.color_indexes)), visObj.color_indexes, GL.GL_STATIC_DRAW)
 #               
 #               GL.glDrawElements(GL.GL_TRIANGLES, visObj.sphere_rep.triangles, GL.GL_UNSIGNED_INT, None)
 #       GL.glBindVertexArray(0)
 #       GL.glUseProgram(0)
 #       GL.glDisable(GL.GL_DEPTH_TEST)
 #   
-#   def _draw_dots_surface(self, visObj = None,  indices = False):
+#   def _draw_dots_surface(self, visObj = None,  indexes = False):
 #       """ Function doc
 #       """
 #       #'''
@@ -1420,9 +1500,9 @@ class VisMolGLCore():
 #               GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.dots_surface_buffers[1])
 #               GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.itemsize*int(len(frame)), 
 #                                                   frame, GL.GL_STATIC_DRAW)
-#               if  indices:
+#               if  indexes:
 #                   GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.dots_surface_buffers[2])
-#                   GL.glBufferData(GL.GL_ARRAY_BUFFER, visObj.color_indices.itemsize*int(len(visObj.color_indices)), visObj.color_indices, GL.GL_STATIC_DRAW)
+#                   GL.glBufferData(GL.GL_ARRAY_BUFFER, visObj.color_indexes.itemsize*int(len(visObj.color_indexes)), visObj.color_indexes, GL.GL_STATIC_DRAW)
 #               GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
 #               #GL.glDrawElements(GL.GL_LINES, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
 #       GL.glPointSize(1)
@@ -1464,7 +1544,7 @@ class VisMolGLCore():
 #                                frame, 
 #                                GL.GL_STATIC_DRAW)              
 #                #GL.glDrawElements(GL.GL_LINES, int(len(visObj.index_bonds)*2), GL.GL_UNSIGNED_INT, None)
-#                GL.glDrawElements(GL.GL_LINES, int(len(visObj.ribbons_Calpha_indices_rep)*2), GL.GL_UNSIGNED_INT, None)
+#                GL.glDrawElements(GL.GL_LINES, int(len(visObj.ribbons_Calpha_indexes_rep)*2), GL.GL_UNSIGNED_INT, None)
 #        GL.glBindVertexArray(0)
 #        GL.glLineWidth(1)
 #        GL.glUseProgram(0)

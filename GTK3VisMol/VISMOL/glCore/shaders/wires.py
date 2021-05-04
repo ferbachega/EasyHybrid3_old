@@ -67,6 +67,7 @@ void main(){
     }
     else{
        final_color = vec4(frag_color, 1.0);
+       //final_color = vec4(0.5 , 0.5, 0.5 , 1.0);
     }
 }
 """

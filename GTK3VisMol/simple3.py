@@ -26,9 +26,9 @@ from VISMOL.vCore.VismolSession  import VisMolSession
 
 
 
-vismolSession  =  VisMolSession(glwidget = True, backend = 'gtk3')
+vismolSession  =  VisMolSession(glwidget = True)
 vismolSession.start_viewer() 
-vismolSession.load('/home/fernando/DMT_H2O.pdb')
+vismolSession.load('/home/fernando/programs/EasyHybrid3/Coords/pdbs/glicose2.pdb')
 #viewer = SW.VismolGTK3Session()
 
 #viewer.run()

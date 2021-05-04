@@ -30,13 +30,18 @@ class VisMolPickingSelection:
     
     def __init__ (self):
         """ Class initialiser """
-        self.picking_selections = [None]*4
+        self.picking_selections_list = [None]*4
+        self.picking_selections_list_index = []
+
         #self.picking_selection_coordinates = []
-    
+        #self.selected_atoms_coords   = []
+        #self.selected_objects        = {}
+
+
     def _generate_picking_selection_coordinates (self):
         """ Function doc """
         pass
-        #for i,atom in enumerate(self.picking_selections):
+        #for i,atom in enumerate(self.picking_selections_list):
         #    if atom is not None:
         #        coord = [atom.Vobject.frames[frame][(atom.index-1)*3  ],
         #                 atom.Vobject.frames[frame][(atom.index-1)*3+1],
@@ -48,22 +53,35 @@ class VisMolPickingSelection:
     def selection_function_picking (self, selected):
         """ Function doc """
         if selected is None:
-            self.picking_selections = [None]*len(self.picking_selections)
+            self.picking_selections_list = [None]*len(self.picking_selections_list)
             #self.selected_residues = []
         else:
-            if selected not in self.picking_selections:
-                for i in range(len(self.picking_selections)):
-                    if self.picking_selections[i] == None:
-                        self.picking_selections[i] = selected
+            if selected not in self.picking_selections_list:
+                for i in range(len(self.picking_selections_list)):
+                    if self.picking_selections_list[i] == None:
+                        self.picking_selections_list[i] = selected
                         selected = None
                         break
                 if selected is not None:
-                    self.picking_selections[len(self.picking_selections)-1] = selected
+                    self.picking_selections_list[len(self.picking_selections_list)-1] = selected
             else:
-                for i in range(len(self.picking_selections)):
-                    if self.picking_selections[i] == selected:
-                        self.picking_selections[i] = None
-    
+                for i in range(len(self.picking_selections_list)):
+                    if self.picking_selections_list[i] == selected:
+                        self.picking_selections_list[i] = None
+        print(self.picking_selections_list)
+
+        
+        
+        #self.picking_selections_list_index=[]
+        #for atom in self.picking_selections_list:  #selections[self.vismolSession.current_selection].selected_objects:
+        #    if atom != None:
+        #        self.picking_selections_list_index.append(atom.index-1)
+        #        #print(atom.index-1)
+        #self.picking_selections_list_index = np.array(self.selected_objects[vobject], dtype=np.uint32)
+
+
+
+
 
 class VisMolViewingSelection:
     """ Class doc """
@@ -74,7 +92,7 @@ class VisMolViewingSelection:
         #---------------------------------------------------------------
         self.active = True
         
-        self._selection_mode    = 'residue'
+        self._selection_mode    = 'chain'
         self.selected_objects          = {} #dic of VisMol objects (obj)
         self.selected_atoms        = [] #List of atoms objects (obj)
         self.selected_atoms_coords = [] #coordinate (floats) x y z

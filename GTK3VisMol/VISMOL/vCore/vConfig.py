@@ -218,7 +218,7 @@ class VisMolConfig:
                                   'line_width'                 : 10                   ,  
                                   'line_width_selection'       : 40                   ,  
 
-                                  'line_type'                  : 0                    ,  # 0 - no detail       1 - Charlitos'style
+                                  'line_type'                  : 1                    ,  # 0 - no detail       1 - Charlitos'style
                                   'line_color'                 : 0                    ,  # 0 - atom types      1 - black (for white bg)     2 - white (for black bg)
                                                                                                                
                                                                                                                
@@ -236,7 +236,7 @@ class VisMolConfig:
                                   'impostor_type'              : 1                    ,  # Quality for real spheres - 1 if default
                                                                                          
                                                                                          
-                                  'Stick_radius'               : 1.5                  ,  
+                                  'Stick_radius'               : 3.5                  ,  
                                   'stick_color'                : 0                    ,  
                                   'stick_type'                 : 0                    ,  # 0 - atom types      1 - black (for white bg)     2 - white (for black bg)
                                                                                 

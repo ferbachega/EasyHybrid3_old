@@ -256,6 +256,13 @@ def _make_sel_gl_dots_surface(program, vismol_object = None):
     GL.glEnableVertexAttribArray(att_colors)
     GL.glVertexAttribPointer(att_colors, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*colors.itemsize, ctypes.c_void_p(0))
     
+    norm_vbo = GL.glGenBuffers(1)
+    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, norm_vbo)
+    GL.glBufferData(GL.GL_ARRAY_BUFFER, colors.itemsize*int(len(colors)), colors, GL.GL_STATIC_DRAW)
+    att_colors = GL.glGetAttribLocation(program, 'vert_color')
+    GL.glEnableVertexAttribArray(att_colors)
+    GL.glVertexAttribPointer(att_colors, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*colors.itemsize, ctypes.c_void_p(0))
+    
     GL.glBindVertexArray(0)
     GL.glDisableVertexAttribArray(att_position)
     GL.glDisableVertexAttribArray(att_colors)

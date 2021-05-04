@@ -17,7 +17,7 @@ class Atom:
                         occupancy    = 0.0,
                         bfactor      = 0.0, 
                         charge       = 0.0,
-						bonds_indices= [] ,
+						bonds_indexes= [] ,
                         Vobject      = None):
  
         if pos is None:
@@ -63,7 +63,7 @@ class Atom:
         self.sticks         = False
         self.spheres        = False
         self.surface        = False
-        self.bonds_indices  = bonds_indices
+        self.bonds_indexes  = bonds_indexes
         self.bonds          = []
     
     def coords (self, frame = None):

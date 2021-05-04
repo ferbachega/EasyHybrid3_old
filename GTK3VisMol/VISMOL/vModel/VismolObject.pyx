@@ -263,7 +263,7 @@ class VismolObject:
                                occupancy     = atom2[10],
                                bfactor       = atom2[11],
                                charge        = atom2[12],
-                               bonds_indices = atom2[8],
+                               bonds_indexes = atom2[8],
                                Vobject       =  self
                                )
 
@@ -332,7 +332,7 @@ class VismolObject:
 
         final = time.time() 
         print ('_generate_atomtree_structure end -  total time: ', final - initial, '\n')
-        self.get_backbone_indices()
+        self.get_backbone_indexes()
         return True
 
 
@@ -364,7 +364,7 @@ class VismolObject:
         
         
         
-        self.color_indices  = []
+        self.color_indexes  = []
         self.colors         = []        
         self.color_rainbow  = []
 
@@ -383,9 +383,9 @@ class VismolObject:
             g = (i & 0x0000FF00) >>  8
             b = (i & 0x00FF0000) >> 16
            
-            self.color_indices.append(r/255.0)
-            self.color_indices.append(g/255.0)
-            self.color_indices.append(b/255.0)
+            self.color_indexes.append(r/255.0)
+            self.color_indexes.append(g/255.0)
+            self.color_indexes.append(b/255.0)
             
             pickedID = r + g * 256 + b * 256*256
             atom.color_id = [r/255.0, g/255.0, b/255.0]
@@ -441,7 +441,7 @@ class VismolObject:
             counter += 1
             #-------------------------------------------------------
 
-        self.color_indices = np.array(self.color_indices, dtype=np.float32)
+        self.color_indexes = np.array(self.color_indexes, dtype=np.float32)
         self.colors        = np.array(self.colors       , dtype=np.float32)    
         self.vdw_dot_sizes = np.array(self.vdw_dot_sizes, dtype=np.float32)
         self.cov_dot_sizes = np.array(self.cov_dot_sizes, dtype=np.float32)
@@ -453,11 +453,11 @@ class VismolObject:
         self.model_mat = np.copy(mat)
         return True
     
-    def get_backbone_indices (self):
+    def get_backbone_indexes (self):
         """ Function doc """
         chains_list   = []
         bonds_pairs   = [] 
-        bonds_indices = [] 
+        bonds_indexes = [] 
         
         self.c_alpha_bonds = []
         
@@ -534,17 +534,17 @@ class VismolObject:
 
     def find_bonded_and_nonbonded_atoms(self, atoms):
         """ Function doc """
-        bonds_full_indices, bonds_pair_of_indices, NB_indices_list = cdist.generete_full_NB_and_Bonded_lists(atoms)
+        bonds_full_indexes, bonds_pair_of_indexes, NB_indexes_list = cdist.generete_full_NB_and_Bonded_lists(atoms)
         
-        self.non_bonded_atoms  = NB_indices_list
+        self.non_bonded_atoms  = NB_indexes_list
         
         self._generate_atomtree_structure()
         
         self._generate_atom_unique_color_id()
         
-        self.index_bonds       = bonds_full_indices
+        self.index_bonds       = bonds_full_indexes
         
-        self.import_bonds(bonds_pair_of_indices)
+        self.import_bonds(bonds_pair_of_indexes)
 
 
 
