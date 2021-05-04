@@ -619,8 +619,8 @@ class VisMolSession (ShowHideVisMol):
         #self.vismol_objects[-1].representations[rep.name] = rep
         
         '''Representation of fake spheres using shaders. Each sphere is actually a point'''
-        rep  = GlumpyRepresentation (name = 'glumpy', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        self.vismol_objects[-1].representations[rep.name] = rep
+        #rep  = GlumpyRepresentation (name = 'glumpy', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        #self.vismol_objects[-1].representations[rep.name] = rep
 
         '''Simple dot representation'''
         #rep  = DotsRepresentation (name = 'dots', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
@@ -629,11 +629,11 @@ class VisMolSession (ShowHideVisMol):
         #rep  = SpheresRepresentation (name = 'spheres', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
         #self.vismol_objects[-1].representations[rep.name] = rep
         
-        #rep =  RibbonsRepresentation(name = 'ribbons', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        #self.vismol_objects[-1].representations[rep.name] = rep
+        rep =  RibbonsRepresentation(name = 'ribbons', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        self.vismol_objects[-1].representations[rep.name] = rep
         
-        #rep =  SurfaceRepresentation(name = 'surface', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        #self.vismol_objects[-1].representations[rep.name] = rep
+        rep =  SurfaceRepresentation(name = 'surface', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        self.vismol_objects[-1].representations[rep.name] = rep
 
         #rep =  WiresRepresentation(name = 'wires', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
         #self.vismol_objects[-1].representations[rep.name] = rep

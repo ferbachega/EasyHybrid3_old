@@ -71,6 +71,19 @@ class Representation:
         GL.glVertexAttribPointer(att_position, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*coords.itemsize, ctypes.c_void_p(0))
         #GL.glDisableVertexAttribArray(att_position)
         return coord_vbo
+        
+    def _make_gl_normal_buffer(self, normals, program):
+        """ Function doc """
+        normal_vbo = GL.glGenBuffers(1)
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, normal_vbo)
+        GL.glBufferData(GL.GL_ARRAY_BUFFER, normals.nbytes, normals, GL.GL_STATIC_DRAW)
+
+        att_normals = GL.glGetAttribLocation(program, 'vert_normal')
+        if att_normals > 0:
+            GL.glEnableVertexAttribArray(att_normals)
+            GL.glVertexAttribPointer(att_normals, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*normals.itemsize, ctypes.c_void_p(0))
+        #GL.glDisableVertexAttribArray(att_normals)
+        return normal_vbo        
 
     def _make_gl_color_buffer(self, colors, program):
         """ Function doc """
@@ -132,6 +145,7 @@ class Representation:
                                               coords     = None,
                                               colors     = None,
                                               dot_sizes  = None,
+                                              normals    = None
                                               ):
         """ Function doc """
         print ('building', self.name,' VAO  and VBOs')    
@@ -139,8 +153,12 @@ class Representation:
         self.ind_vbo    =   self._make_gl_index_buffer( indexes                        )
         self.coord_vbo  =   self._make_gl_coord_buffer( coords   , self.shader_program )
         self.col_vbo    =   self._make_gl_color_buffer( colors   , self.shader_program )
+        
         if dot_sizes is not None:
-            self.sel_size_vbo   =   self._make_gl_size_buffer ( dot_sizes , self.sel_shader_program )
+            self.col_vbo    =   self._make_gl_color_buffer( colors   , self.shader_program )
+        
+        if normals is not None and self.name == "surface":
+            self.norm_vbo   =   self._make_gl_normal_buffer ( normals , self.shader_program )
         else:
             pass
         
@@ -1472,6 +1490,7 @@ class SurfaceRepresentation (Representation):
         self.vao            = None
         self.ind_vbo        = None
         self.coord_vbo      = None
+        self.norm_vbo       = None
         self.col_vbo        = None
         self.size_vbo       = None
            
@@ -1508,6 +1527,7 @@ class SurfaceRepresentation (Representation):
         
         self.coords2 = []
         self.colors2 = []
+        self.normals2 = []
         self.indexes2 = []
         
         
@@ -1524,6 +1544,10 @@ class SurfaceRepresentation (Representation):
                 self.colors2.append(float(line2[3])/255)
                 self.colors2.append(float(line2[4])/255)
                 self.colors2.append(float(line2[5])/255)
+                
+                self.normals2.append(float(line2[0]))
+                self.normals2.append(float(line2[1]))
+                self.normals2.append(float(line2[2]))                
             
             if len(line2) == 7:
                 
@@ -1555,6 +1579,7 @@ class SurfaceRepresentation (Representation):
 
         coords  = np.array(self.coords2, dtype=np.float32)
         colors  = np.array(self.colors2, dtype=np.float32)
+        normals = np.array(self.normals2, dtype=np.float32)
         #indexes = range(0, len(self.coords2))     
         #indexes = np.array(indexes, dtype=np.uint32)
         indexes = np.array(self.indexes2, dtype=np.uint32)
@@ -1565,6 +1590,7 @@ class SurfaceRepresentation (Representation):
                                                    coords     = coords ,
                                                    colors     = colors ,
                                                    dot_sizes  = None   ,
+                                                   normals    = normals
                                                    )
         
         #self.centr_vbo = GL.glGenBuffers(1)

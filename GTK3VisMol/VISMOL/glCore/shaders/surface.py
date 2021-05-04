@@ -6,12 +6,15 @@ uniform mat4 view_mat;
 
 in vec3 vert_coord;
 in vec3 vert_color;
+in vec3 vert_normal;
 
 out vec3 geom_color;
+out vec3 geom_normal;
 out vec4 geom_coord;
 
 void main(){
     geom_color = vert_color;
+    geom_normal = vert_normal;
     geom_coord = view_mat * model_mat * vec4(vert_coord, 1.0);
 }
 
@@ -25,7 +28,9 @@ layout (triangle_strip, max_vertices = 3) out;
 uniform mat4 proj_mat;
 
 in vec3 geom_color[];
+in vec3 geom_normal[];
 in vec4 geom_coord[];
+
 
 out vec3 frag_coord;
 out vec3 frag_color;
@@ -36,21 +41,25 @@ void main(){
     vec3 vec_p0_p2 = geom_coord[2].xyz - geom_coord[0].xyz;
     vec3 norm_vec = cross(vec_p0_p1, vec_p0_p2);
     norm_vec = normalize(norm_vec);
+    
     gl_Position = proj_mat * geom_coord[0];
-    frag_coord = geom_coord[0].xyz;
-    frag_color = geom_color[0];
-    frag_norm = norm_vec;
+    frag_coord  = geom_coord[0].xyz;
+    frag_color  = geom_color[0];
+    frag_norm   = geom_normal[0];
     EmitVertex();
+    
     gl_Position = proj_mat * geom_coord[1];
-    frag_coord = geom_coord[1].xyz;
-    frag_color = geom_color[1];
-    frag_norm = norm_vec;
+    frag_coord  = geom_coord[1].xyz;
+    frag_color  = geom_color[1];
+    frag_norm   = geom_normal[1];
     EmitVertex();
+    
     gl_Position = proj_mat * geom_coord[2];
-    frag_coord = geom_coord[2].xyz;
-    frag_color = geom_color[2];
-    frag_norm = norm_vec;
+    frag_coord  = geom_coord[2].xyz;
+    frag_color  = geom_color[2];
+    frag_norm   = geom_normal[2];
     EmitVertex();
+    
     EndPrimitive();
 }
 
@@ -107,6 +116,8 @@ void main(){
     else{
        final_color = my_color;
     }
+    
+ 
 }
 """
 

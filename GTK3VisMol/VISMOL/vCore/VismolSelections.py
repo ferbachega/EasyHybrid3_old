@@ -92,7 +92,7 @@ class VisMolViewingSelection:
         #---------------------------------------------------------------
         self.active = True
         
-        self._selection_mode    = 'chain'
+        self._selection_mode    = 'residue'
         self.selected_objects          = {} #dic of VisMol objects (obj)
         self.selected_atoms        = [] #List of atoms objects (obj)
         self.selected_atoms_coords = [] #coordinate (floats) x y z
