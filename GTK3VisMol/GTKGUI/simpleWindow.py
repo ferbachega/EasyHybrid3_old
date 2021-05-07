@@ -47,6 +47,7 @@ class VismolGTK3Session():
                                          
         #---------------------------------------------------------------------------  
         self.vismolSession  =  VisMolSession(glwidget = True, toolkit = 'gtk3')       
+        self.vismolSession.insert_glmenu()
         self.container.pack_start(self.vismolSession.glwidget, True, True, 0)         
                                          
         self.window.connect("key-press-event"  , self.vismolSession.glwidget.key_pressed)  

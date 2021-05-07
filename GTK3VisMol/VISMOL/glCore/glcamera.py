@@ -85,7 +85,7 @@ class GLCamera():
             self.z_near = dist - 15.0
             self.z_far = dist + 15.0
         self.fog_end = self.z_far 
-        self.fog_start = self.fog_end - self.min_zfar
+        self.fog_start = self.fog_end - self.min_zfar 
         self.view_matrix = self._get_view_matrix(pos)
         self.projection_matrix = self._get_projection_matrix()
     
@@ -224,7 +224,7 @@ class GLCamera():
                 True
         """
         self.fog_end = self.z_far
-        self.fog_start = self.fog_end - self.min_zfar
+        self.fog_start = self.fog_end - self.min_zfar 
         return True
     
     def print_parms(self):

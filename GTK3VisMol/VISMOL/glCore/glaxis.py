@@ -139,8 +139,10 @@ class GLAxis:
         self.lines_vao = None
         self.zrp = np.array([-0.9, -0.9, 0.0],dtype=np.float32)
         self.camera_position = np.array(cam_pos, dtype=np.float32)
-        self.light_position = np.array([1.5, 1.5, -2.5],dtype=np.float32)
-        self.light_color = np.array([1.0, 1.0, 1.0, 1.0],dtype=np.float32)
+        #self.light_position = np.array([1.5, 1.5, -2.5],dtype=np.float32)
+        self.light_position = np.array([0.0, -2.0, 0.0],dtype=np.float32)
+        #self.light_color = np.array([1.0, 1.0, 1.0, 1.0],dtype=np.float32)
+        self.light_color = np.array([1.0, 0.0, 0.0, 1.0],dtype=np.float32)
         self.light_ambient_coef = 0.2
         self.light_specular_coef = 0.7
         self.light_shininess = 32.0

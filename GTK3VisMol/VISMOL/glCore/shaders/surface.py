@@ -97,7 +97,7 @@ void main(){
     vec3 ambient = my_light.ambient_coef * frag_color * my_light.intensity;
     
     // Diffuse component
-    float diffuse_coef = max(0.0, dot(normal, vert_to_light));
+    float diffuse_coef = (max(0.0, dot(normal, vert_to_light)) + 1.0) * 0.5;
     vec3 diffuse = diffuse_coef * frag_color * my_light.intensity;
     
     // Specular component

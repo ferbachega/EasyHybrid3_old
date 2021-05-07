@@ -96,7 +96,7 @@ class VisMolViewingSelection:
         self.selected_objects          = {} #dic of VisMol objects (obj)
         self.selected_atoms        = [] #List of atoms objects (obj)
         self.selected_atoms_coords = [] #coordinate (floats) x y z
-	
+    
     def get_selection_info (self):
         """ Function doc """
         #print('self._selection_mode          ',self._selection_mode           )
@@ -118,7 +118,7 @@ class VisMolViewingSelection:
         #print('self.selected_residues        ',self.selected_residues         )
         #print('self.selected_atoms           ',self.selected_atoms            )
         #print('self.selected_frames          ',self.selected_frames           )
-		
+        return len(self.selected_atoms)
     
     def selecting_by_atom (self, selected):
         """ Function doc """

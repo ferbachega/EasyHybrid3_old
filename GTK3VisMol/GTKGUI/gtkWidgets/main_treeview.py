@@ -31,50 +31,6 @@
 #import VISMOL.glCore.vismol_shaders as vm_shader
 #import VISMOL.glCore.matrix_operations as mop
 
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
-
-
-
-class FileChooser:
-    """ Class doc """
-    
-    def __init__ (self, main_window = None):
-        """ Class initialiser """
-        self.main_window = main_window
-
-    
-    def open (self):
-
-        """ Function doc """
-        #main = gtkmain
-        main = self.main_window
-        filename = None
-        
-        chooser = Gtk.FileChooserDialog("Open File...", main,0,
-                                       (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                                        Gtk.STOCK_OK, Gtk.ResponseType.OK))
-
-        filter = Gtk.FileFilter()  
-        filter.set_name("PDB files - *.pdb")
-        #
-        filter.add_mime_type("PDB files")
-        filter.add_pattern("*.pdb")
-        #
-        chooser.add_filter(filter)
-        filter = Gtk.FileFilter()
-        filter.set_name("All files")
-        filter.add_pattern("*")
-        #
-        chooser.add_filter(filter)  
-
-        response = chooser.run()
-        if response == Gtk.ResponseType.OK:
-            filename = chooser.get_filename()
-        chooser.destroy()
-        return filename
-        #print (filename)
 
 
 

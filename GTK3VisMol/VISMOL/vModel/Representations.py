@@ -1508,6 +1508,38 @@ class SurfaceRepresentation (Representation):
         self.sel_shader_program = None
         self.read_surface_data()
     
+    
+    ##### sub 2 vev3 vectors
+    def sub_vec3(self, a, b):
+        c = [ a[0] - b[0],
+              a[1] - b[1],
+              a[2] - b[2] ]
+
+        return c
+
+    ## add 2 vectors and take the avg
+    ## if a vector is still 0 we just take b
+    def avg_add_vec3(self, a, b):
+        if a[0] == 0.0 and a[1] == 0.0 and a[2] == 0.0 :
+            return b
+
+        c = [ (a[0] + b[0]) * 0.5 ,
+              (a[1] + b[1]) * 0.5 ,
+              (a[2] + b[2]) * 0.5 ]
+
+        return c    
+
+    ## make the cross product of 2 vectors
+    def cross_vec3(self, a, b):
+        c = [a[1]*b[2] - a[2]*b[1],
+             a[2]*b[0] - a[0]*b[2],
+             a[0]*b[1] - a[1]*b[0]]
+
+        return c
+    #############################################
+        
+    
+    
     def read_surface_data(self):
         """ Function doc """
         #from random import random 
@@ -1529,7 +1561,7 @@ class SurfaceRepresentation (Representation):
         self.colors2 = []
         self.normals2 = []
         self.indexes2 = []
-        
+        avg_normals_indexes = []
         
         
         for line in lines:
@@ -1548,15 +1580,51 @@ class SurfaceRepresentation (Representation):
                 self.normals2.append(float(line2[0]))
                 self.normals2.append(float(line2[1]))
                 self.normals2.append(float(line2[2]))                
-            
+                avg_normals_indexes.append( ( 0.0 , 0.0 , 0.0 ) )  ### NEW !!! 
+
             if len(line2) == 7:
                 
                 self.indexes2.append(int(line2[1]))
                 self.indexes2.append(int(line2[2]))
                 self.indexes2.append(int(line2[3]))
                 
-                
-                
+        
+        ## calculate normals and interpolate them (thanks a lot Kai)
+        for i in range( 0 , len(self.indexes2) , 3 ):
+
+            index_1 = self.indexes2[i] * 3;
+            index_2 = self.indexes2[i+1] * 3;
+            index_3 = self.indexes2[i+2] * 3;
+            vertex_1 = ( self.coords2[index_1] , self.coords2[index_1+1] , self.coords2[index_1+2] )
+            vertex_2 = ( self.coords2[index_2] , self.coords2[index_2+1] , self.coords2[index_2+2] )
+            vertex_3 = ( self.coords2[index_3] , self.coords2[index_3+1] , self.coords2[index_3+2] )
+
+            vec_p0_p1 = self.sub_vec3( vertex_2 , vertex_1 )
+            vec_p0_p2 = self.sub_vec3( vertex_3 , vertex_1 )
+            norm_vec  = self.cross_vec3( vec_p0_p1, vec_p0_p2 )
+
+            vert_index_1 = self.indexes2[i] ;
+            vert_index_2 = self.indexes2[i+1] ;
+            vert_index_3 = self.indexes2[i+2] ;
+            
+            avg_normals_indexes[vert_index_1] = self.avg_add_vec3( avg_normals_indexes[vert_index_1] , norm_vec )
+            avg_normals_indexes[vert_index_2] = self.avg_add_vec3( avg_normals_indexes[vert_index_2] , norm_vec )
+            avg_normals_indexes[vert_index_3] = self.avg_add_vec3( avg_normals_indexes[vert_index_3] , norm_vec )
+
+
+        ## set all new interpolated normals   
+        for i in range( 0 , len(self.indexes2) , 1 ):
+            index_1 = self.indexes2[i] * 3;
+
+            self.normals2[index_1]   = avg_normals_indexes[self.indexes2[i]][0]
+            self.normals2[index_1+1] = avg_normals_indexes[self.indexes2[i]][1]
+            self.normals2[index_1+2] = avg_normals_indexes[self.indexes2[i]][2]
+
+
+
+
+
+               
                 
 
     def _make_gl_vao_and_vbos (self, indexes = None):

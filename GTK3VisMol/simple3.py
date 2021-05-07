@@ -27,8 +27,9 @@ from VISMOL.vCore.VismolSession  import VisMolSession
 
 
 vismolSession  =  VisMolSession(glwidget = True)
+vismolSession.insert_glmenu()
 vismolSession.start_viewer() 
-vismolSession.load('/home/fernando/programs/EasyHybrid3/Coords/pdbs/glicose2.pdb')
+#vismolSession.load('/home/fernando/programs/EasyHybrid3/Coords/pdbs/glicose2.pdb')
 #viewer = SW.VismolGTK3Session()
 
 #viewer.run()

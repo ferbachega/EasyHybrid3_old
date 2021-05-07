@@ -59,6 +59,7 @@ from VISMOL.vModel.Representations   import WiresRepresentation
 
 
 
+from GTKGUI.gtkWidgets.filechooser import FileChooser
 
 
 
@@ -139,74 +140,7 @@ class ShowHideVisMol:
         self.change_attributes_for_selected_atoms (_type = _type , 
                                                    atoms = selection.selected_atoms,  
                                                     show = show)
-        '''
-        for atom in self.selections[self.current_selection].selected_atoms:
-
-            #               B O N D S
-            if _type in ['lines','sticks','ribbons']:
-                if _type == 'lines':
-                    if show:
-                        atom.lines = True        
-                    else:         
-                        atom.lines = False 
-
-                if _type == 'sticks':
-                    if show:
-                        atom.sticks = True        
-                    else:         
-                        atom.sticks = False 
-
-
-            
-            #               A T O M S 
-            else:
-                if _type == 'nonbonded':
-                    if show:
-                        atom.nonbonded = True
-                    else:
-                        atom.nonbonded = False
-
-                if _type == 'dots':
-                    if show:
-                        atom.dots = True
-                    else:
-                        atom.dots = False
-
-                if _type == 'spheres':
-                    #print (atom.name, atom.index, atom.Vobject.name)
-                    if show:
-                        atom.spheres = True
-                    else:
-                        atom.spheres = False
-                
-        '''
-        
-        
-        '''
-        if _type in ['lines','sticks','ribbons']:
-            for atom in self.selections[self.current_selection].selected_atoms:
-                for bond in atom.bonds:
-                    if bond.atom_i in self.selections[self.current_selection].selected_atoms and bond.atom_j in self.selections[self.current_selection].selected_atoms:
-
-                        if _type == 'lines':
-                            if show:
-                                bond.line_active  = True
-                            else:
-                                bond.line_active  = False
-
-                        if _type == 'sticks':
-                            if show:
-                                bond.stick_active = True        
-                            else:
-                                bond.stick_active = False        
-        '''
-        
-        
-        
-        
-        
-        
-        
+      
         
         for vobject in selection.selected_objects:
             #print("Vobject.name:",vobject.name)
@@ -390,7 +324,7 @@ class VisMolSession (ShowHideVisMol):
                                       'antialias'                  : False    ,
                                       'bg_color'                   : [255,255,255,1],
                                       'center_on_coord_sleep_time' : 0.001    ,
-				      }
+                      }
         '''
         
         self.toolkit = toolkit
@@ -400,6 +334,12 @@ class VisMolSession (ShowHideVisMol):
                 from VISMOL.glWidget import VisMolGLWidget
                 self.glwidget   = VisMolGLWidget.GtkGLAreaWidget(self)
                 self.glwidget.vm_widget.queue_draw()
+                
+                '''This gtk list is declared in the VismolGLWidget file 
+                   (it does not depend on the creation of Treeview)'''
+                self.Vismol_Objects_ListStore = self.glwidget.Vismol_Objects_ListStore
+            
+            
             if toolkit == 'qt4':
                 self.glwidget   = VisMolGLWidget.QtGLWidget(self)
         else:
@@ -439,89 +379,8 @@ class VisMolSession (ShowHideVisMol):
     
     
     
-    
-        def menu_show_lines (_):
-            """ Function doc """
-            self.show_or_hide( _type = 'lines', show = True)
-        
-        def menu_hide_lines (_):
-            """ Function doc """
-            self.show_or_hide( _type = 'lines', show = False)
 
-        def menu_show_sticks (_):
-            """ Function doc """
-            self.show_or_hide( _type = 'sticks', show = True)
-        
-        def menu_hide_sticks (_):
-            """ Function doc """
-            self.show_or_hide( _type = 'sticks', show = False)
-    
-        def menu_show_spheres (_):
-            """ Function doc """
-            self.show_or_hide( _type = 'spheres', show = True)
-        
-        def menu_hide_spheres (_):
-            """ Function doc """
-            self.show_or_hide( _type = 'spheres', show = False)
-        
-
-            
-    
-    
-    
-     
-        menu = { 
-                'header' : ['MenuItem', None],
-                
-                
-                'separator1':['separator', None],
-                
-                
-                'show'   : [
-                            'submenu' ,{
-                                        
-                                        'lines'    : ['MenuItem', menu_show_lines],
-                                        'sticks'   : ['MenuItem', menu_show_sticks],
-                                        'spheres'  : ['MenuItem', menu_show_spheres],
-                                        'separator2':['separator', None],
-                                        'nonbonded': ['MenuItem', None],
-                
-                                       }
-                           ],
-                
-                
-                'hide'   : [
-                            'submenu',  {
-                                        'lines'    : ['MenuItem', menu_hide_lines],
-                                        'sticks'   : ['MenuItem', menu_hide_sticks],
-                                        'spheres'  : ['MenuItem', menu_hide_spheres],
-                                        'nonbonded': ['MenuItem', None],
-                                        }
-                            ],
-                
-                
-                'separator2':['separator', None],
-
-                
-                
-                'label':  ['submenu' , {
-                                        'Atom'         : [
-                                                           'submenu', {
-                                                                       'lines'    : ['MenuItem', None],
-                                                                       'sticks'   : ['MenuItem', None],
-                                                                       'spheres'  : ['MenuItem', None],
-                                                                       'nonbonded': ['MenuItem', None],
-                                                                       }
-                                                          ],
-                                        
-                                        'Atom index'   : ['MenuItem', None],
-                                        'residue name' : ['MenuItem', None],
-                                        'residue_index': ['MenuItem', None],
-                                       },
-                           ]
-                }
-
-        self.insert_glmenu(menu)
+        #self.insert_glmenu()
 
 
 
@@ -555,10 +414,246 @@ class VisMolSession (ShowHideVisMol):
                               'surface' : False,
                               }
 
-    def insert_glmenu (self, menu  = None):
-	    """ Function doc """
-	    self.glwidget.build_glmenu(menu  = menu )
+    
+    def teste (self, teste = None):
+        """ Function doc """
+        print('  funcao teste   ')
+    
+    def insert_glmenu (self, bg_menu  = None, sele_menu = None, obj_menu = None):
+        """ Function doc """
+        
 
+
+
+        def _selection_mode_atom (_):
+            """ Function doc """
+            self.selection_mode(selmode = 'atom')
+        def _selection_mode_residue (_):
+            """ Function doc """
+            self.selection_mode(selmode = 'residue')
+        def _selection_mode_chain (_):
+            """ Function doc """
+            self.selection_mode(selmode = 'chain')
+
+
+
+
+
+        if sele_menu is None:
+            ''' Standard Sele Menu '''
+            def menu_show_lines (_):
+                """ Function doc """
+                self.show_or_hide( _type = 'lines', show = True)
+
+            def menu_hide_lines (_):
+                """ Function doc """
+                self.show_or_hide( _type = 'lines', show = False)
+
+            def menu_show_sticks (_):
+                """ Function doc """
+                self.show_or_hide( _type = 'sticks', show = True)
+
+            def menu_hide_sticks (_):
+                """ Function doc """
+                self.show_or_hide( _type = 'sticks', show = False)
+
+            def menu_show_spheres (_):
+                """ Function doc """
+                self.show_or_hide( _type = 'spheres', show = True)
+
+            def menu_hide_spheres (_):
+                """ Function doc """
+                self.show_or_hide( _type = 'spheres', show = False)
+
+
+            sele_menu = { 
+                    'header' : ['MenuItem', None],
+                    
+                    
+                    'separator1':['separator', None],
+                    
+                    
+                    'show'   : [
+                                'submenu' ,{
+                                            
+                                            'lines'    : ['MenuItem', menu_show_lines],
+                                            'sticks'   : ['MenuItem', menu_show_sticks],
+                                            'spheres'  : ['MenuItem', menu_show_spheres],
+                                            'separator2':['separator', None],
+                                            'nonbonded': ['MenuItem', None],
+                    
+                                           }
+                               ],
+                    
+                    
+                    'hide'   : [
+                                'submenu',  {
+                                            'lines'    : ['MenuItem', menu_hide_lines],
+                                            'sticks'   : ['MenuItem', menu_hide_sticks],
+                                            'spheres'  : ['MenuItem', menu_hide_spheres],
+                                            'nonbonded': ['MenuItem', None],
+                                            }
+                                ],
+                    
+                    
+                    'separator2':['separator', None],
+
+                    'Selection Mode'   : [
+                                'submenu' ,{
+                                            
+                                            'Atoms'     :  ['MenuItem', _selection_mode_atom],
+                                            'Residue'   :  ['MenuItem', _selection_mode_residue],
+                                            'Chain'     :  ['MenuItem', _selection_mode_chain],
+                                            #'separator2':['separator', None],
+                                            #'nonbonded' : ['MenuItem', None],
+                    
+                                           }
+                               ],
+                    
+                    'Label Mode':  ['submenu' , {
+                                            'Atom'         : [
+                                                               'submenu', {
+                                                                           'lines'    : ['MenuItem', None],
+                                                                           'sticks'   : ['MenuItem', None],
+                                                                           'spheres'  : ['MenuItem', None],
+                                                                           'nonbonded': ['MenuItem', None],
+                                                                           }
+                                                              ],
+                                            
+                                            'Atom index'   : ['MenuItem', None],
+                                            'residue name' : ['MenuItem', None],
+                                            'residue_index': ['MenuItem', None],
+                                           },
+                               ]
+                    }
+      
+        if bg_menu is None:
+            ''' Standard Bg Menu'''
+            
+            def open_structure_data (_):
+                """ Function doc """
+                print('ebaaaa')
+                self.filechooser   = FileChooser()
+                filename = self.filechooser.open()
+                self.load (filename, widget = None, autocenter = True)
+
+
+                
+            bg_menu = { 
+                    'separator0'   :['separator', None],
+
+                    'Open File'    : ['MenuItem', open_structure_data],
+
+                    'funcao teste' : ['MenuItem', self.teste],                  
+                    
+                    'separator1':['separator', None],
+                    
+                    
+                    'Selection Mode'   : [
+                                'submenu' ,{
+                                            
+                                            'Atoms'     :  ['MenuItem', _selection_mode_atom],
+                                            'Residue'   :  ['MenuItem', _selection_mode_residue],
+                                            'Chain'     :  ['MenuItem', _selection_mode_chain],
+                                            #'separator2':['separator', None],
+                                            #'nonbonded' : ['MenuItem', None],
+                    
+                                           }
+                               ],
+                    
+                    
+                    'hide'   : [
+                                'submenu',  {
+                                            'lines'    : ['MenuItem', menu_hide_lines],
+                                            'sticks'   : ['MenuItem', menu_hide_sticks],
+                                            'spheres'  : ['MenuItem', menu_hide_spheres],
+                                            'nonbonded': ['MenuItem', None],
+                                            }
+                                ],
+                    
+                    
+                    'separator2':['separator', None],
+
+                    
+                    
+                    'label':  ['submenu' , {
+                                            'Atom'         : [
+                                                               'submenu', {
+                                                                           'lines'    : ['MenuItem', None],
+                                                                           'sticks'   : ['MenuItem', None],
+                                                                           'spheres'  : ['MenuItem', None],
+                                                                           'nonbonded': ['MenuItem', None],
+                                                                           }
+                                                              ],
+                                            
+                                            'Atom index'   : ['MenuItem', None],
+                                            'residue name' : ['MenuItem', None],
+                                            'residue_index': ['MenuItem', None],
+                                           },
+                               ]
+                    }
+
+        if obj_menu is None:
+            ''' Standard Obj Menu'''
+            obj_menu = { 
+                    'OBJ menu' : ['MenuItem', None],
+                    
+                    
+                    'separator1':['separator', None],
+                    
+                    
+                    'show'   : [
+                                'submenu' ,{
+                                            
+                                            'lines'    : ['MenuItem', menu_show_lines],
+                                            'sticks'   : ['MenuItem', menu_show_sticks],
+                                            'spheres'  : ['MenuItem', menu_show_spheres],
+                                            'separator2':['separator', None],
+                                            'nonbonded': ['MenuItem', None],
+                    
+                                           }
+                               ],
+                    
+                    
+                    'hide'   : [
+                                'submenu',  {
+                                            'lines'    : ['MenuItem', menu_hide_lines],
+                                            'sticks'   : ['MenuItem', menu_hide_sticks],
+                                            'spheres'  : ['MenuItem', menu_hide_spheres],
+                                            'nonbonded': ['MenuItem', None],
+                                            }
+                                ],
+                    
+                    
+                    'separator2':['separator', None],
+
+                    
+                    
+                    'label':  ['submenu' , {
+                                            'Atom'         : [
+                                                               'submenu', {
+                                                                           'lines'    : ['MenuItem', None],
+                                                                           'sticks'   : ['MenuItem', None],
+                                                                           'spheres'  : ['MenuItem', None],
+                                                                           'nonbonded': ['MenuItem', None],
+                                                                           }
+                                                              ],
+                                            
+                                            'Atom index'   : ['MenuItem', None],
+                                            'residue name' : ['MenuItem', None],
+                                            'residue_index': ['MenuItem', None],
+                                           },
+                               ]
+                    }
+
+
+
+
+        self.glwidget.build_glmenu( bg_menu  = bg_menu, sele_menu = sele_menu, obj_menu = obj_menu )
+
+    
+    
+    
     def command_line (self, entry = None):
         """ Function doc """
         cmd = entry.split()
@@ -623,17 +718,17 @@ class VisMolSession (ShowHideVisMol):
         #self.vismol_objects[-1].representations[rep.name] = rep
 
         '''Simple dot representation'''
-        #rep  = DotsRepresentation (name = 'dots', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        #self.vismol_objects[-1].representations[rep.name] = rep
+        rep  = DotsRepresentation (name = 'dots', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        self.vismol_objects[-1].representations[rep.name] = rep
         
         #rep  = SpheresRepresentation (name = 'spheres', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
         #self.vismol_objects[-1].representations[rep.name] = rep
         
-        rep =  RibbonsRepresentation(name = 'ribbons', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        self.vismol_objects[-1].representations[rep.name] = rep
+        #rep =  RibbonsRepresentation(name = 'ribbons', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        #self.vismol_objects[-1].representations[rep.name] = rep
         
-        rep =  SurfaceRepresentation(name = 'surface', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        self.vismol_objects[-1].representations[rep.name] = rep
+        #rep =  SurfaceRepresentation(name = 'surface', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        #self.vismol_objects[-1].representations[rep.name] = rep
 
         #rep =  WiresRepresentation(name = 'wires', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
         #self.vismol_objects[-1].representations[rep.name] = rep
@@ -643,12 +738,37 @@ class VisMolSession (ShowHideVisMol):
         #if self.toolkit == 'gtk3':
         #    self.refresh_gtk(widget)
         #visObj = vismolSession.vismol_objects[-1]
+        
+        
+        # after opening a new object, center the camera on this new object
         if autocenter:
             self.glwidget.vm_widget.center_on_coordinates(self.vismol_objects[-1], self.vismol_objects[-1].mass_center)
-
-        
         
 
+        #This function adds new structures to "Vismol_Objects_ListStore"
+        self.append_vismol_object_to_vismol_objects_listStore(self.vismol_objects[-1])
+    
+    
+    def append_vismol_object_to_vismol_objects_listStore(self, visObj):
+        """ This function adds new structures to "Vismol_Objects_ListStore". 
+        The Vismol_Objects_ListStore is created in the VisMolGLWidget 
+        file and does not depend on the maintreeview of the main window. """
+        
+        i = self.vismol_objects.index(visObj)
+
+        data = [visObj.active  , 
+        str(i)                 ,
+        visObj.name            , 
+        str(len(visObj.atoms)) , 
+        str(len(visObj.frames)),
+        ]
+        print (data)
+        self.Vismol_Objects_ListStore.append(data)
+        
+        
+        
+        
+        
         
     def _load_pdb_file (self, infile):
         """ Function doc """      
@@ -732,18 +852,19 @@ class VisMolSession (ShowHideVisMol):
     def get_vobject_list (self):
         """ Function doc """
         Vobjects_dic = {}
-	
+    
         for Vobject in self.vismol_objects:
             #print ('----------------------- > get_vobject_list ', Vobject.label)
             index = self.vismol_objects.index(Vobject)
             name = Vobject.label
             #print( '\n label get_vobject_list:', name, index, len(Vobject.atoms) )
             Vobjects_dic[index] = name
-	
+    
         return Vobjects_dic
 
     def selection_mode(self, selmode = 'atom'):
         """ Function doc """        
+        print(selmode)
         self.selections[self.current_selection]._selection_mode = selmode
     
     def selection_function (self, pickedID):

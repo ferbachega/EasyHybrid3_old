@@ -44,7 +44,7 @@ from OpenGL import GL
 from OpenGL.GL import shaders
 
 
-class GLMenus :
+class GLMenus2 :
     """ Class doc """
     def __init__ (self, glWidget, menu_items):
         
@@ -124,7 +124,7 @@ class GLMenus :
      
 
 
-class GLMenu2:
+class GLMenu3:
     """ Class doc """
     def __init__ (self, glWidget):
         """ Class initialiser """
@@ -309,20 +309,35 @@ class GtkGLAreaWidget(Gtk.GLArea):
                        | Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.POINTER_MOTION_HINT_MASK
                        | Gdk.EventMask.KEY_PRESS_MASK | Gdk.EventMask.KEY_RELEASE_MASK )
         
+        
+        self.Vismol_Objects_ListStore = Gtk.ListStore(bool,str , str ,str, str)
+        
+        
         self.vm_widget = vismol_widget.VisMolGLCore(self, vismolSession, np.float32(width), np.float32(height))
         self.vismolSession = vismolSession
         
+        
+        self.glMenu_sele = None
+        self.glMenu_bg = None
+        self.glMenu_obj = None
+
         #self.glMenu = GLMenu(self)
     
+    
+    
+    def _ (_):
+        """ Function doc """
+        
     
     def build_submenus_from_dicts (self, menu_dict):
         """ Function doc """
         menu = Gtk.Menu()
-         
+        
         for key in menu_dict:
             mitem = Gtk.MenuItem(key)
             
             if menu_dict[key][0] == 'submenu':
+                #print(key)
                 menu2 = self.build_submenus_from_dicts (menu_dict[key][1])
                 mitem.set_submenu(menu2)
             
@@ -331,7 +346,8 @@ class GtkGLAreaWidget(Gtk.GLArea):
                 mitem = Gtk.SeparatorMenuItem()
                 #menu2 = self.build_submenus_from_dicts (menu_dict[key][1])
                 #mitem.set_submenu(menu2)
-            
+                #print(key)
+
             
             else:
                 if menu_dict[key][1] != None:
@@ -342,12 +358,27 @@ class GtkGLAreaWidget(Gtk.GLArea):
         
         return menu
         #menu.show_all()
-     
-    def show_gl_menu (self, signals = None):
+
+    def build_glmenu_from_dicts (self, menu_dict, glMenu):
         """ Function doc """
-        self.glMenu.popup(None, None, None, None, 0, 0)
-    
-    def build_glmenu (self, menu = None):
+        for key in menu_dict:
+            mitem = Gtk.MenuItem(label = key)
+            
+            if menu_dict[key][0] == 'submenu':
+                menu2 = self.build_submenus_from_dicts (menu_dict[key][1])
+                mitem.set_submenu(menu2)
+            
+            elif menu_dict[key][0] == 'separator':
+                mitem = Gtk.SeparatorMenuItem()
+          
+            else:
+                if menu_dict[key][1] != None:
+                    mitem.connect('activate', menu_dict[key][1])
+                else:
+                    pass
+            glMenu.append(mitem) 
+
+    def build_glmenu (self,  bg_menu  = None, sele_menu = None, obj_menu = None):
         """ Function doc """
 
         #self.glMenu = Gtk.Menu()
@@ -377,10 +408,65 @@ class GtkGLAreaWidget(Gtk.GLArea):
         #self.glMenu.show_all()
 
         
-        self.glMenu = self.build_submenus_from_dicts (menu)
-        self.glMenu.show_all()
+        ''' Selection Menu '''
+        # --------------------------------------------------------------- #
+        if sele_menu:
+            self.glMenu_sele           = Gtk.Menu()
+            self.glMenu_sele_toplabel =  Gtk.MenuItem(label = 'selection')
+            self.glMenu_sele.append (self.glMenu_sele_toplabel)
+            
+            self.build_glmenu_from_dicts( sele_menu, self.glMenu_sele)
+           
+            self.glMenu_sele.show_all()
 
+        else:
+            self.glMenu_sele = None
+        # --------------------------------------------------------------- #
 
+        ''' Background Menu '''
+        # --------------------------------------------------------------- #
+        if bg_menu:
+            self.glMenu_bg  = Gtk.Menu()
+            self.glMenu_bg_toplabel =  Gtk.MenuItem(label = 'background')
+            self.glMenu_bg.append (self.glMenu_bg_toplabel)
+
+            self.build_glmenu_from_dicts( bg_menu, self.glMenu_bg)
+            #self.glMenu_bg = self.build_submenus_from_dicts (bg_menu)
+            self.glMenu_bg.show_all()
+        else:
+            self.glMenu_bg = None
+        
+        
+        if obj_menu:
+            self.glMenu_obj  = Gtk.Menu()
+            self.glMenu_obj_toplabel =  Gtk.MenuItem(label = 'atom')
+            self.glMenu_obj.append (self.glMenu_obj_toplabel)
+
+            self.build_glmenu_from_dicts( obj_menu, self.glMenu_obj)
+            self.glMenu_obj.show_all()
+        else:
+            self.glMenu_obj = None
+            
+     
+    def show_gl_menu (self, signals = None, menu_type = None, info = None):
+        """ Function doc """
+        
+        if menu_type == 'bg_menu':
+            if self.glMenu_bg:
+                self.glMenu_bg.popup(None, None, None, None, 0, 0)
+        
+        
+        if menu_type == 'sele_menu':
+            if self.glMenu_sele:
+                self.glMenu_sele.popup(None, None, None, None, 0, 0)
+        
+        
+        if menu_type == 'obj_menu':
+            if self.glMenu_obj:
+                self.glMenu_obj_toplabel.set_label(info)
+                self.glMenu_obj.popup(None, None, None, None, 0, 0)
+        
+            
     def initialize(self, widget):
         """ Enables the buffers and other charasteristics of the OpenGL context.
             sets the initial projection and view matrix

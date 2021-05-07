@@ -262,6 +262,7 @@ class VisMolGLCore():
                     self.atom_picked = None
             if right:
                 self.button = 3
+                menu_type = None 
                 # Checks if there is anything in the selection list
                 # If {} means that there are no selection points on the screen
                 if self.vismolSession.selections[self.vismolSession.current_selection].selected_objects == {}:
@@ -281,19 +282,23 @@ class VisMolGLCore():
                         #for bond in self.atom_picked.bonds:
                         #    print (bond.atom_index_i, bond.atom_index_j)
                         self.atom_picked = None
+                        menu_type = 'obj_menu'
+                        info = label
                     else:
                         
                         # When no atom is identified in the click (user clicked on a point in the background)
                         print ('self.atom_picked is None')
                         print ('selection is not active')
+                        menu_type = 'bg_menu'
+                        info = None
                 else:
                     print('selection is  active')
-                    self.vismolSession.selections[self.vismolSession.current_selection].get_selection_info()
-                
+                    info = self.vismolSession.selections[self.vismolSession.current_selection].get_selection_info()
+                    menu_type = 'sele_menu'
                 #self.parent_widget.glMenu.#open_gl_menu(event = event)
                 #self.parent_widget.menu_header.set_label(label)
                 #self.parent_widget.glMenu.popup(None, None, None, None, 0, 0)  
-                self.parent_widget.show_gl_menu()
+                self.parent_widget.show_gl_menu(menu_type = menu_type, info = info)
         return True
     
     def mouse_motion(self, mouse_x, mouse_y):

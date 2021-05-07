@@ -2,8 +2,8 @@ import gi, sys
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
-from GTKGUI.gtkWidgets.main_treeview import GtkMainTreeView
-from GTKGUI.gtkWidgets.main_treeview import FileChooser
+#from GTKGUI.gtkWidgets.main_treeview import GtkMainTreeView
+from GTKGUI.gtkWidgets.filechooser import FileChooser
 
 class VismolMainWindow ( ):
     """ Class doc """
@@ -15,8 +15,8 @@ class VismolMainWindow ( ):
             
             #self.treeview.append()
             #self.treeview.refresh_gtk_main_treeview()
-            visObj = self.vismolSession.vismol_objects[-1]
-            self.treeview.append(visObj)
+            #visObj = self.vismolSession.vismol_objects[-1]
+            #self.treeview.append(visObj)
 
             #self.vismolSession.glwidget.vm_widget.center_on_coordinates(visObj, visObj.mass_center)
         else:
@@ -38,7 +38,12 @@ class VismolMainWindow ( ):
         self.vismolSession = vismolSession#( main_session = None)
         self.vismolSession.main_session = self
         
+        '''This gtk list is declared in the VismolGLWidget file 
+           (it does not depend on the creation of Treeview)'''
+        #self.Vismol_Objects_ListStore = self.vismolSession.Vismol_Objects_ListStore
         
+        
+        #-------------------------------------------------------------------      
         #                         notebook_V1
         #-------------------------------------------------------------------
         self.notebook_V1 = Gtk.Notebook()
@@ -58,8 +63,10 @@ class VismolMainWindow ( ):
         #-------------------------------------------------------------------
         self.notebook_H1 = Gtk.Notebook()
         self.ScrolledWindow_notebook_H1 = Gtk.ScrolledWindow()
+        
         #self.Tree_notebook_H1           = Gtk.TreeView()
         self.treeview = GtkMainTreeView(vismolSession)
+        
         #self.treeview  = self.gtkTreeViewObj.treeview
         self.ScrolledWindow_notebook_H1.add(self.treeview)
         self.notebook_H1.append_page(self.ScrolledWindow_notebook_H1, Gtk.Label('Vertical Tab'))
@@ -131,7 +138,8 @@ class GtkMainTreeView(Gtk.TreeView):
         Gtk.TreeView.__init__(self)
         self.vismolSession = vismolSession
         self.treeview_menu = TreeViewMenu(self)
-        self.store         = Gtk.ListStore(bool,str , str ,str, str)
+        #self.store         = Gtk.ListStore(bool,str , str ,str, str)
+        self.store         = vismolSession.Vismol_Objects_ListStore
 
         self.set_model(self.store)
 

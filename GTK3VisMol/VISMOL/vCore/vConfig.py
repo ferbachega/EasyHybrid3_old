@@ -215,7 +215,7 @@ class VisMolConfig:
                                   'dot_type'                   : 0                    ,  # 0 - square    1 - rounded
                                   'dot_sel_size'               : 1.5                  , 
                                                                                          
-                                  'line_width'                 : 10                   ,  
+                                  'line_width'                 : 5                   ,  
                                   'line_width_selection'       : 40                   ,  
 
                                   'line_type'                  : 0                    ,  # 0 - no detail       1 - Charlitos'style
@@ -246,7 +246,7 @@ class VisMolConfig:
                                   'field_of_view'              : 15                   ,
                                     
 
-                                  'light_position'             : [-2.5, 2.5, 3.0    ] ,
+                                  'light_position'             : [-2.5, -2.5, 3.0  ] ,
                                   'light_color'                : [ 1.0, 1.0, 1.0,1.0] ,
                                   'light_ambient_coef'         : 0.4                  ,
                                   'light_shininess'            : 5.5                  ,
