@@ -296,8 +296,10 @@ class LinesRepresentation (Representation):
         self._check_VAO_and_VBOs ()
         self._enable_anti_alis_to_lines()
         GL.glUseProgram(self.shader_program)
-        LineWidth = (80/abs(self.glCore.dist_cam_zrp)/2)**0.5  #40/abs(self.glCore.dist_cam_zrp)
-        GL.glLineWidth(LineWidth)
+        
+        line_width = self.visObj.vismol_session.vConfig.gl_parameters['line_width']
+        line_width = (line_width*200/abs(self.glCore.dist_cam_zrp)/2)**0.5  #40/abs(self.glCore.dist_cam_zrp)
+        GL.glLineWidth(line_width)
 
 
         self.glCore.load_matrices(self.shader_program, self.visObj.model_mat)
@@ -733,9 +735,10 @@ class NonBondedRepresentation (Representation):
         self._check_VAO_and_VBOs ()
         self._enable_anti_alis_to_lines()
 
-
+        line_width = self.visObj.vismol_session.vConfig.gl_parameters['line_width']
+        
         GL.glUseProgram(self.shader_program)
-        GL.glLineWidth(40/abs(self.glCore.dist_cam_zrp))
+        GL.glLineWidth(line_width*20/abs(self.glCore.dist_cam_zrp))
 
         self.glCore.load_matrices(self.shader_program, self.visObj.model_mat)
         self.glCore.load_fog(self.shader_program)

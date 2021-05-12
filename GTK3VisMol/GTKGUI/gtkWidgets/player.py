@@ -39,7 +39,7 @@ import time
 class PlayerFrame:
     """ Class doc """
     
-    def __init__ (self):
+    def __init__ (self, vismol_session):
         """ Class initialiser """
         pass
         xml ='''
@@ -177,31 +177,78 @@ class PlayerFrame:
 
 
         '''
+        
+        self.vismol_session = vismol_session
+        
         self.builder = Gtk.Builder()
         #self.builder.add_from_string(xml)
-        self.builder.add_from_file('VisMolPlayer.glade')
+        self.builder.add_from_file('GTK3VisMol/GTKGUI/gtkWidgets/VisMolPlayer.glade')
         self.builder.connect_signals(self)
-        self.value = 20
+        self.value = 0
         self.main  = self.builder.get_object('main_window')
         self.scale = self.builder.get_object('scaler_frame_change')
         self.button_play = self.builder.get_object('button_play')
         self.scale.set_digits(0)
-
+        
         self.adjustment = Gtk.Adjustment(self.value, 0, 100, 0, 10, 0)
         
         self.scale.set_adjustment ( self.adjustment)
+        
+        
+
+        
+        
+        # combo box  - using the same Vismol_Objects_ListStore
+        self.combo_box_objs = self.builder.get_object('combo_box_objects')
+        self.combo_box_objs.set_model(self.vismol_session.Vismol_Objects_ListStore)
+        renderer_text = Gtk.CellRendererText()
+        self.combo_box_objs.pack_start(renderer_text, True)
+        self.combo_box_objs.add_attribute(renderer_text, "text", 2)
+        
         print ('print', self.main)
         self.main.show()
-        Gtk.main()
+        
+        #Gtk.main()
+    def on_combobox_change (self, combo):
+        """ Function doc """
+        #print (combobox)
+        
+        tree_iter = combo.get_active_iter()
+        
+        if tree_iter is not None:
+            model = combo.get_model()
+            row_id, name = model[tree_iter][:2]
+            print(model[tree_iter][:])
+            number_of_frames = model[tree_iter][4]
+            self.scale.set_range(0, int(number_of_frames)-1)
+            #print("Selected: ID=%d, name=%s" % (row_id, name))
+        else:
+            entry = combo.get_child()
+            print("Entered: %s" % entry.get_text())
+
+
+
 
     def forward (self, button):
         """ Function doc """
-        valor = self.scale.get_value()
-        self.scale.set_value(int(valor+1))
-        print(valor+1)
+        value =  int(self.scale.get_value())
+        value = value+1
+        self.scale.set_value(int(value))
+        self.vismol_session.set_frame(int(value))
+        print(value)
 
-
+    def reverse (self, button):
+        """ Function doc """
+        value = int(self.scale.get_value())
         
+        if value == 0:
+            pass
+        else:
+           value = value-1
+
+        self.vismol_session.set_frame(int(value))
+        self.scale.set_value(value)
+        print(value)
 
     def on_button_print (self, button):
         """ Function doc """
@@ -210,16 +257,18 @@ class PlayerFrame:
         
         while value != 100:
             value += 1
+            self.vismol_session.set_frame(int(value))
             
             self.scale.set_value(int(value))
             time.sleep(0.1)
+            
             print(value)
         #self.scale.set_range(10  , 90)
         #self.scale.set_digits(0)
 
     def on_scaler_frame_change_change_value (self, hscale, text= None,  data=None):
         """ Function doc """
-        valor = hscale.get_value()
+        value = hscale.get_value()
         #cmd.frame( int (valor) )
         #BondTable = self.project.BondTable
         
@@ -230,12 +279,13 @@ class PlayerFrame:
         #scale = self.builder.get_object("trajectory_hscale")
         #scale.set_increments(1, 10)
         #scale.set_digits(0)
+        self.vismol_session.set_frame(int(value)) 
+        print(value)
         
-        print(valor)
+    def show_player (self, show = True):
+        """ Function doc """
+        self.main.show()
+        Gtk.main()
         
         
-        
-        
-        
-
-PlayerFrame = PlayerFrame()
+#PlayerFrame = PlayerFrame()

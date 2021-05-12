@@ -128,6 +128,10 @@ class VismolMainWindow ( ):
         self.window.show_all()
 
 
+    def on_toolbutton_trajectory_tool (self, button):
+        """ Function doc """
+        print (button)
+        
 
 class GtkMainTreeView(Gtk.TreeView):
     """ Class doc """

@@ -89,6 +89,7 @@ class VisMolConfig:
                     'Be' : [ 4,   [0.760000, 1.000000, 0.000000], [130,  90,  30], [204, 128, 255],  0.350000 , 0.900000 , 1.700000 ],#                                                          1.12, 0.30, 0.90 ],	
                     'B'  : [ 5,   [1.000000, 0.710000, 0.710000], [ 90, 130,  30], [194, 255,   0],  0.830000 , 0.820000 , 2.080000 ],#                                                          0.87, 0.30, 0.82 ],	
                     #'C'  : [ 6,   [0.231372, 0.619607, 0.44705 ], [ 80, 180, 180], [255, 181, 181],  0.680000 , 0.770000 , 1.950000 ],#                                                          0.67, 1.70, 0.77 ],	
+                    
                     'C'  : [ 6,   [0.1     , 1, 0.1         ], [ 80, 180, 180], [255, 181, 181],  0.680000 , 0.770000 , 1.950000 ],#                                                          0.67, 1.70, 0.77 ],	
                     
                     #'C'  : [ 6,   [0.      , 1.0     , 0.      ], [ 80, 180, 180], [255, 181, 181],  0.680000 , 0.770000 , 1.950000 ],#                                                          0.67, 1.70, 0.77 ],	
@@ -198,8 +199,8 @@ class VisMolConfig:
                     'Bh' : [ 107, [0.880000, 0.000000, 0.220000], [179,   0, 179], [217,   0,  69],  1.600000 , 0.000000 , 1.700000 ],#                                                          0.01 ],
                     'Hs' : [ 108, [0.900000, 0.000000, 0.180000], [179,   0, 179], [224,   0,  56],  1.600000 , 0.000000 , 1.700000 ],#                                                          0.01 ],
                     'Mt' : [ 109, [0.920000, 0.000000, 0.150000], [179,   0, 179], [230,   0,  46],  1.600000 , 0.000000 , 1.700000 ],#                                                          0.01 ],
-                    'Xx' : [ 0,   [0.070000, 0.500000, 0.700000], [179,   0, 179], [235,   0,  38],  0.000000 , 0.000000 , 0.000000 ],#                                                          0.01 ],
-                    'X'  : [ 0,   [0.070000, 0.500000, 0.700000], [179,   0, 179], [235,   0,  38],  0.000000 , 0.000000 , 0.000000 ],#                                                          0.01 ]
+                    'Xx' : [ 0,   [0.070000, 0.500000, 0.700000], [179,   0, 179], [235,   0,  38],  1.000000 , 0.000000 , 0.000000 ],#                                                          0.01 ],
+                    'X'  : [ 0,   [0.070000, 0.500000, 0.700000], [179,   0, 179], [235,   0,  38],  1.000000 , 0.000000 , 0.000000 ],#                                                          0.01 ]
                     }
         
         
@@ -207,24 +208,27 @@ class VisMolConfig:
         
         
         self.gl_parameters      =     {
-                                  'background_color'           : [0.0, 0.0, 0.0, 1.0]    , 
+                                  'background_color'           : [0.0, 0.0, 0.0, 1.0]    , #black
+                                  #'background_color'           : [1.0, 1.0, 1.0, 1.0]    ,  #white
+                                  #'background_color'           : [0.5, 0.5, 0.5, 1.0]    ,  #gray
+                                  
                                   'color_type'                 : 0                    ,  # 0 - pymol style   1 - Gabedit    
                                                                                          
                                                                                          
-                                  'dot_size'                   : 5                    ,  
+                                  'dot_size'                   : 20                    ,  
                                   'dot_type'                   : 0                    ,  # 0 - square    1 - rounded
                                   'dot_sel_size'               : 1.5                  , 
                                                                                          
-                                  'line_width'                 : 5                   ,  
+                                  'line_width'                 : 5                    ,  
                                   'line_width_selection'       : 40                   ,  
 
                                   'line_type'                  : 0                    ,  # 0 - no detail       1 - Charlitos'style
                                   'line_color'                 : 0                    ,  # 0 - atom types      1 - black (for white bg)     2 - white (for black bg)
                                                                                                                
                                                                                                                
-                                  'ribbon_width'               : 40                   ,  
+                                  'ribbon_width'               : 100                   ,  
                                   'ribbon_width_selection'     : 40                   ,  
-                                  'ribbon_type'                : 0                    ,  # 0 - no detail       1 - Charlitos'style
+                                  'ribbon_type'                : 1                    ,  # 0 - no detail       1 - Charlitos'style
                                   'ribbon_color'               : 0                    ,  # 0 - atom types      1 - black (for white bg)     2 - white (for black bg)
                                                                                                                
                                                                                                                
@@ -232,7 +236,7 @@ class VisMolConfig:
                                                                                                                
                                   'sphere_type'                : 0                    ,  # 0 - real spheres    1 - impostors 
                                   'sphere_scale'               : 0.85                 ,  # Scale size for real spheres
-                                  'sphere_quality'             : 1                    ,  # Quality for real spheres - 1 if default
+                                  'sphere_quality'             : 2                    ,  # Quality for real spheres - 1 if default
                                   'impostor_type'              : 1                    ,  # Quality for real spheres - 1 if default
                                                                                          
                                                                                          
@@ -243,7 +247,7 @@ class VisMolConfig:
                                                                                     
                                   'antialias'                  : True                 ,
                                   'scroll_step'                : 0.9                  ,
-                                  'field_of_view'              : 15                   ,
+                                  'field_of_view'              : 10                   ,
                                     
 
                                   'light_position'             : [-2.5, -2.5, 3.0  ] ,

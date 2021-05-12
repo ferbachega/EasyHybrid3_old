@@ -8,7 +8,7 @@ uniform mat4 view_mat;
 in vec3 vert_coord;
 in vec3 vert_color;
 //const float vert_rad = 0.12;
-const float vert_rad = 0.05;
+const float vert_rad = 0.15;
 
 out vec3 geom_color;
 out vec4 geom_coord;

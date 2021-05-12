@@ -60,6 +60,7 @@ from VISMOL.vModel.Representations   import WiresRepresentation
 
 
 from GTKGUI.gtkWidgets.filechooser import FileChooser
+from GTKGUI.gtkWidgets.player import PlayerFrame
 
 
 
@@ -338,7 +339,9 @@ class VisMolSession (ShowHideVisMol):
                 '''This gtk list is declared in the VismolGLWidget file 
                    (it does not depend on the creation of Treeview)'''
                 self.Vismol_Objects_ListStore = self.glwidget.Vismol_Objects_ListStore
-            
+                
+                
+                self.player = PlayerFrame(self)
             
             if toolkit == 'qt4':
                 self.glwidget   = VisMolGLWidget.QtGLWidget(self)
@@ -418,6 +421,12 @@ class VisMolSession (ShowHideVisMol):
     def teste (self, teste = None):
         """ Function doc """
         print('  funcao teste   ')
+    
+    
+    def import_player_widget (self):
+        """ Function doc """
+        
+    
     
     def insert_glmenu (self, bg_menu  = None, sele_menu = None, obj_menu = None):
         """ Function doc """
@@ -718,8 +727,8 @@ class VisMolSession (ShowHideVisMol):
         #self.vismol_objects[-1].representations[rep.name] = rep
 
         '''Simple dot representation'''
-        rep  = DotsRepresentation (name = 'dots', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        self.vismol_objects[-1].representations[rep.name] = rep
+        #rep  = DotsRepresentation (name = 'dots', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        #self.vismol_objects[-1].representations[rep.name] = rep
         
         #rep  = SpheresRepresentation (name = 'spheres', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
         #self.vismol_objects[-1].representations[rep.name] = rep

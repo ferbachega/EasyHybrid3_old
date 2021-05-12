@@ -28,8 +28,12 @@ cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None):
     at  =  VMSession.vConfig.atom_types
     with open(infile, 'r') as pdb_file:
         pdbtext = pdb_file.read()
-
-        rawframes = pdbtext.split('ENDMDL')
+        if 'ENDMDL' in pdbtext:
+            rawframes = pdbtext.split('ENDMDL')
+        else:
+            #pass
+            rawframes = pdbtext.split('END')
+            #print (rawframes)
         atoms     = get_list_of_atoms_from_rawframe(rawframes[0], gridsize, at =  at)
         frames    = get_list_of_frames_from_pdb_rawframes (rawframes = rawframes)
     #-------------------------------------------------------------------------------------------
@@ -118,26 +122,28 @@ iCode = ""
     cdef int index           = 0
     for line in pdb_file_lines:
         if line[:4] == 'ATOM' or line[:6] == 'HETATM':
-            
-            at_name    = line[12:16].strip()
-            at_pos     = np.array([float(line[30:38]), float(line[38:46]), float(line[46:54])])
-            at_resi    = int(line[22:27])
-            at_resn    = line[17:20].strip()
-            at_ch      = line[21]             
-            at_symbol  = line[76:78]
-            at_occup   = float(line[54:60])   #occupancy
-            at_bfactor = float(line[60:66])
-            at_charge  = 0.0
-            
-            cov_rad  = at.get_cov_rad (at_name)
-            gridpos  = [int(at_pos[0]/gridsize), int(at_pos[1]/gridsize), int(at_pos[2]/gridsize)]
-            #ocupan   = float(line[54:60])
-            #bfactor  = float(line[60:66])
-            
-                            #0      1        2        3       4        5        6       7       8       9       10          11        12      
-            atoms.append([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge ])
-            index += 1
-
+            try:
+                at_name    = line[12:16].strip()
+                at_pos     = np.array([float(line[30:38]), float(line[38:46]), float(line[46:54])])
+                
+                at_resi    = int(line[22:27])
+                at_resn    = line[17:20].strip()
+                at_ch      = line[21]             
+                at_symbol  = line[76:78]
+                at_occup   = float(line[54:60])   #occupancy
+                at_bfactor = float(line[60:66])
+                at_charge  = 0.0
+                
+                cov_rad  = at.get_cov_rad (at_name)
+                gridpos  = [int(at_pos[0]/gridsize), int(at_pos[1]/gridsize), int(at_pos[2]/gridsize)]
+                #ocupan   = float(line[54:60])
+                #bfactor  = float(line[60:66])
+                
+                                #0      1        2        3       4        5        6       7       8       9       10          11        12      
+                atoms.append([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge ])
+                index += 1
+            except:
+                print(line)
     return atoms
 
 
@@ -149,6 +155,24 @@ cpdef get_list_of_frames_from_pdb_rawframes (rawframes = None):
     n_processor = multiprocessing.cpu_count()
     pool        = multiprocessing.Pool(n_processor)
     frames      = pool.map(get_pdb_frame_coordinates, rawframes)
+    framesout   = [] 
+    #print (frames[-1])
+    #frames.pop(-1)
+    #n = 0 
+    #for item in frames:
+    #    if item:
+    #        pass
+    #    else:
+    #        frames.pop(n)
+    #    
+    #    n += 1
+    #    #print (item)
+    #    #if item == None:
+    #    #    index = frames.index(item)
+    #    #    frames.pop(index)
+    
+    if frames[-1] == None:
+        frames.pop(-1)
     return frames
 
 
@@ -177,5 +201,5 @@ cpdef get_pdb_frame_coordinates (str frame):
 
     if len(frame_coordinates) == 0:
         return None
-    
-    return frame_coordinates
+    else:
+        return frame_coordinates
