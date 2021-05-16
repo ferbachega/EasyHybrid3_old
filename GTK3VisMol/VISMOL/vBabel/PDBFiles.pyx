@@ -34,7 +34,13 @@ cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None):
             #pass
             rawframes = pdbtext.split('END')
             #print (rawframes)
-        atoms     = get_list_of_atoms_from_rawframe(rawframes[0], gridsize, at =  at)
+        
+        n    = 0 
+        atoms = []
+        while atoms == []:
+            atoms     = get_list_of_atoms_from_rawframe(rawframes[n], gridsize, at =  at)
+            n += 1
+        
         frames    = get_list_of_frames_from_pdb_rawframes (rawframes = rawframes)
     #-------------------------------------------------------------------------------------------
     
@@ -144,6 +150,7 @@ iCode = ""
                 index += 1
             except:
                 print(line)
+    #print('atoms:', atoms)
     return atoms
 
 
@@ -156,24 +163,16 @@ cpdef get_list_of_frames_from_pdb_rawframes (rawframes = None):
     pool        = multiprocessing.Pool(n_processor)
     frames      = pool.map(get_pdb_frame_coordinates, rawframes)
     framesout   = [] 
-    #print (frames[-1])
-    #frames.pop(-1)
-    #n = 0 
-    #for item in frames:
-    #    if item:
-    #        pass
-    #    else:
-    #        frames.pop(n)
-    #    
-    #    n += 1
-    #    #print (item)
-    #    #if item == None:
-    #    #    index = frames.index(item)
-    #    #    frames.pop(index)
     
-    if frames[-1] == None:
-        frames.pop(-1)
-    return frames
+    
+    for frame in frames:
+        if frame:
+            frame = np.array(frame, dtype=np.float32)
+            framesout.append(frame)
+        else:
+            pass
+
+    return framesout
 
 
 
@@ -197,9 +196,9 @@ cpdef get_pdb_frame_coordinates (str frame):
             frame_coordinates.append(float(line[46:54]))
             #at_pos   = np.array([float(line[30:38]), float(line[38:46]), float(line[46:54])])
 
-    frame_coordinates = np.array(frame_coordinates, dtype=np.float32)
+    #frame_coordinates = np.array(frame_coordinates, dtype=np.float32)
 
     if len(frame_coordinates) == 0:
-        return None
+        return False
     else:
         return frame_coordinates

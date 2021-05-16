@@ -42,18 +42,21 @@ class Atom:
         self.charge     = charge   
         
         
-        at = Vobject.vismol_session.vConfig.atom_types
+        self.at = Vobject.vismol_session.vConfig.atom_types
 
         self.atom_id = atom_id        # An unique number
-        self.color   = at.get_color    (name)
+        #self.color   = at.get_color    (name)
+        self.get_color()
+        #----------------------------------------------
         self.color_id = None
-        #self.color.append(0.0)  
-
-        self.col_rgb      = at.get_color_rgb(name)
-        self.radius       = at.get_radius   (name)
-        self.vdw_rad      = at.get_vdw_rad  (name)
-        self.cov_rad      = at.get_cov_rad  (name)
-        self.ball_radius  = at.get_ball_rad (name)
+        self._generate_atom_unique_color_id ()  
+        #----------------------------------------------
+        
+        self.col_rgb      = self.at.get_color_rgb(name)
+        self.radius       = self.at.get_radius   (name)
+        self.vdw_rad      = self.at.get_vdw_rad  (name)
+        self.cov_rad      = self.at.get_cov_rad  (name)
+        self.ball_radius  = self.at.get_ball_rad (name)
 
         self.lines          = True
         self.dots           = False
@@ -139,5 +142,32 @@ class Atom:
                         self.symbol = 'Xx'
 
  
+    def get_color (self):
+        """ Function doc """
+        #self.at = Vobject.vismol_session.vConfig.atom_types
+
+        self.color   = self.at.get_color(self.name)
  
- 
+
+    def _generate_atom_unique_color_id (self):
+        """ Function doc """
+        i = self.atom_id
+        r = (i & 0x000000FF) >>  0
+        g = (i & 0x0000FF00) >>  8
+        b = (i & 0x00FF0000) >> 16
+       
+        #self.color_indexes.append(r/255.0)
+        #self.color_indexes.append(g/255.0)
+        #self.color_indexes.append(b/255.0)
+        
+        pickedID = r + g * 256 + b * 256*256
+        self.color_id = [r/255.0, g/255.0, b/255.0]
+        #print (pickedID)
+        self.Vobject.vismol_session.atom_dic_id[pickedID] = self
+    
+    
+    
+    
+    
+    
+    

@@ -96,10 +96,11 @@ class VismolObject:
     """
     
     def __init__ (self, 
-                  name       = 'UNK', 
-                  atoms      = []   ,
-                  VMSession  = None , 
-                  trajectory = None):
+                  name                           = 'UNK', 
+                  atoms                          = []   ,
+                  VMSession                      = None , 
+                  trajectory                     = None ,
+                  auto_find_bonded_and_nonbonded = True):
         
         """ Class initialiser """
         #-----------------------------------------------------------------
@@ -186,8 +187,190 @@ class VismolObject:
         self.picking_dots_vao      = None
         self.picking_dot_buffers   = None
         #-----------------------------------------------------------------
-        self.find_bonded_and_nonbonded_atoms(atoms)
+        if auto_find_bonded_and_nonbonded:
+            self.find_bonded_and_nonbonded_atoms(atoms)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    def _add_new_atom_to_vobj (self, name          ,
+                                     index         ,
+                                     pos           ,
+                                     resi          ,
+                                     resn          ,
+                                     chain         ,
+                                     atom_id       ,
+                                     occupancy     ,
+                                     bfactor       ,
+                                     charge        ,
+                                     bonds_indexes ,
+                                     Vobject       ,
+                                                 ):
+        """ Function doc """
+    
+        atom        = Atom(name          =  name          ,
+                           index         =  index         ,
+                           pos           =  pos           ,
+                           resi          =  resi          ,
+                           resn          =  resn          ,
+                           chain         =  chain         ,
+                           atom_id       =  atom_id       , 
+                           occupancy     = occupancy     ,
+                           bfactor       = bfactor       ,
+                           charge        = charge        ,
+                           bonds_indexes = bonds_indexes ,
+                           Vobject       = Vobject       ,
+                           )
+        
 
+        
+        
+        if atom.chain in self.chains.keys():
+            ch = self.chains[atom.chain]
+        
+        else:
+            ch = Chain(name = atom.chain, label = 'UNK')
+            self.chains[atom.chain] = ch
+        
+        
+        '''This step checks if a residue has already been created and adds it to the respective chain.'''
+        if len(ch.residues) == 0:
+            residue = Residue(name=atom.resn, 
+                             index=atom.resi, 
+                             chain=atom.chain,
+                             Vobject = self)
+                                
+            atom.residue     = residue
+            residue.atoms.append(atom)
+            self.residues[atom.resi] = residue
+            ch.residues.append(residue)
+        
+        elif atom.resi == ch.residues[-1].resi:# and at_res_n == parser_resn:
+            
+            atom.residue = ch.residues[-1]
+            ch.residues[-1].atoms.append(atom)
+
+        else:
+            residue = Residue(name=atom.resn, 
+                             index=atom.resi, 
+                             chain=atom.chain,
+                             Vobject = self)
+                                
+            atom.residue     = residue
+            residue.atoms.append(atom)
+            self.residues[atom.resi] = residue
+            ch.residues.append(residue)
+            
+            
+            #'Checks whether RESN belongs to the solvent or protein'
+            #---------------------------------------------------------
+            if residue.isProtein:
+                self.residues_in_protein.append(residue)
+            
+            elif residue.isSolvent:
+                self.residues_in_solvent.append(residue)
+            
+            else:
+                self.residues_ligands.append(residue)
+                pass
+            #---------------------------------------------------------
+
+            #parser_resi  = atom.resi
+            #parser_resn  = atom.resn
+
+
+        if atom.name == 'CA':
+            ch.backbone.append(atom)
+        
+        self.atoms.append(atom)
+        
+        #sum_x += atom.pos[0]
+        #sum_y += atom.pos[1]
+        #sum_z += atom.pos[2]
+        
+        self.vismol_session.atom_dic_id[self.vismol_session.atom_id_counter] = atom
+        self.vismol_session.atom_id_counter +=1
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    def add_new_atom (self, name          ,  
+                            index         ,
+                            pos           ,
+                            resi          ,
+                            resn          ,
+                            chain         ,
+                            atom_id       ,
+                            occupancy     ,
+                            bfactor       ,
+                            charge        ,
+                            bonds_indexes ,
+                            Vobject       ,
+                                        ):
+        """ Function doc """
+        
+        
+        atom        = Atom(name          = name         ,   
+                           index         = index        ,
+                           pos           = pos          ,
+                           resi          = resi         ,
+                           resn          = resn         ,
+                           chain         = chain        ,
+                           atom_id       = atom_id      ,
+                           occupancy     = occupancy    ,
+                           bfactor       = bfactor      ,
+                           charge        = charge       ,
+                           bonds_indexes = bonds_indexes,
+                           Vobject       = Vobject      ,
+                           )
+        
+        
+        
+        
+        
+        self.atoms.append(atom)                   
+        self.vismol_session.atom_dic_id[self.vismol_session.atom_id_counter] = atom
+        #index +=1
+        self.vismol_session.atom_id_counter +=1
+        return atom
+                               
     def generate_default_representations (self, reps_list = {}) :
         """ Function doc """
         pass
@@ -222,26 +405,34 @@ class VismolObject:
         '''
     
 	
+    def _get_mass_center (self, frame = 0):
+        """ Function doc """
+        sum_x = 0.0 
+        sum_y = 0.0 
+        sum_z = 0.0 
+        
+        for atom in self.atoms:
+            sum_x += atom.pos[0]
+            sum_y += atom.pos[1]
+            sum_z += atom.pos[2]
+        
+        total = len(self.atoms)        
+        self.mass_center = np.array([sum_x / total,
+                                     sum_y / total, 
+                                     sum_z / total])
+        
+    
+    
     def _generate_atomtree_structure (self):
         """ Function doc """
         
         print ('\ngenerate_chain_structure starting')
         initial          = time.time()
-        
-        parser_chi   = None
-        parser_chn   = None
-
-        parser_resi  = None
-        parser_resn  = None
-        chains_m     = {}
+        #chains_m     = {}
         frame        = []
-        #index        = 1
         
         self.atoms   = [] 
-            
-        sum_x = 0.0 
-        sum_y = 0.0 
-        sum_z = 0.0 
+
         
         for atom2 in self.atoms2:
             index       = atom2[0]
@@ -252,83 +443,28 @@ class VismolObject:
             at_res_n    = atom2[5]
             at_ch       = atom2[6]
             #bonds_idxes = atom2[8]
-            atom        = Atom(name          =  at_name, 
-                               index         =  index+1, 
-                               pos           =  at_pos, 
-                               resi          =  at_res_i, 
-                               resn          =  at_res_n, 
-                               chain         =  at_ch, 
-                               atom_id       =  self.vismol_session.atom_id_counter  , 
-                                             
-                               occupancy     = atom2[10],
-                               bfactor       = atom2[11],
-                               charge        = atom2[12],
-                               bonds_indexes = atom2[8],
-                               Vobject       =  self
-                               )
-
-
-            
-            if atom.chain in self.chains.keys():
-                ch = self.chains[atom.chain]
-            
-            else:
-                ch = Chain(name = atom.chain, label = 'UNK')
-                self.chains[atom.chain] = ch
+            self._add_new_atom_to_vobj
             
             
-            '''This step checks if a residue has already been created and adds it to the respective chain.'''
-            if atom.resi == parser_resi:# and at_res_n == parser_resn:
-                atom.residue = ch.residues[-1]
-                ch.residues[-1].atoms.append(atom)
-
-            else:
-                residue = Residue(name=atom.resn, 
-                                 index=atom.resi, 
-                                 chain=atom.chain,
-                                 Vobject = self)
-                                    
-                atom.residue     = residue
-                residue.atoms.append(atom)
-                self.residues[atom.resi] = residue
-                ch.residues.append(residue)
-                
-                
-                #'Checks whether RESN belongs to the solvent or protein'
-                #---------------------------------------------------------
-                if residue.isProtein:
-                    self.residues_in_protein.append(residue)
-                
-                elif residue.isSolvent:
-                    self.residues_in_solvent.append(residue)
-                
-                else:
-                    self.residues_ligands.append(residue)
-                    pass
-                #---------------------------------------------------------
-
-                parser_resi  = atom.resi
-                parser_resn  = atom.resn
-
-
-            if atom.name == 'CA':
-                ch.backbone.append(atom)
             
-            self.atoms.append(atom)
             
-            sum_x += atom.pos[0]
-            sum_y += atom.pos[1]
-            sum_z += atom.pos[2]
-            
-            self.vismol_session.atom_dic_id[self.vismol_session.atom_id_counter] = atom
-            #index +=1
-            self.vismol_session.atom_id_counter +=1
-        
+            #'''
+            self._add_new_atom_to_vobj(name          =  at_name,  
+                                       index         =  index+1, 
+                                       pos           =  at_pos, 
+                                       resi          =  at_res_i, 
+                                       resn          =  at_res_n, 
+                                       chain         =  at_ch, 
+                                       atom_id       =  self.vismol_session.atom_id_counter  ,
+                                       occupancy     = atom2[10],
+                                       bfactor       = atom2[11],
+                                       charge        = atom2[12],
+                                       bonds_indexes = atom2[8],
+                                       Vobject       =  self
+                                        )
+            #'''
 
-        total = len(self.atoms2)        
-        self.mass_center = np.array([sum_x / total,
-                                     sum_y / total, 
-                                     sum_z / total])
+        self._get_mass_center()
 
         final = time.time() 
         print ('_generate_atomtree_structure end -  total time: ', final - initial, '\n')
@@ -336,13 +472,13 @@ class VismolObject:
         return True
 
 
-    def _generate_atom_unique_color_id (self):
+    def _generate_color_vectors (self):
         """ Function doc 
         
         (1) This method assigns to each atom of the system a 
         unique identifier based on the RGB color standard. 
         This identifier will be used in the selection function. 
-        There are no two atoms with the same color ID in the 
+        There are no two atoms with the same color ID in  
         vismol.
         
         
@@ -378,23 +514,33 @@ class VismolObject:
             #-------------------------------------------------------
             # (1)                  ID Colors
             #-------------------------------------------------------
+            '''
             i = atom.atom_id
             r = (i & 0x000000FF) >>  0
             g = (i & 0x0000FF00) >>  8
             b = (i & 0x00FF0000) >> 16
-           
+            '''
+            
+            '''
             self.color_indexes.append(r/255.0)
             self.color_indexes.append(g/255.0)
             self.color_indexes.append(b/255.0)
+            '''
             
+            self.color_indexes.append(atom.color_id[0])
+            self.color_indexes.append(atom.color_id[1])
+            self.color_indexes.append(atom.color_id[2])
+            
+            '''
             pickedID = r + g * 256 + b * 256*256
             atom.color_id = [r/255.0, g/255.0, b/255.0]
             #print (pickedID)
             self.vismol_session.atom_dic_id[pickedID] = atom
-            
+            '''
             #-------------------------------------------------------
             # (2)                   Colors
             #-------------------------------------------------------
+            
             self.colors.append(atom.color[0])        
             self.colors.append(atom.color[1])        
             self.colors.append(atom.color[2])   
@@ -441,10 +587,10 @@ class VismolObject:
             counter += 1
             #-------------------------------------------------------
 
-        self.color_indexes = np.array(self.color_indexes, dtype=np.float32)
-        self.colors        = np.array(self.colors       , dtype=np.float32)    
-        self.vdw_dot_sizes = np.array(self.vdw_dot_sizes, dtype=np.float32)
-        self.cov_dot_sizes = np.array(self.cov_dot_sizes, dtype=np.float32)
+        self.color_indexes  = np.array(self.color_indexes, dtype=np.float32)
+        self.colors         = np.array(self.colors       , dtype=np.float32)    
+        self.vdw_dot_sizes  = np.array(self.vdw_dot_sizes, dtype=np.float32)
+        self.cov_dot_sizes  = np.array(self.cov_dot_sizes, dtype=np.float32)
         self.colors_rainbow = np.array(self.color_rainbow, dtype=np.float32) 
 
     def set_model_matrix(self, mat):
@@ -535,12 +681,12 @@ class VismolObject:
     def find_bonded_and_nonbonded_atoms(self, atoms):
         """ Function doc """
         bonds_full_indexes, bonds_pair_of_indexes, NB_indexes_list = cdist.generete_full_NB_and_Bonded_lists(atoms)
-        
+        #print (bonds_full_indexes, bonds_pair_of_indexes)
         self.non_bonded_atoms  = NB_indexes_list
         
         self._generate_atomtree_structure()
         
-        self._generate_atom_unique_color_id()
+        self._generate_color_vectors()
         
         self.index_bonds       = bonds_full_indexes
         

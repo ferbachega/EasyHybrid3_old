@@ -36,6 +36,7 @@ from VISMOL.vBabel import PDBFiles
 
 from VISMOL.vBabel import MOL2Files
 from VISMOL.vBabel import XYZFiles
+from VISMOL.vBabel import NewObj
 
 from VISMOL.vCore.VismolSelections  import VisMolPickingSelection as vPick
 from VISMOL.vCore.VismolSelections  import VisMolViewingSelection as vSele
@@ -417,16 +418,134 @@ class VisMolSession (ShowHideVisMol):
                               'surface' : False,
                               }
 
+    def teste2 (self, teste = None):
+        """ Function doc """
+        
+        vismol_object = self.vismol_objects[-1]
+        
+        print('  funcao teste 2  ', len(vismol_object.atoms))
+        
+        vismol_object._add_new_atom_to_vobj (name          = 'O',  
+                                             index         =  3 ,
+                                             pos           =  [3,0,4] ,
+                                             resi          =  1       ,
+                                             resn          =  'UNK'   ,
+                                             chain         =   "A"    ,
+                                             atom_id       =  self.atom_id_counter ,
+                                             occupancy     =   0 ,
+                                             bfactor       =   0 ,
+                                             charge        =   0 ,
+                                             bonds_indexes =   [] ,
+                                             Vobject       =   vismol_object )
+        
+        frame = []
+        for atom in vismol_object.atoms:
+            vismol_object.non_bonded_atoms.append(atom.index-1)
+            for coord  in atom.pos:
+                print (coord)
+                #print (atom.pos)
+                frame.append(coord)
+        print('len', len(frame))
+        frame =    np.array(frame, dtype=np.float32)
+        vismol_object.frames = [frame]
+        
+        
+        
+        vismol_object.atoms[0].name = "N" 
+        vismol_object.atoms[0].define_atom_symbol ( vismol_object.atoms[0].name)
+        vismol_object.atoms[0].get_color()
+        
+        vismol_object._generate_color_vectors()
+        #self.vismol_objects.append(vismol_object)
+        vismol_object._get_mass_center()
+
+        
+        
+        vismol_object.index_bonds.append(2) #bonds_full_indexes
+        vismol_object.index_bonds.append(1) #bonds_full_indexes
+        bonds_pair_of_indexes      = [[2,1]]
+        vismol_object.import_bonds(bonds_pair_of_indexes)
+        
+        #vismol_object = self.vismol_objects[-1]
+        #vismol_object.index_bonds.append(0)
+        #vismol_object.index_bonds.append(1) #bonds_full_indexes
+        #bonds_pair_of_indexes = [[0,1]] 
+        #vismol_object.import_bonds(bonds_pair_of_indexes)
+        
+            
+        rep  = LinesRepresentation (name = 'lines', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        self.vismol_objects[-1].representations[rep.name] = rep
+
+        rep  = NonBondedRepresentation (name = 'nonbonded', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        self.vismol_objects[-1].representations[rep.name] = rep
+        #self.append_vismol_object_to_vismol_objects_listStore(self.vismol_objects[-1])
+    
+        from pprint import pprint
+        pprint(vismol_object.chains)
     
     def teste (self, teste = None):
         """ Function doc """
+        from VISMOL.vModel.Atom              import Atom
+        from VISMOL.vModel.Chain             import Chain
+        from VISMOL.vModel.Residue           import Residue
         print('  funcao teste   ')
-    
-    
+        vismol_object  = NewObj.create_empty_vismol_obj (infile = None, VMSession = self, gridsize = 3)
+        vismol_object.set_model_matrix(self.glwidget.vm_widget.model_mat)        
+        vismol_object.active = True
+        
+        for i in range(1,3):
+            vismol_object._add_new_atom_to_vobj (name          = 'C',  
+                                                 index         =  i ,
+                                                 pos           =  [i,i,i] ,
+                                                 resi          =  1       ,
+                                                 resn          =  'UNK'   ,
+                                                 chain         =   "A"    ,
+                                                 atom_id       =  self.atom_id_counter ,
+                                                 occupancy     =   0 ,
+                                                 bfactor       =   0 ,
+                                                 charge        =   0 ,
+                                                 bonds_indexes =   [] ,
+                                                 Vobject       =   vismol_object )
+            
+            
+        
+        frame = []
+        for atom in vismol_object.atoms:
+            vismol_object.non_bonded_atoms.append(atom.index-1)
+            for coord  in atom.pos:
+                frame.append(coord)
+        
+        
+        frame =    np.array(frame, dtype=np.float32)
+        
+        vismol_object.frames = [frame]
+        vismol_object._generate_color_vectors()
+        self.vismol_objects.append(vismol_object)
+        vismol_object._get_mass_center()
+
+        
+        
+        vismol_object.index_bonds  = [0,1] #bonds_full_indexes
+        bonds_pair_of_indexes      = [[0,1]]
+        vismol_object.import_bonds(bonds_pair_of_indexes)
+        
+            
+        rep  = LinesRepresentation (name = 'lines', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        self.vismol_objects[-1].representations[rep.name] = rep
+
+        rep  = NonBondedRepresentation (name = 'nonbonded', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        self.vismol_objects[-1].representations[rep.name] = rep
+        self.append_vismol_object_to_vismol_objects_listStore(self.vismol_objects[-1])
+
+        
+        
+        
+        
+        
+        
     def import_player_widget (self):
         """ Function doc """
         
-    
     
     def insert_glmenu (self, bg_menu  = None, sele_menu = None, obj_menu = None):
         """ Function doc """
@@ -554,7 +673,8 @@ class VisMolSession (ShowHideVisMol):
                     'Open File'    : ['MenuItem', open_structure_data],
 
                     'funcao teste' : ['MenuItem', self.teste],                  
-                    
+                    'funcao teste2': ['MenuItem', self.teste2], 
+
                     'separator1':['separator', None],
                     
                     
@@ -660,8 +780,6 @@ class VisMolSession (ShowHideVisMol):
 
         self.glwidget.build_glmenu( bg_menu  = bg_menu, sele_menu = sele_menu, obj_menu = obj_menu )
 
-    
-    
     
     def command_line (self, entry = None):
         """ Function doc """
@@ -785,7 +903,59 @@ class VisMolSession (ShowHideVisMol):
         vismol_object  = PDBFiles.load_pdb_file (infile = infile, VMSession = self)     
         vismol_object.set_model_matrix(self.glwidget.vm_widget.model_mat)        
         self.vismol_objects.append(vismol_object)
-     
+        
+        #print(vismol_object.atoms)
+        #print(vismol_object.atoms2)
+        '''
+        vismol_object.atoms2             = atoms # this is a raw list : [0, 'C5', 0.77, array([ 0.295,  2.928, -0.407]), 1, 'GLC', ' ', 'C ', [1, 12, 8, 10], [0, 0, 0]]
+        #-----------------------------------------------------------------
+
+        vismol_object.atoms              = []    # this a list ao atom objects!
+        vismol_object.residues           = {}
+        vismol_object.chains             = {}
+        vismol_object.frames             = trajectory
+        vismol_object.atom_unique_id_dic = {}
+
+
+
+        #-----------------------#
+        #         Bonds         #
+        #-----------------------#
+        vismol_object.index_bonds        = []
+        vismol_object.bonds              = []                        
+
+        #-----------------------#
+        #    Calpha  Ribbons    #
+        #-----------------------#
+        vismol_object.c_alpha_bonds      = []           
+        
+        #-----------------------#
+        #       Nonbonded       #
+        #-----------------------#
+        vismol_object.non_bonded_atoms   = []
+        
+        vismol_object.residues_in_protein = []
+        vismol_object.residues_in_solvent = []
+        vismol_object.residues_ligands    = []
+
+        vismol_object.atoms_in_protein = [] # a list of atoms belonging to a protein
+        vismol_object.atoms_in_solvent = []
+        '''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def _load_mol2_file (self, infile):
         """ Function doc """
