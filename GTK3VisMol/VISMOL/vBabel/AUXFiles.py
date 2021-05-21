@@ -86,80 +86,110 @@ USER_CHARGES
 @<TRIPOS>SUBSTRUCTURE
 '''
 
-def load_xyz_file (infile = None, VMSession =  None, gridsize = 3):
+def load_aux_file (infile = None, VMSession =  None, gridsize = 3):
     """ Function doc """
-    print ('\nstarting: parse_mol2')
+    print ('\nstarting: parse_aux')
     at  =  VMSession.vConfig.atom_types
 
     #initial = time.time()
 
-    with open(infile, 'r') as xyz_file:
+    with open(infile, 'r') as aux_file:
         
-        #pdbtext          = xyz_file.readlines()
-        #totalsize        = len(pdbtext)
-        #framesize        = int(pdbtext[0])
-        #number_of_frames = totalsize/(framesize+2)
-        
-        
-        xyz_lines        = xyz_file.readlines()
-        total_size       = len(xyz_lines)    
-        xyz_model_size   = int(xyz_lines[0])
-        model_size       = xyz_model_size+2
-        number_of_frames = total_size/(xyz_model_size+2)
 
+        frames = []
         
-        frame0           = xyz_lines[2: model_size]
+        aux_lines        = aux_file.read()
+        text1 = aux_lines.split('HEAT_OF_FORM_UPDATED')
         
         
-        atoms, frames    = get_atom_list_from_xyz_frame (raw_atoms= frame0, frame = True, gridsize = 3, at = at)
+        # atoms names
+        h1 = text1[0].split("ATOM_EL")
+        h2 = h1[-1].split('ATOM_CORE')
         
-        models     = []
+        atoms_temp = []
+        atoms      = []
+        atoms_raw  = h2[0].split()
+
+ 
+ 
+ 
+        for atom in atoms_raw:
+            if '\n' in atom or '[' in atom:
+                pass
+            else:
+                atoms_temp.append(atom)
+
+        #first frame
+        coord = text1[0].split('ATOM_X:ANGSTROMS')
+        frame_coordinates = coord[-1].split('AO_ATOMINDEX')
+        frame_coordinates = frame_coordinates[0].replace('\n','')
+        frame_coordinates =frame_coordinates.split()
+        frame  = []
         
-        for i in range(0, int(number_of_frames)): 
-            #print (i*model_size) , (i+1)*model_size
-            model = xyz_lines[(i*model_size) : (i+1)*model_size]
-            models.append(model)
+        for coord in frame_coordinates[1:]:
+        #frame_coordinates.pop[0]
+            frame.append(float(coord))
         
-        n = 1
-        for model_i  in models[1:]:
+
+        atom_coord = []
+        
+        i = 0
+        index = 0
+        for atom in atoms_temp:
+            
+            at_name = atom
+            
+            at_pos  = np.array([frame[i], frame[i+1], frame[i+2]])
+            
+            at_resi = 1
+            
+            at_resn = 'UNK'
+            
+            at_ch   = 'X'          
+            
+            at_occup   = 0.0     #occupancy
+            at_bfactor = 0.0
+            at_charge  = 0.0
+            
+
+            #at_symbol = line[5].split('.')
+            at_symbol = at_name
+            cov_rad   = at.get_cov_rad (at_name)
+            gridpos  = [int(at_pos[0]/gridsize), int(at_pos[1]/gridsize), int(at_pos[2]/gridsize)]     
+            atoms.append([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge ])
+            
+            print ([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge ])
+            index += 1
+            #print (atom, frame[i], frame[i+1], frame[i+2])
+            i+=3 
+        
+        
+        
+        
+        frame = np.array(frame, dtype=np.float32)
+        frames.append(frame)
+        
+        for frame_raw in text1[1:-2]:
+            frame_raw = frame_raw.split('\n')
             frame = []
-            for line in model_i[2:]:
-                line2 = line.split()
-                #print line2, [float(line[1]), float(line[2]), float(line[3])]
-                #at_name  = line2[0].strip()
-                #at_pos   = np.array([float(line2[1]), float(line2[2]), float(line2[3])])
-                frame.append(float(line2[1]))
-                frame.append(float(line2[2]))
-                frame.append(float(line2[3]))
-                
+            
+            for data in frame_raw: 
+                data2 = data.split()
+                if len(data2) == 3:
+                    frame.append(data2[0])
+                    frame.append(data2[1])
+                    frame.append(data2[2])
             frame = np.array(frame, dtype=np.float32)
             frames.append(frame)
-            n += 1
-
     
-    #-------------------------------------------------------------------------------------------
-    #                                Bonded and NB lists 
-    #-------------------------------------------------------------------------------------------
-    #atoms, bonds_full_indexes, bonds_pair_of_indexes, NB_indexes_list = cdist.generete_full_NB_and_Bonded_lists(atoms)
-    #-------------------------------------------------------------------------------------------
-    
-    
-    #-------------------------------------------------------------------------------------------
-    #                         Building   V I S M O L    O B J
-    #-------------------------------------------------------------------------------------------
     name = os.path.basename(infile)
+    #print (name, atoms, frames)     
+
     vismol_object  = VismolObject.VismolObject(name        = name, 
                                                atoms       = atoms, 
                                                VMSession   = VMSession, 
                                                trajectory  = frames)
     
-    
-    #vismol_object._generate_atomtree_structure()
-    #vismol_object._generate_atom_unique_color_id()
-    #vismol_object.index_bonds       = bonds_full_indexes
-    #vismol_object.index_bonds_pairs = bonds_pair_of_indexes
-    #vismol_object.non_bonded_atoms  = NB_indexes_list
-    #-------------------------------------------------------------------------------------------
     return vismol_object
 
 
@@ -183,7 +213,7 @@ def get_atom_list_from_xyz_frame (raw_atoms, frame = True, gridsize = 3, at = No
     frames = []
     frame_coordinates = []
     #print (raw_atoms)
-    index  = 0
+    index  = 1
     for line in raw_atoms:
         line = line.split()
         if len(line) > 1:

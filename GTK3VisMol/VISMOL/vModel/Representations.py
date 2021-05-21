@@ -109,7 +109,8 @@ class Representation:
 
 
     def _set_coordinates_to_buffer (self, coord_vbo = True, sel_coord_vbo = True):
-        ''' This function assigns the coordinates to be drawn by the function  "draw_representation"'''
+        ''' This function assigns the coordinates to 
+        be drawn by the function  "draw_representation"'''
         
         frame = self.glCore._safe_frame_exchange(self.visObj)
         #GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.line_buffers[1])
@@ -316,6 +317,8 @@ class LinesRepresentation (Representation):
             different trajectory sizes to be manipulated at the same time within the 
             glArea'''
             self._set_coordinates_to_buffer (coord_vbo = True, sel_coord_vbo = False)
+            
+            #self.define_new_indexes_to_VBO ( self.visObj.index_bonds)
             GL.glDrawElements(GL.GL_LINES, int(len(self.visObj.index_bonds)*2), GL.GL_UNSIGNED_INT, None)
 
         GL.glBindVertexArray(0)
@@ -360,7 +363,6 @@ class LinesRepresentation (Representation):
             #GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.nbytes,
             #                frame, 
             #                GL.GL_STATIC_DRAW)              
-
             GL.glDrawElements(GL.GL_LINES, int(len(self.visObj.index_bonds)*2), GL.GL_UNSIGNED_INT, None)  
         GL.glBindVertexArray(0)
         GL.glLineWidth(2)
@@ -371,6 +373,175 @@ class LinesRepresentation (Representation):
 
 
 
+        
+class DynamicBonds (Representation):
+    """ Class doc """
+    
+    def __init__ (self, name = 'sticks', active = True, _type = 'mol', visObj = None, glCore = None,  indexes = [] ):
+        """ Class initialiser """
+        self.name               = name
+        self.active             = active
+        self.type               = _type
+
+        self.visObj             = visObj
+        self.glCore             = glCore
+
+        # representation 	
+        self.vao            = None
+        self.ind_vbo        = None
+        self.coord_vbo      = None
+        self.col_vbo        = None
+        self.size_vbo       = None
+           
+
+        # bgrd selection   
+        self.sel_vao        = None
+        self.sel_ind_vbo    = None
+        self.sel_coord_vbo  = None
+        self.sel_col_vbo    = None
+        self.sel_size_vbo   = None
+
+
+        #     S H A D E R S
+        self.shader_program     = None
+        self.sel_shader_program = None
+        
+        if indexes == []:
+            self.indexes = np.array(self.visObj.index_bonds, dtype=np.uint32)
+        else:
+            self.indexes = np.array(indexes, dtype=np.uint32)
+            
+    def _make_gl_vao_and_vbos (self, indexes = []):
+        """ Function doc """
+        #if indexes == []:
+        #    self.indexes = np.array(self.visObj.index_bonds, dtype=np.uint32)
+        #else:
+        #    self.indexes = np.array(indexes, dtype=np.uint32)
+        
+        #self.indexes = np.array([0,1,0,2,1,2], dtype=np.uint32)
+        self.shader_program     = self.glCore.shader_programs[self.name]
+        self.sel_shader_program = self.glCore.shader_programs[self.name+'_sel']
+        
+        
+        #indexes = np.array(self.visObj.index_bonds, dtype=np.uint32)
+        coords  = self.visObj.frames[0]
+        colors  = self.visObj.colors
+
+        self._make_gl_representation_vao_and_vbos (indexes    = self.indexes,
+                                                   coords     = coords ,
+                                                   colors     = colors ,
+                                                   dot_sizes  = None   ,
+                                                   )
+        colors_idx = self.visObj.color_indexes
+        self._make_gl_sel_representation_vao_and_vbos (indexes    = self.indexes    ,
+                                                       coords     = coords     ,
+                                                       colors     = colors_idx ,
+                                                       dot_sizes  = None       ,
+                                                       )
+
+    def draw_representation (self):
+        """ Function doc """
+        self._check_VAO_and_VBOs ()
+        self._enable_anti_alis_to_lines()
+
+        GL.glUseProgram(self.shader_program)
+        GL.glLineWidth(40/abs(self.glCore.dist_cam_zrp))
+
+        self.glCore.load_matrices(self.shader_program, self.visObj.model_mat)
+        self.glCore.load_fog(self.shader_program)
+        self.glCore.load_lights(self.shader_program)
+
+        GL.glBindVertexArray(self.vao)
+
+        if self.glCore.modified_view:
+            pass
+
+        else:
+            '''
+            This function checks if the number of the called frame will not exceed 
+            the limit of frames that each object has. Allowing two objects with 
+            different trajectory sizes to be manipulated at the same time within the 
+            glArea'''
+            
+            frame = self.glCore.frame
+            #try:
+            #print (frame, self.visObj.dynamic_bons[frame])
+            #self.define_new_indexes_to_VBO ( self.visObj.index_bonds)
+            if frame < len(self.visObj.dynamic_bons):
+                self.define_new_indexes_to_VBO ( self.visObj.dynamic_bons[frame])
+                self._set_coordinates_to_buffer (coord_vbo = True, sel_coord_vbo = False)
+                GL.glDrawElements(GL.GL_LINES, int(len(self.visObj.dynamic_bons[frame])*2), GL.GL_UNSIGNED_INT, None)
+            else:
+                self.define_new_indexes_to_VBO ( self.visObj.dynamic_bons[-1])
+                self._set_coordinates_to_buffer (coord_vbo = True, sel_coord_vbo = False)
+                GL.glDrawElements(GL.GL_LINES, int(len(self.visObj.dynamic_bons[-1])*2), GL.GL_UNSIGNED_INT, None)
+            #except:
+            #    pass
+            
+
+        
+        GL.glBindVertexArray(0)
+        GL.glUseProgram(0)
+        #GL.glDisable(GL.GL_LINE_SMOOTH)
+        #GL.glDisable(GL.GL_BLEND)
+        GL.glDisable(GL.GL_DEPTH_TEST)
+            
+    def draw_background_sel_representation  (self):
+        """ Function doc """
+        self._check_VAO_and_VBOs ()
+
+        GL.glEnable(GL.GL_DEPTH_TEST)
+        GL.glUseProgram(self.sel_shader_program)
+        GL.glLineWidth(20)
+        GL.glDisable(GL.GL_LINE_SMOOTH)
+        GL.glDisable(GL.GL_BLEND)
+
+        self.glCore.load_matrices(self.sel_shader_program, self.visObj.model_mat)
+        GL.glBindVertexArray(self.sel_vao)
+
+        if self.glCore.modified_view:
+            pass
+
+        else:
+            '''
+            This function checks if the number of the called frame will not exceed 
+            the limit of frames that each object has. Allowing two objects with 
+            different trajectory sizes to be manipulated at the same time within the 
+            glArea
+            '''
+            frame = self.glCore.frame
+
+            if frame < len(self.visObj.dynamic_bons):
+                self.define_new_indexes_to_VBO ( self.visObj.dynamic_bons[frame])
+                self._set_coordinates_to_buffer (coord_vbo = True, sel_coord_vbo = False)
+                GL.glDrawElements(GL.GL_LINES, int(len(self.visObj.dynamic_bons[frame])*2), GL.GL_UNSIGNED_INT, None)
+            else:
+                self.define_new_indexes_to_VBO ( self.visObj.dynamic_bons[-1])
+                self._set_coordinates_to_buffer (coord_vbo = True, sel_coord_vbo = False)
+                GL.glDrawElements(GL.GL_LINES, int(len(self.visObj.dynamic_bons[-1])*2), GL.GL_UNSIGNED_INT, None)
+            
+            
+            
+            #frame = self.glCore.frame
+            
+            
+            ##try:
+            ##print (frame, self.visObj.dynamic_bons[frame])
+            ##self.define_new_indexes_to_VBO ( self.visObj.index_bonds)
+            #self.define_new_indexes_to_VBO ( self.visObj.dynamic_bons[frame])
+            #self._set_coordinates_to_buffer (coord_vbo = True, sel_coord_vbo = False)
+            #GL.glDrawElements(GL.GL_LINES, int(len(self.visObj.dynamic_bons[frame])*2), GL.GL_UNSIGNED_INT, None)
+            
+            #self._set_coordinates_to_buffer (coord_vbo = False, sel_coord_vbo = True)
+            #GL.glDrawElements(GL.GL_LINES, int(len(self.visObj.index_bonds)*2), GL.GL_UNSIGNED_INT, None)
+        GL.glBindVertexArray(0)
+        GL.glUseProgram(0)
+        GL.glDisable(GL.GL_DEPTH_TEST)
+
+
+        
+        
+        
 class SticksRepresentation (Representation):
     """ Class doc """
     

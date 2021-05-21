@@ -280,7 +280,7 @@ class PlayerFrame:
         #scale.set_increments(1, 10)
         #scale.set_digits(0)
         self.vismol_session.set_frame(int(value)) 
-        print(value)
+        #print(value)
         
     def show_player (self, show = True):
         """ Function doc """

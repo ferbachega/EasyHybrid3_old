@@ -273,12 +273,13 @@ class VisMolGLCore():
 
                         # Getting the information about the atom that was identified in the click
                         print(self.atom_picked.chain,self.atom_picked.resn, self.atom_picked.resi, self.atom_picked.name, self.atom_picked.index, self.atom_picked.bonds_indexes)
-                        label = '{} / {} / {}({}) / {}({})'.format( self.atom_picked.Vobject.name,
+                        label = '{} / {} / {}({}) / {}({} / {})'.format( self.atom_picked.Vobject.name,
 																    self.atom_picked.chain,
                                                                     self.atom_picked.resn, 
                                                                     self.atom_picked.resi, 
                                                                     self.atom_picked.name, 
-                                                                    self.atom_picked.index)
+                                                                    self.atom_picked.index,
+                                                                    self.atom_picked.symbol)
                         #for bond in self.atom_picked.bonds:
                         #    print (bond.atom_index_i, bond.atom_index_j)
                         self.atom_picked = None
@@ -714,6 +715,20 @@ class VisMolGLCore():
 
 
 
+
+    def _create_dynamic_bonds_shaders (self, _type = 0):
+        # S T I C K S
+        self.shader_programs['dynamic']     = self.load_shaders(sticksShaders.vertex_shader_sticks, 
+                                                               sticksShaders.fragment_shader_sticks, 
+                                                               sticksShaders.geometry_shader_sticks)
+        
+        self.shader_programs['dynamic_sel'] = self.load_shaders(sticksShaders.sel_vertex_shader_sticks, 
+                                                               sticksShaders.sel_fragment_shader_sticks, 
+                                                               sticksShaders.sel_geometry_shader_sticks)
+
+
+
+
     def _create_sphere_shaders (self, _type = 0):
         self.shader_programs['spheres']     = self.load_shaders(spheresShaders.vertex_shader_spheres, 
                                                                 spheresShaders.fragment_shader_spheres)
@@ -802,6 +817,7 @@ class VisMolGLCore():
         #-------------------------------------------------------------------------------------
         self._create_stick_shaders()
         self._create_sphere_shaders ()
+        self._create_dynamic_bonds_shaders()
         self._create_impostor_shaders()
         #-------------------------------------------------------------------------------------
 
@@ -941,10 +957,12 @@ class VisMolGLCore():
         pos = [self.picking_x, self.height - self.picking_y]
         data = GL.glReadPixels(pos[0], (pos[1]), 1, 1, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE)
         pickedID = data[0] + data[1] * 256 + data[2] * 256*256;
+        
         if pickedID == 16777215:
             self.atom_picked = None
             if self.button ==1:
                 self.vismolSession._selection_function (self.atom_picked)
+                print('_selection_function 965', self.vismolSession.selections[self.vismolSession.current_selection].active )
                 self.button = None
         else:
             try:
@@ -957,7 +975,10 @@ class VisMolGLCore():
                 '''
                 self.atom_picked = self.vismolSession.atom_dic_id[pickedID]
                 if self.button ==1:
+                    print('_selection_function 978', self.vismolSession.selections[self.vismolSession.current_selection].active )
                     self.vismolSession._selection_function (self.atom_picked)
+                    print('_selection_function 980', self.vismolSession.selections[self.vismolSession.current_selection].active )
+
                     self.button = None
             except:
                 print('pickedID', pickedID, 'not found')

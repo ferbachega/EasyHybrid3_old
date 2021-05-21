@@ -148,6 +148,8 @@ def load_xyz_file (infile = None, VMSession =  None, gridsize = 3):
     #                         Building   V I S M O L    O B J
     #-------------------------------------------------------------------------------------------
     name = os.path.basename(infile)
+    #print (atoms)
+    #print (frames)
     vismol_object  = VismolObject.VismolObject(name        = name, 
                                                atoms       = atoms, 
                                                VMSession   = VMSession, 

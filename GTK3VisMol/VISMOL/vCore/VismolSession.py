@@ -37,12 +37,14 @@ from VISMOL.vBabel import PDBFiles
 from VISMOL.vBabel import MOL2Files
 from VISMOL.vBabel import XYZFiles
 from VISMOL.vBabel import NewObj
+from VISMOL.vBabel import AUXFiles
 
 from VISMOL.vCore.VismolSelections  import VisMolPickingSelection as vPick
 from VISMOL.vCore.VismolSelections  import VisMolViewingSelection as vSele
 from VISMOL.vCore.vConfig           import VisMolConfig 
 
 import VISMOL.glCore.shapes as shapes
+import time
 
 
 
@@ -57,14 +59,14 @@ from VISMOL.vModel.Representations   import GlumpyRepresentation
 from VISMOL.vModel.Representations   import RibbonsRepresentation
 from VISMOL.vModel.Representations   import SurfaceRepresentation
 from VISMOL.vModel.Representations   import WiresRepresentation
-
+from VISMOL.vModel.Representations   import DynamicBonds
 
 
 from GTKGUI.gtkWidgets.filechooser import FileChooser
 from GTKGUI.gtkWidgets.player import PlayerFrame
 
 
-
+from pprint import pprint
 
 
 
@@ -421,50 +423,62 @@ class VisMolSession (ShowHideVisMol):
     def teste2 (self, teste = None):
         """ Function doc """
         
-        vismol_object = self.vismol_objects[-1]
+        #vismol_object = self.vismol_objects[-1]
+        #
+        #print('  funcao teste 2  ', len(vismol_object.atoms))
+        #
+        #vismol_object._add_new_atom_to_vobj (name          = 'O',  
+        #                                     index         =  3 ,
+        #                                     pos           =  [3,0,4] ,
+        #                                     resi          =  1       ,
+        #                                     resn          =  'UNK'   ,
+        #                                     chain         =   "A"    ,
+        #                                     atom_id       =  self.atom_id_counter ,
+        #                                     occupancy     =   0 ,
+        #                                     bfactor       =   0 ,
+        #                                     charge        =   0 ,
+        #                                     bonds_indexes =   [] ,
+        #                                     Vobject       =   vismol_object )
+        #
+        #frame = []
+        #for atom in vismol_object.atoms:
+        #    vismol_object.non_bonded_atoms.append(atom.index-1)
+        #    for coord  in atom.pos:
+        #        print (coord)
+        #        #print (atom.pos)
+        #        frame.append(coord)
+        #print('len', len(frame))
+        #frame =    np.array(frame, dtype=np.float32)
+        #vismol_object.frames = [frame]
         
-        print('  funcao teste 2  ', len(vismol_object.atoms))
-        
-        vismol_object._add_new_atom_to_vobj (name          = 'O',  
-                                             index         =  3 ,
-                                             pos           =  [3,0,4] ,
-                                             resi          =  1       ,
-                                             resn          =  'UNK'   ,
-                                             chain         =   "A"    ,
-                                             atom_id       =  self.atom_id_counter ,
-                                             occupancy     =   0 ,
-                                             bfactor       =   0 ,
-                                             charge        =   0 ,
-                                             bonds_indexes =   [] ,
-                                             Vobject       =   vismol_object )
-        
-        frame = []
-        for atom in vismol_object.atoms:
-            vismol_object.non_bonded_atoms.append(atom.index-1)
-            for coord  in atom.pos:
-                print (coord)
-                #print (atom.pos)
-                frame.append(coord)
-        print('len', len(frame))
-        frame =    np.array(frame, dtype=np.float32)
-        vismol_object.frames = [frame]
-        
-        
-        
-        vismol_object.atoms[0].name = "N" 
-        vismol_object.atoms[0].define_atom_symbol ( vismol_object.atoms[0].name)
-        vismol_object.atoms[0].get_color()
-        
-        vismol_object._generate_color_vectors()
-        #self.vismol_objects.append(vismol_object)
-        vismol_object._get_mass_center()
+        ##-----------------------------------------------------------------------
+        ## Modifying an existing atom 
+        #vismol_object.atoms[0].name = "N" 
+        #vismol_object.atoms[0].define_atom_symbol ( vismol_object.atoms[0].name)
+        #vismol_object.atoms[0].get_color()
+        #vismol_object._generate_color_vectors()
+        ##self.vismol_objects.append(vismol_object)
+        #vismol_object._get_mass_center()
+        ##-----------------------------------------------------------------------
+        ##index_bonds = [0,1, 2,3, 3,4 , 0,4, 1,3]
+        #
+        #
+        #
+        ##----------------------------------------------------------------------
+        #vismol_object.index_bonds.append(2) #bonds_full_indexes
+        #vismol_object.index_bonds.append(1) #bonds_full_indexes
+        #bonds_pair_of_indexes      = [[2,1]]
+        #vismol_object.import_bonds(bonds_pair_of_indexes)
 
-        
-        
-        vismol_object.index_bonds.append(2) #bonds_full_indexes
-        vismol_object.index_bonds.append(1) #bonds_full_indexes
-        bonds_pair_of_indexes      = [[2,1]]
-        vismol_object.import_bonds(bonds_pair_of_indexes)
+        #----------------------------------------------------------------------
+        vismol_object0 = self.vismol_objects[0]
+        print('before',vismol_object0.index_bonds)
+
+        vismol_object0.index_bonds.append(0)
+        vismol_object0.index_bonds.append(24)
+        print('after',vismol_object0.index_bonds)
+        vismol_object0.representations['lines'].define_new_indexes_to_VBO ( vismol_object0.index_bonds)
+        #-----------------------------------------------------------------------
         
         #vismol_object = self.vismol_objects[-1]
         #vismol_object.index_bonds.append(0)
@@ -473,15 +487,15 @@ class VisMolSession (ShowHideVisMol):
         #vismol_object.import_bonds(bonds_pair_of_indexes)
         
             
-        rep  = LinesRepresentation (name = 'lines', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        self.vismol_objects[-1].representations[rep.name] = rep
-
-        rep  = NonBondedRepresentation (name = 'nonbonded', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        self.vismol_objects[-1].representations[rep.name] = rep
-        #self.append_vismol_object_to_vismol_objects_listStore(self.vismol_objects[-1])
-    
-        from pprint import pprint
-        pprint(vismol_object.chains)
+        #rep  = LinesRepresentation (name = 'lines', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        #self.vismol_objects[-1].representations[rep.name] = rep
+        #
+        #rep  = NonBondedRepresentation (name = 'nonbonded', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        #self.vismol_objects[-1].representations[rep.name] = rep
+        ##self.append_vismol_object_to_vismol_objects_listStore(self.vismol_objects[-1])
+        #
+        #from pprint import pprint
+        #pprint(vismol_object.chains)
     
     def teste (self, teste = None):
         """ Function doc """
@@ -537,12 +551,70 @@ class VisMolSession (ShowHideVisMol):
         self.vismol_objects[-1].representations[rep.name] = rep
         self.append_vismol_object_to_vismol_objects_listStore(self.vismol_objects[-1])
 
+    
+    def _get_distance_atom1_atom2 (self, atom1, atom2, frame):
+        """ Function doc """
+        coords1 =  atom1.coords(frame)
+        coords2 =  atom2.coords(frame)
+        
+        x1 = coords1[0]
+        y1 = coords1[1]
+        z1 = coords1[2]
+        
+        x2 = coords2[0]
+        y2 = coords2[1]
+        z2 = coords2[2]
+        
+        dx = x1 - x2
+        dy = y1 - y2
+        dz = z1 - z2
+        
+        dist = (dx**2 + dy**2+ dz**2)**0.5
+        return dist
+    
+    def teste3 (self,  selection = None):
+        """ Function doc """
+        initial       = time.time()
+        if selection:
+            pass
+        else:
+            selection = self.selections[self.current_selection]
+        
+        Vobject = selection.selected_atoms[0].Vobject
+        
+        index_bonds_dynamic = []
+        
+        for i in range (0, len(Vobject.frames)):
+            
+            indexes = []
+            
+            n = 1
+            for atom1 in selection.selected_atoms:
+            
+                for atom2 in selection.selected_atoms[n:]:
+            
+                    dist = self._get_distance_atom1_atom2 (  atom1, atom2, i)
+                    if dist <= (atom1.cov_rad + atom2.cov_rad)*1.1 :
+                        #print ( atom1.name, atom2.name,atom1.index, atom2.index, dist, atom1.cov_rad + atom2.cov_rad, atom1.index, atom2.index, True)
+                        indexes.append(atom1.index-1)
+                        indexes.append(atom2.index-1)
+    
+                    else:
+                        pass#print ( atom1.name, atom2.name, dist, atom1.cov_rad + atom2.cov_rad, atom1.index, atom2.index, False)
+                n += 1
+
+            indexes = np.array(indexes,dtype=np.uint32)
+            index_bonds_dynamic.append(indexes)        
+        
+        Vobject.dynamic_bons = index_bonds_dynamic
+        final = time.time()                                            #
         
         
+        rep  = DynamicBonds (name = 'dynamic', active = True, _type = 'mol', visObj = Vobject, glCore = self.glwidget.vm_widget)
+        Vobject.representations[rep.name] = rep
         
-        
-        
-        
+        print ('Bonds calcultation time : ', final - initial, '\n')    #
+
     def import_player_widget (self):
         """ Function doc """
         
@@ -569,12 +641,22 @@ class VisMolSession (ShowHideVisMol):
 
         if sele_menu is None:
             ''' Standard Sele Menu '''
+            
+            def dynamic_test (_):
+                """ Function doc """
+                self.teste3()
+            
+            def select_test (_):
+                """ Function doc """
+                self.select(indexes = 'all')
+            
             def menu_show_lines (_):
                 """ Function doc """
                 self.show_or_hide( _type = 'lines', show = True)
 
             def menu_hide_lines (_):
                 """ Function doc """
+                print('hide')
                 self.show_or_hide( _type = 'lines', show = False)
 
             def menu_show_sticks (_):
@@ -598,17 +680,19 @@ class VisMolSession (ShowHideVisMol):
                     'header' : ['MenuItem', None],
                     
                     
+                    
                     'separator1':['separator', None],
                     
                     
                     'show'   : [
                                 'submenu' ,{
                                             
-                                            'lines'    : ['MenuItem', menu_show_lines],
-                                            'sticks'   : ['MenuItem', menu_show_sticks],
-                                            'spheres'  : ['MenuItem', menu_show_spheres],
-                                            'separator2':['separator', None],
-                                            'nonbonded': ['MenuItem', None],
+                                            'lines'         : ['MenuItem', menu_show_lines],
+                                            'sticks'        : ['MenuItem', menu_show_sticks],
+                                            'spheres'       : ['MenuItem', menu_show_spheres],
+                                            'dynamic bonds' : ['MenuItem', dynamic_test],
+                                            'separator2'    : ['separator', None],
+                                            'nonbonded'     : ['MenuItem', None],
                     
                                            }
                                ],
@@ -671,6 +755,8 @@ class VisMolSession (ShowHideVisMol):
                     'separator0'   :['separator', None],
 
                     'Open File'    : ['MenuItem', open_structure_data],
+                    
+                    'select' : ['MenuItem', select_test],
 
                     'funcao teste' : ['MenuItem', self.teste],                  
                     'funcao teste2': ['MenuItem', self.teste2], 
@@ -820,7 +906,10 @@ class VisMolSession (ShowHideVisMol):
         
         if infile[-3:] == 'xyz':
             self._load_xyz_file(infile = infile)
-
+        
+        if infile[-3:] == 'aux':
+            self._load_aux_file(infile = infile)
+        
         self.vismol_objects[-1].active = True
         
         if self.toolkit == 'gtk':
@@ -839,6 +928,13 @@ class VisMolSession (ShowHideVisMol):
         
         #rep  = SticksRepresentation (name = 'sticks', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
         #self.vismol_objects[-1].representations[rep.name] = rep
+        
+        #rep  = DynamicBonds (name = 'dynamic', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+        #self.vismol_objects[-1].representations[rep.name] = rep
+        
+        #self.vismol_objects[-1]
+        
+        
         
         '''Representation of fake spheres using shaders. Each sphere is actually a point'''
         #rep  = GlumpyRepresentation (name = 'glumpy', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
@@ -889,7 +985,7 @@ class VisMolSession (ShowHideVisMol):
         str(len(visObj.atoms)) , 
         str(len(visObj.frames)),
         ]
-        print (data)
+        #print (data)
         self.Vismol_Objects_ListStore.append(data)
         
         
@@ -951,7 +1047,13 @@ class VisMolSession (ShowHideVisMol):
 
 
 
-
+    def _load_aux_file (self, infile):
+        """ Function doc """
+        print(infile)
+        vismol_object  = AUXFiles.load_aux_file (infile = infile, VMSession = self)
+        vismol_object.set_model_matrix(self.glwidget.vm_widget.model_mat)        
+        self.vismol_objects.append(vismol_object)
+        
 
 
 
@@ -982,9 +1084,35 @@ class VisMolSession (ShowHideVisMol):
         #self.glwidget.updateGL()
     #''' 
     
-    def select (self, obj =  None, indexes = []):
+    def select (self, vismol_object =  None, indexes = [], sele = None):
         """ Function doc """
-
+        print('select',vismol_object, indexes, sele )
+        
+        
+        if vismol_object:
+            pass
+        else:
+            vismol_object = self.vismol_objects[-1]
+            
+        #pprint(vismol_object.atoms_by_chains)
+        
+        if sele == None:
+            sele = self.current_selection
+        else:
+            pass
+            
+        if indexes == 'all':
+            self.selections[sele].selected_atoms = vismol_object.atoms
+            for atom in vismol_object.atoms:
+                atom.selected = True
+            
+            self.selections[sele].build_selected_atoms_coords_and_selected_objects_from_selected_atoms()
+        
+        
+        #for index in  
+        
+        self.glwidget.queue_draw()
+        
     def orient (self, obj =  None):
         """ Function doc """  
     
@@ -1041,6 +1169,7 @@ class VisMolSession (ShowHideVisMol):
     
         return Vobjects_dic
 
+   
     def selection_mode(self, selmode = 'atom'):
         """ Function doc """        
         print(selmode)

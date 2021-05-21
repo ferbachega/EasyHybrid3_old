@@ -6,13 +6,13 @@ class Atom:
     
     def __init__ (self, name         ='Xx',
                         index        =None, 
-                        symbol       ='X', 
+                        symbol       =None, 
                         pos          = None, 
                         resi         = None, 
                         resn         = None, 
                         chain        = ''  , 
                         atom_id      = 0   , 
-                        residue      = None,
+                        residue      = 'X',
                         
                         occupancy    = 0.0,
                         bfactor      = 0.0, 
@@ -29,7 +29,13 @@ class Atom:
                                   # (it is not a zero base, it starts at 1 for the first atom)
 					    
         self.name       = name    #
-        self.symbol     = symbol  #
+        
+        if symbol:
+            self.symbol     = symbol  #
+        else:
+            self.symbol  = "X"
+        
+        
         self.resi       = resi    #
         self.resn       = resn    #
         self.chain      = chain   #
@@ -52,11 +58,22 @@ class Atom:
         self._generate_atom_unique_color_id ()  
         #----------------------------------------------
         
-        self.col_rgb      = self.at.get_color_rgb(name)
-        self.radius       = self.at.get_radius   (name)
-        self.vdw_rad      = self.at.get_vdw_rad  (name)
-        self.cov_rad      = self.at.get_cov_rad  (name)
-        self.ball_radius  = self.at.get_ball_rad (name)
+        #self.col_rgb      = self.at.get_color_rgb(name)
+        #self.radius       = self.at.get_radius   (name)
+        #self.vdw_rad      = self.at.get_vdw_rad  (name)
+        #self.cov_rad      = self.at.get_cov_rad  (name)
+        #self.ball_radius  = self.at.get_ball_rad (name)
+
+        #print (self.symbol)
+        self.col_rgb      = self.at.get_color_rgb(self.symbol)
+        self.radius       = self.at.get_radius   (self.symbol)
+        self.vdw_rad      = self.at.get_vdw_rad  (self.symbol)
+        self.cov_rad      = self.at.get_cov_rad  (self.symbol)
+        self.ball_radius  = self.at.get_ball_rad (self.symbol)
+
+
+        self.selected       = False
+
 
         self.lines          = True
         self.dots           = False
@@ -146,7 +163,7 @@ class Atom:
         """ Function doc """
         #self.at = Vobject.vismol_session.vConfig.atom_types
 
-        self.color   = self.at.get_color(self.name)
+        self.color   = self.at.get_color(self.symbol)
  
 
     def _generate_atom_unique_color_id (self):

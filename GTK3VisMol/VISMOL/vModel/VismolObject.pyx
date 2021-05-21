@@ -126,17 +126,19 @@ class VismolObject:
         self.atoms2             = atoms # this is a raw list : [0, 'C5', 0.77, array([ 0.295,  2.928, -0.407]), 1, 'GLC', ' ', 'C ', [1, 12, 8, 10], [0, 0, 0]]
         #-----------------------------------------------------------------
 
-        self.atoms              = []    # this a list ao atom objects!
+        self.atoms              = []    # this a list  atom objects!
         self.residues           = {}
         self.chains             = {}
+        self.atoms_by_chains    = {}
         self.frames             = trajectory
         self.atom_unique_id_dic = {}
 
-
+        self.vobj_selected_atoms= []
 
         #-----------------------#
         #         Bonds         #
         #-----------------------#
+        self.dynamic_bons       = [] #  [0,1,1,2,3,4] 
         self.index_bonds        = []
         self.bonds              = []                        
 
@@ -206,6 +208,7 @@ class VismolObject:
     
     def _add_new_atom_to_vobj (self, name          ,
                                      index         ,
+                                     symbol        ,
                                      pos           ,
                                      resi          ,
                                      resn          ,
@@ -221,6 +224,7 @@ class VismolObject:
     
         atom        = Atom(name          =  name          ,
                            index         =  index         ,
+                           symbol        =  symbol        , 
                            pos           =  pos           ,
                            resi          =  resi          ,
                            resn          =  resn          ,
@@ -234,6 +238,17 @@ class VismolObject:
                            )
         
 
+        
+        
+        if atom.chain in self.atoms_by_chains.keys():
+            self.atoms_by_chains[atom.chain].append(atom)
+        
+        else:
+            self.atoms_by_chains[atom.chain] = []
+            self.atoms_by_chains[atom.chain].append(atom)
+
+        
+        
         
         
         if atom.chain in self.chains.keys():
@@ -442,8 +457,9 @@ class VismolObject:
             at_res_i    = atom2[4]
             at_res_n    = atom2[5]
             at_ch       = atom2[6]
+            at_symbol   = atom2[7]
             #bonds_idxes = atom2[8]
-            self._add_new_atom_to_vobj
+            #self._add_new_atom_to_vobj
             
             
             
@@ -451,6 +467,7 @@ class VismolObject:
             #'''
             self._add_new_atom_to_vobj(name          =  at_name,  
                                        index         =  index+1, 
+                                       symbol        =  at_symbol, 
                                        pos           =  at_pos, 
                                        resi          =  at_res_i, 
                                        resn          =  at_res_n, 
