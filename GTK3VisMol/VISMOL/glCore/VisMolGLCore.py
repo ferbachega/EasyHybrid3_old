@@ -962,7 +962,7 @@ class VisMolGLCore():
             self.atom_picked = None
             if self.button ==1:
                 self.vismolSession._selection_function (self.atom_picked)
-                print('_selection_function 965', self.vismolSession.selections[self.vismolSession.current_selection].active )
+                #print('_selection_function 965', self.vismolSession.selections[self.vismolSession.current_selection].active )
                 self.button = None
         else:
             try:
@@ -975,9 +975,9 @@ class VisMolGLCore():
                 '''
                 self.atom_picked = self.vismolSession.atom_dic_id[pickedID]
                 if self.button ==1:
-                    print('_selection_function 978', self.vismolSession.selections[self.vismolSession.current_selection].active )
+                    #print('_selection_function 978', self.vismolSession.selections[self.vismolSession.current_selection].active )
                     self.vismolSession._selection_function (self.atom_picked)
-                    print('_selection_function 980', self.vismolSession.selections[self.vismolSession.current_selection].active )
+                    #print('_selection_function 980', self.vismolSession.selections[self.vismolSession.current_selection].active )
 
                     self.button = None
             except:

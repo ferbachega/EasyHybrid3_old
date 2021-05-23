@@ -367,7 +367,7 @@ class VisMolSession (ShowHideVisMol):
         #---------------------------------------------------------------
         #  VIEWING SELECTIONS
         #---------------------------------------------------------------
-        selection = vSele()
+        selection = vSele(self)
         #selection._selection_mode ='chain' # 'atom'
         self.selections = {
                           'sel01' : selection
@@ -377,7 +377,7 @@ class VisMolSession (ShowHideVisMol):
         #---------------------------------------------------------------
         #  PICKING SELECTIONS
         #---------------------------------------------------------------
-        self.picking_selections =  vPick()
+        self.picking_selections =  vPick(self)
         
     
     
@@ -987,11 +987,7 @@ class VisMolSession (ShowHideVisMol):
         ]
         #print (data)
         self.Vismol_Objects_ListStore.append(data)
-        
-        
-        
-        
-        
+      
         
     def _load_pdb_file (self, infile):
         """ Function doc """      
@@ -1039,24 +1035,12 @@ class VisMolSession (ShowHideVisMol):
         '''
 
 
-
-
-
-
-
-
-
-
     def _load_aux_file (self, infile):
         """ Function doc """
         print(infile)
         vismol_object  = AUXFiles.load_aux_file (infile = infile, VMSession = self)
         vismol_object.set_model_matrix(self.glwidget.vm_widget.model_mat)        
         self.vismol_objects.append(vismol_object)
-        
-
-
-
 
 
     def _load_mol2_file (self, infile):
@@ -1102,11 +1086,14 @@ class VisMolSession (ShowHideVisMol):
             pass
             
         if indexes == 'all':
-            self.selections[sele].selected_atoms = vismol_object.atoms
-            for atom in vismol_object.atoms:
-                atom.selected = True
+            self.selections[sele].selecting_by_indexes (vismol_object = vismol_object, 
+                                                              indexes = range(0, int(len(vismol_object.atoms)/2)) 
+                                                              )
             
-            self.selections[sele].build_selected_atoms_coords_and_selected_objects_from_selected_atoms()
+            #for atom in vismol_object.atoms:
+            #    atom.selected = True
+            
+            #self.selections[sele].build_selected_atoms_coords_and_selected_objects_from_selected_atoms()
         
         
         #for index in  

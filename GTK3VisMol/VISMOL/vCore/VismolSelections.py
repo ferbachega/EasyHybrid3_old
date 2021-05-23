@@ -28,11 +28,11 @@ import numpy as np
 class VisMolPickingSelection:
     """ Class doc """
     
-    def __init__ (self):
+    def __init__ (self, vismol_session):
         """ Class initialiser """
         self.picking_selections_list = [None]*4
         self.picking_selections_list_index = []
-
+        self.vismol_session = vismol_session
         #self.picking_selection_coordinates = []
         #self.selected_atoms_coords   = []
         #self.selected_objects        = {}
@@ -86,16 +86,17 @@ class VisMolPickingSelection:
 class VisMolViewingSelection:
     """ Class doc """
     
-    def __init__ (self):
+    def __init__ (self, vismol_session):
         #---------------------------------------------------------------
         #                S E L E C T I O N S
         #---------------------------------------------------------------
         self.active = False
         
-        self._selection_mode    = 'residue'
-        self.selected_objects          = {} #dic of VisMol objects (obj)
+        self._selection_mode       = 'residue'
+        self.selected_objects      = {} #dic of VisMol objects (obj)
         self.selected_atoms        = [] #List of atoms objects (obj)
         self.selected_atoms_coords = [] #coordinate (floats) x y z
+        self.vismol_session        = vismol_session
     
     def get_selection_info (self):
         """ Function doc """
@@ -171,11 +172,9 @@ class VisMolViewingSelection:
                 else:
                     pass   
 
-
-
     def selecting_by_chain (self, selected_atom):
         ''' If the object selection is disabled, all atoms in the system will be set to False '''
-        vismol_session      = selected_atom.Vobject.vismol_session
+        #vismol_session      = selected_atom.Vobject.vismol_session
         self._clear_selection_buffer(selected_atom)
         
         '''
@@ -204,25 +203,31 @@ class VisMolViewingSelection:
             for atom in selected_atom.Vobject.atoms_by_chains[chain]:
                 atom.selected = True 
             
-            #selected.Vobject.vobj_selected_atoms = selected.Vobject.atoms_by_chains[chain]
-            
         else:
             chain = selected_atom.chain
             for atom in selected_atom.Vobject.atoms_by_chains[chain]:
                 atom.selected = False 
-            
-            #selected.Vobject.vobj_selected_atoms = []
-            
-            #for atom in selected.Vobject.atoms_by_chains[chain]:
-            #    
-            #    selected.vobj_selected_atoms.append(atom)
-            #    
-            #    self.selected_atoms.append(atom)
         
+        self._build_selection_buffer ()
+        print ('selected atoms: ',len(self.selected_atoms))
+
+
+    def selecting_by_indexes (self, vismol_object = None, indexes = []):
+        """ Function doc """
+        print (indexes)
+        #for atom in vismol_object.atoms:
+        for i in indexes:
+            vismol_object.atoms[i-1].selected = True
         
+        self._build_selection_buffer()
+        #self.active = True
+        self.build_selected_atoms_coords_and_selected_objects_from_selected_atoms ()
+        
+    def _build_selection_buffer (self):
+        """ Function doc """
         self.selected_atoms = []
         
-        for Vobject in vismol_session.vismol_objects:
+        for Vobject in self.vismol_session.vismol_objects:
             for atom in Vobject.atoms:
                 if atom.selected:
                     #print ('',atom )
@@ -231,85 +236,20 @@ class VisMolViewingSelection:
                     pass
         
         
-        '''
-        if selected not in self.selected_atoms:
-            
-            chain = selected.chain
-            
-            for atom in selected.Vobject.atoms_by_chains[chain]:
-                self.selected_atoms.append(atom)
-            
-            #if len(selected.Vobject.chains.keys()) == 1:
-            #    
-            #    for atom in selected.Vobject.atoms:
-            #        self.selected_atoms.append(atom)
-            #        #if atom not in self.selected_atoms:
-            #        #    self.selected_atoms.append(atom)
-            #        #else:
-            #        #    pass
-            
-            
-            
-            else:
-                # So, add all atoms  - selected residue <- selected.resi
-                for residue in selected.Vobject.chains[selected.chain].residues:
-                    for atom in residue.atoms:
-                        # the atom is not on the list -  add atom by atom
-                        if atom not in self.selected_atoms:
-                            self.selected_atoms.append(atom)
-                        
-                        # the atom IS on the list - do nothing 
-                        else:
-                            pass
-
-        
-        
-        # if the selected atoms IS on the selected list
-        else:
-            
-            if len(selected.Vobject.chains.keys()) == 1:
-                #self.selected_atoms = []
-                for atom in selected.Vobject.atoms:
-                    
-                    if atom in self.selected_atoms:
-                        index = self.selected_atoms.index(atom)
-                        self.selected_atoms.pop(index)  
-                    # the atom IS on the list - do nothing 
-                    else:
-                        pass 
-            
-            
-            
-            for residue in selected.Vobject.chains[selected.chain].residues:
-                #for residue in chain.residues:
-                for atom in residue.atoms:
-                    # the atom is not on the list -  add atom by atom
-                    if atom in self.selected_atoms:
-                        index = self.selected_atoms.index(atom)
-                        self.selected_atoms.pop(index)                            
-                    # the atom IS on the list - do nothing 
-                    else:
-                        pass          
-        '''
-        print ('selected atoms: ',len(self.selected_atoms))
-
     def _clear_selection_buffer (self,  selected_atom):
         ''' If the object selection is disabled, 
         all atoms in the system will be set to False '''
-        
-        vismol_session      = selected_atom.Vobject.vismol_session
-        
+
         #------------------------------------------------
         # Clearing the selections buffer
         # assigning false to all atoms loaded into memory
         if self.active:
             pass
         else:
-            for Vobject in vismol_session.vismol_objects:
+            for Vobject in self.vismol_session.vismol_objects:
                 for atom in Vobject.atoms:
                     atom.selected = False
         #------------------------------------------------""
-        
 
     def selection_function_viewing (self, selected):
         #print (selected)

@@ -599,149 +599,168 @@ class AtomTypes:
                 ball = 0.30
         return ball/2.0
 
+
+
+
+
+    
     def get_symbol (self, name):
         """ Function doc """
         
         name  =  name.strip()
         
+        if name == '':
+            return ''
+        
+        
+        if len(name) >=3:
+            name  = name[:2]
+        
+        if len(name) == 2:
+            if name[1].isnumeric():
+                symbol  =  name[0]
+            else:
+                pass
+                
+        
+        
         if name in self.ATOM_TYPES.keys():
             return name
         
         else:
-       
-            if name[1].isnumeric():
-                symbol  =  name[0]
-            
-       
-            
-            else:
+           
+            if name[0] == 'H':
                 
-                if name[0] == 'H':
-                    
-                    if name[1] == 'g':
-                        symbol =  'Hg'
-                   
-                    elif  name[-1] =='e':
-                        symbol = 'He'                    
-                    
-                    else:
-                        symbol =  'H'
-
+                if name[1] == 'g':
+                    symbol =  'Hg'
+               
+                elif  name[-1] =='e':
+                    symbol = 'He'                    
                 
-                
-                elif name[0] == 'C':
-                    
-                    if name[1] == 'a':
-                        symbol =  'Ca'
-                        
-                    elif  name[-1] =='L':
-                        symbol = 'Cl'
-                       
-                    elif  name[-1] =='d':
-                        symbol = 'Cd'
-                    
-                    elif  name[-1] =='u':
-                        symbol = 'Cu'
-                    
-                    else:
-                        symbol =  'C'
-            
-                
-                
-                
-                
-                elif name[0] == 'N':
-                    
-                    if name[1] == 'i':
-                        symbol =  'Ni'
-                    
-                    elif name[1] == 'a':
-                        symbol =  'Na'
-                    
-                    elif name[1] == 'A':
-                        symbol =  'Na'
-                    
-                    elif name[1] == 'e':
-                        symbol =  'Ne'
-                    elif name[1] == 'b':
-                        symbol =  'Nb'
-                    
-                    else:
-                        symbol =  'N'
-                        
-                
-                
-                
-                elif name[0] == 'O':
-                    
-                    if name[1] == 'g':
-                        symbol =  'Og'
-                    
-                    if name[1] == 's':
-                        symbol =  'Os'
-                    
-                    else:
-                        symbol =  'O'                        
-                
-                
-                
-                elif name[0] == 'S':           
-                    if name[1] == 'I':
-                        symbol =  'Si'
-                    
-                    elif name[1] == 'e':
-                        symbol =  'Se'
-                    else:
-                        symbol =  'S'   
-                
-                
-                
-                
-                
-                elif name[0] == 'P':
-                    
-                    if name[1] == 'd':
-                        symbol =  'Pd'
-                        
-                    elif  name[1] == 'b':
-                        symbol =  'Pb'
-                    
-                    elif  name[1] == 'o':
-                        symbol =  'Po'
-                    
-                    else:
-                        symbol =  'P' 
-                
-                
-                elif name[0] == 'O':
-                    
-                    if name[1] == 'g':
-                        symbol =  'Og'
-                    else:
-                        symbol =  'O' 
-
-
-                elif name[0] == 'M':
-                    
-                    if name[1] == 'n':
-                        symbol =  'Mn'
-                        
-                    elif name[1] == 'N':
-                        symbol =  'Mn'
-                    
-                    elif name[1] == 'o':
-                        symbol =  'Mo'
-                    
-                    elif name[1] == 'G':
-                        symbol =  'Mg'
-                        
-                    else:
-                        symbol =  'X' 
-
-            
                 else:
-                    symbol = 'X'
+                    symbol =  'H'
+
+            
+            
+            elif name[0] == 'C':
+                
+                if name[1] == 'a':
+                    symbol =  'Ca'
+                    
+                elif  name[-1] =='l':
+                    symbol = 'Cl'
+                
+                elif  name[-1] =='L':
+                    symbol = 'Cl'
+                   
+                elif  name[-1] =='d':
+                    symbol = 'Cd'
+                
+                elif  name[-1] =='u':
+                    symbol = 'Cu'
+                
+                else:
+                    symbol =  'C'
         
+            
+            
+            
+            
+            elif name[0] == 'N':
+                
+                if name[1] == 'i':
+                    symbol =  'Ni'
+                
+                elif name[1] == 'a':
+                    symbol =  'Na'
+                
+                elif name[1] == 'A':
+                    symbol =  'Na'
+                
+                elif name[1] == 'e':
+                    symbol =  'Ne'
+                elif name[1] == 'b':
+                    symbol =  'Nb'
+                
+                else:
+                    symbol =  'N'
+                    
+            
+            
+            
+            elif name[0] == 'O':
+                
+                if name[1] == 'g':
+                    symbol =  'Og'
+                
+                if name[1] == 's':
+                    symbol =  'Os'
+                
+                else:
+                    symbol =  'O'                        
+            
+            
+            
+            elif name[0] == 'S':           
+                if name[1] == 'I':
+                    symbol =  'Si'
+                
+                elif name[1] == 'e':
+                    symbol =  'Se'
+                else:
+                    symbol =  'S'   
+            
+            
+            
+            
+            
+            elif name[0] == 'P':
+                
+                if name[1] == 'd':
+                    symbol =  'Pd'
+                    
+                elif  name[1] == 'b':
+                    symbol =  'Pb'
+                
+                elif  name[1] == 'o':
+                    symbol =  'Po'
+                
+                else:
+                    symbol =  'P' 
+            
+            
+            elif name[0] == 'O':
+                
+                if name[1] == 'g':
+                    symbol =  'Og'
+                else:
+                    symbol =  'O' 
+
+
+            elif name[0] == 'M':
+                
+                if name[1] == 'n':
+                    symbol =  'Mn'
+                    
+                elif name[1] == 'N':
+                    symbol =  'Mn'
+                
+                elif name[1] == 'o':
+                    symbol =  'Mo'
+                
+                elif name[1] == 'G':
+                    symbol =  'Mg'
+                    
+                else:
+                    symbol =  'X' 
+
+        
+            else:
+                if returnX:
+                    symbol = 'X'
+                else:
+                    symbol = ''
+    
         return symbol
             
         

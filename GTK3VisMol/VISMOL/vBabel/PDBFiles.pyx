@@ -137,29 +137,32 @@ iCode = ""
             at_ch      = line[21]             
             
             
-            at_symbol  = line[75:-1]
+            at_symbol  = line[70:]
+            #print ('at_symbol raw ',at_symbol )
             at_symbol  = at_symbol.strip()
+            #print ('at_symbol raw2 ',at_symbol )
+
             if at_symbol == 'MG':
                 at_symbol = 'Mg'
             else:
                 pass
-            #except:
-            #    at_symbol  = at.get_symbol(at_name)
-            #
-            if at_symbol =='':
-                at_symbol  = at.get_symbol(at_name)
             
+            
+            if at_symbol in at.ATOM_TYPES.keys():
+                #print ('at_symbol if ',at_symbol )
+                pass
+            else:
+                #print ('at_symbol else1 ',at_symbol )
+                at_symbol  = at.get_symbol(at_name)
+                #print ('at_symbol else2 ',at_symbol )
+
+            #print('at_symbol',at_name, at_symbol) 
             
             at_occup   = float(line[54:60])   #occupancy
             at_bfactor = float(line[60:66])
             at_charge  = 0.0
-            
-            try:
-                cov_rad  = at.get_cov_rad (at_symbol)
-            
-            except:
-                print (at_symbol)
-            #cov_rad  = at.get_cov_rad (at_name)
+
+            cov_rad  = at.get_cov_rad (at_symbol)
             gridpos  = [int(at_pos[0]/gridsize), int(at_pos[1]/gridsize), int(at_pos[2]/gridsize)]
             #ocupan   = float(line[54:60])
             #bfactor  = float(line[60:66])

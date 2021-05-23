@@ -13,7 +13,9 @@ class Chain:
         self.Vobject  = Vobject
         self.backbone_pair_indexes_full = []
         self.backbone_pair_indexes_show = []
-    
+    def return_name (self):
+        """ Function doc """
+        return self.name
     '''
     def generate_backbone_indexes (self):
         """ Function doc """
