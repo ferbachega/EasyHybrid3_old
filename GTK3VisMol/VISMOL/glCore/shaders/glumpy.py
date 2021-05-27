@@ -226,7 +226,7 @@ in vec3 vert_coord;
 in vec3 vert_color;
 
 //in float vert_rad;
-const float vert_rad = 3.0;
+const float vert_rad = 1.0;
 
 uniform vec3 u_campos;
 
@@ -438,7 +438,6 @@ struct Light {
 uniform Light my_light;
 
 uniform float u_depth;
-uniform int u_mode;
 
 in vec3 frag_color;
 in vec3 frag_coord;
@@ -462,22 +461,18 @@ void main() {
     if (t < 0.0) discard;
     vec3 coord = ro + rd * t;
     vec3 normal = normalize(coord - frag_center);
-    if (u_mode == 0) {
-        gl_FragColor = vec4(frag_color, 1.0);
-    } else if (u_mode == 1) {
-        //vec3 normal = normalize(frag_norm);
-        vec3 vert_to_light = normalize(my_light.position);
-        vec3 vert_to_cam = normalize(frag_coord);
-        
-        // Ambient Component
-        vec3 ambient = my_light.ambient_coef * frag_color * my_light.intensity;
-        
-        // Diffuse component
-        float diffuse_coef = max(0.0, dot(normal, vert_to_light));
-        vec3 diffuse = diffuse_coef * frag_color * my_light.intensity;
-        
-        gl_FragColor = vec4(ambient + diffuse, 1.0);
-    }
+    vec3 vert_to_light = normalize(my_light.position);
+    vec3 vert_to_cam = normalize(frag_coord);
+    
+    // Ambient Component
+    vec3 ambient = my_light.ambient_coef * frag_color * my_light.intensity;
+    
+    // Diffuse component
+    float diffuse_coef = max(0.0, dot(normal, vert_to_light));
+    vec3 diffuse = diffuse_coef * frag_color * my_light.intensity;
+    
+    gl_FragColor = vec4(ambient + diffuse, 1.0);
+    
     vec3 depth_coord = frag_center + normal * frag_radius;
     gl_FragDepthEXT = -length(depth_coord - frag_cam)/u_depth;
 }

@@ -1602,7 +1602,7 @@ class GlumpyRepresentation (Representation):
         #GL.glPointSize(55)
         #print('passei aqui')
         
-        xyz_coords = self.glCore.glcamera.get_position()
+        xyz_coords = self.glCore.glcamera.get_modelview_position(self.visObj.model_mat)
         u_campos = GL.glGetUniformLocation(self.shader_program, 'u_campos')
         GL.glUniform3fv(u_campos, 1, xyz_coords)
         
