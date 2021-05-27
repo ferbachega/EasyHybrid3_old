@@ -214,6 +214,277 @@ void main()
 
 
 
+v_shader_imposter = """
+#version 330
+precision highp float;
+
+uniform mat4 model_mat;
+uniform mat4 view_mat;
+uniform mat4 proj_mat;
+
+in vec3 vert_coord;
+in vec3 vert_color;
+
+//in float vert_rad;
+const float vert_rad = 3.0;
+
+uniform vec3 u_campos;
+
+const float atom_rad = 0.90;
+const float uAtomShade = 0.9;
+
+out vec3 geom_color;
+out vec3 geom_coord;
+out vec3 geom_center;
+out vec3 geom_cam;
+out float geom_radius;
+
+void main() {
+    geom_color = vert_color;
+    geom_coord = vert_coord;
+    geom_center = vert_coord;
+    geom_cam = u_campos;
+    geom_radius = vert_rad;
+}
+"""
+g_shader_imposter = """
+#version 330
+
+layout (points) in;
+layout (triangle_strip, max_vertices = 18) out;
+
+uniform mat4 model_mat;
+uniform mat4 view_mat;
+uniform mat4 proj_mat;
+
+in vec3 geom_color[];
+in vec3 geom_coord[];
+in vec3 geom_center[];
+in vec3 geom_cam[];
+in float geom_radius[];
+
+out vec3 frag_color;
+out vec3 frag_coord;
+out vec3 frag_center;
+out vec3 frag_cam;
+out float frag_radius;
+
+vec3 p_1 = vec3(-1.0,-1.0,-1.0);
+vec3 p_2 = vec3(-1.0,-1.0, 1.0);
+vec3 p_3 = vec3( 1.0,-1.0, 1.0);
+vec3 p_4 = vec3( 1.0,-1.0,-1.0);
+vec3 p_5 = vec3(-1.0, 1.0,-1.0);
+vec3 p_6 = vec3(-1.0, 1.0, 1.0);
+vec3 p_7 = vec3( 1.0, 1.0, 1.0);
+vec3 p_8 = vec3( 1.0, 1.0,-1.0);
+
+void main(){
+    vec3 point1 = geom_coord[0] + p_1 * geom_radius[0];
+    vec3 point2 = geom_coord[0] + p_2 * geom_radius[0];
+    vec3 point3 = geom_coord[0] + p_3 * geom_radius[0];
+    vec3 point4 = geom_coord[0] + p_4 * geom_radius[0];
+    vec3 point5 = geom_coord[0] + p_5 * geom_radius[0];
+    vec3 point6 = geom_coord[0] + p_6 * geom_radius[0];
+    vec3 point7 = geom_coord[0] + p_7 * geom_radius[0];
+    vec3 point8 = geom_coord[0] + p_8 * geom_radius[0];
+    
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point1, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point1, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point6, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point6, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point2, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point2, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point7, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point7, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point3, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point3, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point8, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point8, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point4, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point4, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point5, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point5, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point1, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point1, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point6, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point6, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    
+    EndPrimitive();
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point1, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point1, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point2, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point2, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point4, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point4, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point3, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point3, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    EndPrimitive();
+
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point5, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point5, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point6, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point6, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point8, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point8, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    gl_Position = proj_mat * view_mat * model_mat * vec4(point7, 1.0);
+    frag_color = geom_color[0];
+    frag_coord = vec3(model_mat * vec4(point7, 1.0));
+    frag_center = vec3(model_mat * vec4(geom_center[0], 1.0));
+    frag_cam = vec3(model_mat * vec4(geom_cam[0], 1.0));
+    frag_radius = geom_radius[0];
+    EmitVertex();
+    EndPrimitive();
+}
+"""
+f_shader_imposter = """
+#version 330
+#extension GL_EXT_frag_depth: enable
+precision highp float;
+
+struct Light {
+    vec3 position;
+    //vec3 color;
+    vec3 intensity;
+    //vec3 specular_color;
+    float ambient_coef;
+    float shininess;
+};
+
+uniform Light my_light;
+
+uniform float u_depth;
+uniform int u_mode;
+
+in vec3 frag_color;
+in vec3 frag_coord;
+in vec3 frag_center;
+in vec3 frag_cam;
+in float frag_radius;
+
+float sphIntersect(vec3 ro, vec3 rd, vec3 sph, float rad){
+    vec3 oc = ro - sph;
+    float b = dot(oc, rd);
+    float c = dot(oc, oc) - rad*rad;
+    float h = b*b - c;
+    if( h<0.0 ) return -1.0;
+    return -b - sqrt(h);
+}
+
+void main() {
+    vec3 ro = frag_cam;
+    vec3 rd = normalize(frag_coord - frag_cam);
+    float t = sphIntersect(ro, rd, frag_center, frag_radius);
+    if (t < 0.0) discard;
+    vec3 coord = ro + rd * t;
+    vec3 normal = normalize(coord - frag_center);
+    if (u_mode == 0) {
+        gl_FragColor = vec4(frag_color, 1.0);
+    } else if (u_mode == 1) {
+        //vec3 normal = normalize(frag_norm);
+        vec3 vert_to_light = normalize(my_light.position);
+        vec3 vert_to_cam = normalize(frag_coord);
+        
+        // Ambient Component
+        vec3 ambient = my_light.ambient_coef * frag_color * my_light.intensity;
+        
+        // Diffuse component
+        float diffuse_coef = max(0.0, dot(normal, vert_to_light));
+        vec3 diffuse = diffuse_coef * frag_color * my_light.intensity;
+        
+        gl_FragColor = vec4(ambient + diffuse, 1.0);
+    }
+    vec3 depth_coord = frag_center + normal * frag_radius;
+    gl_FragDepthEXT = -length(depth_coord - frag_cam)/u_depth;
+}
+"""
+
+
+
 
 
 shader_type ={
@@ -228,6 +499,14 @@ shader_type ={
 			1: {'vertex_shader'      : vertex_shader_glumpy_1  ,
 			    'fragment_shader'    : fragment_shader_glumpy_1,
 			    'sel_vertex_shader'  : vertex_shader_glumpy_1  ,
+			    'sel_fragment_shader': fragment_shader_glumpy_1
+				},
+			
+			2: {'vertex_shader'      : v_shader_imposter,
+			    'fragment_shader'    : f_shader_imposter,
+			    'geometry_shader'    : g_shader_imposter,
+			    
+                'sel_vertex_shader'  : vertex_shader_glumpy_1  ,
 			    'sel_fragment_shader': fragment_shader_glumpy_1
 				}
 

@@ -30,7 +30,11 @@ class VismolMainWindow ( ):
         self.builder.connect_signals(self)
         self.window = self.builder.get_object('window1')
         self.window.set_default_size(600, 600)                          
-
+        
+        self.statusbar_main = self.builder.get_object('statusbar1')
+        self.statusbar_main.push(0,'wellcome to EasyHydrid')
+        self.statusbar_main.push(1,'wellcome to EasyHydrid1')
+        
         self.paned_V = self.builder.get_object('paned_V')
         #self.nootbook  =  self.builder.get_object('notebook2')
         #self.window = Gtk.Window(title="VisMol window")

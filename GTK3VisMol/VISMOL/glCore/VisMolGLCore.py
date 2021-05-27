@@ -740,13 +740,23 @@ class VisMolGLCore():
     def _create_impostor_shaders (self, _type = 0):
         """ Function doc """
         # G L U M P Y
+        #_type = 2
+        #_type = self.vConfig.gl_parameters['impostor_type']
+        #if _type == 2:
+
+        self.shader_programs['glumpy']     = self.load_shaders(glumpyShaders.shader_type[2]['vertex_shader'  ],
+                                                               glumpyShaders.shader_type[2]['fragment_shader'],
+                                                               glumpyShaders.shader_type[2]['geometry_shader'])
         
-        _type = self.vConfig.gl_parameters['impostor_type']
-        
-        self.shader_programs['glumpy']     = self.load_shaders(glumpyShaders.shader_type[_type]['sel_vertex_shader'  ],
-                                                               glumpyShaders.shader_type[_type]['sel_fragment_shader'])
-        self.shader_programs['glumpy_sel'] = self.load_shaders(glumpyShaders.shader_type[_type]['sel_vertex_shader'  ],
-                                                               glumpyShaders.shader_type[_type]['sel_fragment_shader'])
+        self.shader_programs['glumpy_sel'] = self.load_shaders(glumpyShaders.shader_type[0]['sel_vertex_shader'  ],
+                                                               glumpyShaders.shader_type[0]['sel_fragment_shader'])
+
+
+        #else:
+        #    self.shader_programs['glumpy']     = self.load_shaders(glumpyShaders.shader_type[_type]['sel_vertex_shader'  ],
+        #                                                           glumpyShaders.shader_type[_type]['sel_fragment_shader'])
+        #    self.shader_programs['glumpy_sel'] = self.load_shaders(glumpyShaders.shader_type[_type]['sel_vertex_shader'  ],
+								#glumpyShaders.shader_type[_type]['sel_fragment_shader'])
 
 
 

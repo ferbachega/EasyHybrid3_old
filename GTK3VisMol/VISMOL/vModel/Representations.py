@@ -1598,8 +1598,24 @@ class GlumpyRepresentation (Representation):
         height = self.visObj.vismol_session.glwidget.vm_widget.height
         dist_cam_zrp = self.visObj.vismol_session.glwidget.vm_widget.dist_cam_zrp
         
-        GL.glPointSize((50*height/(abs(dist_cam_zrp)))**0.5)
+        #GL.glPointSize((50*height/(abs(dist_cam_zrp)))**0.5)
         #GL.glPointSize(55)
+        #print('passei aqui')
+        
+        xyz_coords = self.glCore.glcamera.get_position()
+        u_campos = GL.glGetUniformLocation(self.shader_program, 'u_campos')
+        GL.glUniform3fv(u_campos, 1, xyz_coords)
+        
+        u_depth = GL.glGetUniformLocation(self.shader_program, 'u_depth')
+        GL.glUniform1fv(u_depth, 1, (self.glCore.glcamera.z_near - self.glCore.glcamera.z_far))
+        
+        
+        self.glCore.load_lights  (self.shader_program )
+
+        
+        
+        
+        
         self.glCore.load_matrices(self.shader_program, self.visObj.model_mat)
         self.glCore.load_fog(self.shader_program)
         GL.glBindVertexArray(self.vao)
