@@ -5,6 +5,13 @@ setup(
     #ext_modules = cythonize("cfunctions.pyx")
     ext_modules = cythonize("PDBFiles.pyx")
 )
+
+setup(
+    #ext_modules = cythonize("cfunctions.pyx")
+    ext_modules = cythonize("GROFiles.pyx")
+)
+
+
 #'''
 '''
 setup(

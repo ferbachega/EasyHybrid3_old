@@ -106,11 +106,11 @@ class Atom:
         
         
         coords = [self.Vobject.frames[frame][(self.index-1)*3  ],
-        self.Vobject.frames[frame][(self.index-1)*3+1],
-        self.Vobject.frames[frame][(self.index-1)*3+2],]
+                  self.Vobject.frames[frame][(self.index-1)*3+1],
+                  self.Vobject.frames[frame][(self.index-1)*3+2],]
 
         return coords
-
+    '''
     def define_atom_symbol (self, name):
         """ Function doc """
         self.symbol_list = [ 'H' ,'He','Li','Be','B' ,'C' ,'N' ,'O' ,'F' ,'Ne','Na','Mg','Al','Si','P' ,'S' ,'Cl','Ar','K' ,'Ca','Sc','Ti','V' ,'Cr','Mn','Fe','Co','Ni','Cu','Zn','Ga','Ge','As','Se','Br','Kr','Rb','Sr','Y' ,'Zr','Nb','Mo','Tc','Ru','Rh','Pd','Ag','Cd','In','Sn','Sb','Te','I' ,'Xe','Cs','Ba','La','Ce','Pr','Nd','Pm','Sm','Eu','Gd','Tb','Dy','Ho','Er', 'Tm', 'Yb', 'Lu', 'Hf', 'Ta', 'W' , 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn', 'Fr', 'Ra', 'Ac', 'Th', 'Pa', 'U' , 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm', 'Md', 'No', 'Lr', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt', 'Xx', 'X' ]
@@ -157,15 +157,13 @@ class Atom:
                         self.symbol = newSymbol
                     else:
                         self.symbol = 'Xx'
-
- 
+    '''
     def get_color (self):
         """ Function doc """
         #self.at = Vobject.vismol_session.vConfig.atom_types
 
         self.color   = self.at.get_color(self.symbol)
  
-
     def _generate_atom_unique_color_id (self):
         """ Function doc """
         i = self.atom_id

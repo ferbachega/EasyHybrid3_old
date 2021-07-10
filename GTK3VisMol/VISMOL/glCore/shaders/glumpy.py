@@ -226,7 +226,7 @@ in vec3 vert_coord;
 in vec3 vert_color;
 
 //in float vert_rad;
-const float vert_rad = 1.0;
+const float vert_rad = 0.5;
 
 uniform vec3 u_campos;
 

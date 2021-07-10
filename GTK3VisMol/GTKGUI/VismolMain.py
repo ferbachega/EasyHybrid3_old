@@ -259,7 +259,7 @@ class TreeViewMenu:
         """ Class initialiser """
         pass
         self.treeview = treeview
-        
+        self.filechooser   = FileChooser()
         functions = {
                 'test':self.f1 ,
                 'f1': self.f1,
@@ -270,10 +270,36 @@ class TreeViewMenu:
 
 
 
-    def f1 (self):
+    def f1 (self, visObj = None ):
         """ Function doc """
-        print('f1')
+        selection        = self.treeview.get_selection()
+        (model, iter)    = selection.get_selected()
+        self.selectedID  = int(model.get_value(iter, 1))  # @+
         
+        visObj = self.treeview.vismolSession.vismol_objects[self.selectedID]
+        
+        infile = self.filechooser.open()
+        
+        self.treeview.vismolSession.load_xyz_coords_to_vismol_obejct(infile , visObj)
+        
+        print (infile)
+    
+    
+        self.treeview.store .clear()
+        for vis_object in self.treeview.vismolSession.vismol_objects:
+            print ('\n\n',vis_object.name,'\n\n')
+            data = [vis_object.active          , 
+                    str(self.treeview.vismolSession.vismol_objects.index(vis_object)),
+                    vis_object.name            , 
+                    str(len(vis_object.atoms)) , 
+                    str(len(vis_object.frames)),
+                   ]
+            model.append(data)
+        #self.treeview.vismolSession.glwidget.queue_draw()
+    
+    
+    
+    
     def f2 (self):
         """ Function doc """
         print('f2')

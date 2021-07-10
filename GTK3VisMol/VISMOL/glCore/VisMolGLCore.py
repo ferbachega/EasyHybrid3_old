@@ -488,20 +488,20 @@ class VisMolGLCore():
 
             if visObj.active:
                 # visObj.active = False means that nothing is showed 
-                
-                for rep_name in visObj.representations:
-                    # if the representation doen't exists , ignore
-                    if visObj.representations[rep_name] is None:
-                        pass
-                    
-                    else:
-                        # only shows the representation if representations[rep_name].active = True
-                        if visObj.representations[rep_name].active:
-                            #print(rep_name,visObj.representations[rep_name].active)
-                            visObj.representations[rep_name].draw_representation()
-                            #visObj.representations[rep_name].draw_background_sel_representation()
-                        else:
+                if visObj.frames != []:
+                    for rep_name in visObj.representations:
+                        # if the representation doen't exists , ignore
+                        if visObj.representations[rep_name] is None:
                             pass
+                        
+                        else:
+                            # only shows the representation if representations[rep_name].active = True
+                            if visObj.representations[rep_name].active:
+                                #print(rep_name,visObj.representations[rep_name].active)
+                                visObj.representations[rep_name].draw_representation()
+                                #visObj.representations[rep_name].draw_background_sel_representation()
+                            else:
+                                pass
 
 
         for visObj in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:

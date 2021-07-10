@@ -105,7 +105,7 @@ def load_mol2_files (infile = None, VMSession =  None, gridsize = 3):
     raw_atoms = raw_atoms.split('\n')
     bonds     = bonds.split('\n')
 
-
+    print (raw_atoms)
     atoms, frames = get_atom_list_from_mol2_frame(raw_atoms = raw_atoms, frame = True,  gridsize = gridsize,  at = at)
 
     #-------------------------------------------------------------------------------------------
@@ -162,9 +162,9 @@ def get_atom_list_from_mol2_frame (raw_atoms, frame = True, gridsize = 3, at =  
             at_charge  = float(line[8])
 
 
-
-            at_symbol= line[5].split('.')
-            at_symbol= at_symbol[0]
+            at_symbol  = at.get_symbol(at_name)
+            #at_symbol= line[5].split('.')
+            #at_symbol= at_symbol[0]
             cov_rad  = at.get_cov_rad (at_symbol)
 
 

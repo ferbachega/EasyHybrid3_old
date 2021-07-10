@@ -7,7 +7,7 @@ import numpy as np
 from   VISMOL.vModel import VismolObject
 from pprint import pprint
 
-cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None, frames_only = False):
+cpdef load_gro_file (infile = None, gridsize = 3, VMSession =  None):
     """ Function doc 
 
     gridsize =
@@ -26,38 +26,29 @@ cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None, frames_only
     #                                P D B     P A R S E R 
     #-------------------------------------------------------------------------------------------
     at  =  VMSession.vConfig.atom_types
-    with open(infile, 'r') as pdb_file:
-        pdbtext = pdb_file.read()
-        if 'ENDMDL' in pdbtext:
-            rawframes = pdbtext.split('ENDMDL')
-        else:
-            #pass
-            rawframes = pdbtext.split('END')
-            #print (rawframes)
+    with open(infile, 'r') as gro_file:
         
+        grotext = gro_file.readlines()
         
-        
-        frames    = get_list_of_frames_from_pdb_rawframes (rawframes = rawframes)
-        
-        if frames_only:
-            return frames
-        else:
-            pass
-            
-        n    = 0 
-        atoms = []
-        while atoms == []:
-            atoms     = get_list_of_atoms_from_rawframe(rawframes[n], gridsize, at =  at)
-            n += 1
-        
-        
-    #-------------------------------------------------------------------------------------------
-    
+        atoms, frame = get_atom_info_from_raw_line(grotext, gridsize = 3, at = at)
+        frame = np.array(frame, dtype=np.float32)
+        frames = [frame]
+        #frames = []
+    #    n    = 0 
+    #    atoms = []
+    #    while atoms == []:
+    #        atoms     = get_list_of_atoms_from_rawframe(rawframes[n], gridsize, at =  at)
+    #        n += 1
+    #    
+    #    
+    ##-------------------------------------------------------------------------------------------
+    #
     name = os.path.basename(infile)
     vismol_object  = VismolObject.VismolObject(name        = name, 
                                                atoms       = atoms, 
                                                VMSession   = VMSession, 
-                                               trajectory  = frames)
+                                               trajectory  = frames,
+                                               auto_find_bonded_and_nonbonded = True)
     '''
     #-------------------------------------------------------------------------------------------
     #                                Bonded and NB lists 
@@ -86,9 +77,52 @@ cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None, frames_only
     
     
     
-    
-    
-    
+cpdef get_atom_info_from_raw_line(lines, gridsize = 3, at =  None):
+    #try:
+    atoms           = []
+    index           = 0
+    size            = int(lines[1])
+    frame           = []
+    for line in lines[2:size+2]:
+        at_resi    = int(line[0:5])
+        
+        at_resn    = line[5:10].strip()
+
+        at_name    = line[10:15].strip()
+        
+        #index      = int(line[15:20])
+        
+        x          =float(line[20:28])*10
+        y          =float(line[28:36])*10
+        z          =float(line[36:44])*10
+        frame.append(x)
+        frame.append(y)
+        frame.append(z)
+        at_pos     = np.array([x,y,z])
+        
+        at_ch      = 'X'          
+
+        at_symbol  = at.get_symbol(at_name)
+
+
+        at_occup   = 0.0   #occupancy
+        at_bfactor = 0.0
+        at_charge  = 0.0
+
+        cov_rad  = at.get_cov_rad (at_symbol)
+        gridpos  = [int(at_pos[0]/gridsize), int(at_pos[1]/gridsize), int(at_pos[2]/gridsize)]
+        #ocupan   = float(line[54:60])
+        #bfactor  = float(line[60:66])
+
+                        #0      1        2        3       4        5        6       7       8       9       10          11        12      
+        atoms.append([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge ])
+        #print (index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge )
+        index += 1
+
+    return atoms, frame
+
+
+'''    
 cpdef get_list_of_atoms_from_rawframe(rawframe, gridsize = 3, at =  None):
     """ Function doc 
 
@@ -178,19 +212,17 @@ iCode = ""
             
                             #0      1        2        3       4        5        6       7       8       9       10          11        12      
             atoms.append([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge ])
-            #atoms.append([index, at_name, cov_rad,  None, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge ])
-            #print (index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge )
             index += 1
             #except:
             #    pass
                 #print(line)
     #print('atoms:', atoms)
     return atoms
+'''
 
 
 
-
-
+'''
 cpdef get_list_of_frames_from_pdb_rawframes (rawframes = None):
     """ Function doc """
     n_processor = multiprocessing.cpu_count()
@@ -236,3 +268,4 @@ cpdef get_pdb_frame_coordinates (str frame):
         return False
     else:
         return frame_coordinates
+'''

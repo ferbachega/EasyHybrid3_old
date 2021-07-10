@@ -215,7 +215,7 @@ def get_atom_list_from_xyz_frame (raw_atoms, frame = True, gridsize = 3, at = No
             #atoms.append([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge ])
 
             atoms.append([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge ])
-            
+            print (index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge )
             index += 1
 
             frame_coordinates.append(float(line[1]))

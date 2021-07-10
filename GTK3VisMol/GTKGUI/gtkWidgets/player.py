@@ -224,7 +224,7 @@ class PlayerFrame:
             #print("Selected: ID=%d, name=%s" % (row_id, name))
         else:
             entry = combo.get_child()
-            print("Entered: %s" % entry.get_text())
+            #print("Entered: %s" % entry.get_text())
 
 
 

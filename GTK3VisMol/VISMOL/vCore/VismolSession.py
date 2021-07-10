@@ -33,11 +33,13 @@
 from VISMOL.vModel import VismolObject
 #from VISMOL.vBabel import PDBFiles
 from VISMOL.vBabel import PDBFiles
+from VISMOL.vBabel import GROFiles
 
 from VISMOL.vBabel import MOL2Files
 from VISMOL.vBabel import XYZFiles
 from VISMOL.vBabel import NewObj
 from VISMOL.vBabel import AUXFiles
+from VISMOL.vBabel import AMBERFiles
 
 from VISMOL.vCore.VismolSelections  import VisMolPickingSelection as vPick
 from VISMOL.vCore.VismolSelections  import VisMolViewingSelection as vSele
@@ -898,6 +900,14 @@ class VisMolSession (ShowHideVisMol):
         #Vobject_id = len(self.vismol_objects)
         print ('load')
         
+        rep = True
+        
+        if infile[-3:] == 'gro':
+            self._load_gro_file(infile = infile)
+        
+        if infile[-3:] == 'top' or infile[-3:] == 'prmtop':
+            self._load_amber_top_file(infile = infile)
+            rep = False
         if infile[-3:] == 'pdb':
             self._load_pdb_file(infile = infile)
         
@@ -913,64 +923,103 @@ class VisMolSession (ShowHideVisMol):
         self.vismol_objects[-1].active = True
         
         if self.toolkit == 'gtk':
-            
             print(self.vismol_objects)
         
-        
-        #self.vismol_objects[-1].generate_indexesresentations (reps_list = self.indexes)
-        #print (self.vismol_objects[-1].representations)
-
-        rep  = LinesRepresentation (name = 'lines', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        self.vismol_objects[-1].representations[rep.name] = rep
-
-        rep  = NonBondedRepresentation (name = 'nonbonded', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        self.vismol_objects[-1].representations[rep.name] = rep
-        
-        #rep  = SticksRepresentation (name = 'sticks', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        #self.vismol_objects[-1].representations[rep.name] = rep
-        
-        #rep  = DynamicBonds (name = 'dynamic', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        #self.vismol_objects[-1].representations[rep.name] = rep
-        
-        #self.vismol_objects[-1]
-        
-        
-        
-        '''Representation of fake spheres using shaders. Each sphere is actually a point'''
-        rep  = GlumpyRepresentation (name = 'glumpy', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        self.vismol_objects[-1].representations[rep.name] = rep
-
-        '''Simple dot representation'''
-        #rep  = DotsRepresentation (name = 'dots', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        #self.vismol_objects[-1].representations[rep.name] = rep
-        
-        #rep  = SpheresRepresentation (name = 'spheres', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        #self.vismol_objects[-1].representations[rep.name] = rep
-        
-        #rep =  RibbonsRepresentation(name = 'ribbons', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        #self.vismol_objects[-1].representations[rep.name] = rep
-        
-        #rep =  SurfaceRepresentation(name = 'surface', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        #self.vismol_objects[-1].representations[rep.name] = rep
-
-        #rep =  WiresRepresentation(name = 'wires', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-        #self.vismol_objects[-1].representations[rep.name] = rep
-
-        #self.glwidget.queue_draw()
-       
-        #if self.toolkit == 'gtk3':
-        #    self.refresh_gtk(widget)
-        #visObj = vismolSession.vismol_objects[-1]
-        
-        
-        # after opening a new object, center the camera on this new object
-        if autocenter:
-            self.glwidget.vm_widget.center_on_coordinates(self.vismol_objects[-1], self.vismol_objects[-1].mass_center)
-        
-
         #This function adds new structures to "Vismol_Objects_ListStore"
         self.append_vismol_object_to_vismol_objects_listStore(self.vismol_objects[-1])
+        
+        
+        
+        
+        if rep:
+            #self.vismol_objects[-1].generate_indexesresentations (reps_list = self.indexes)
+            #print (self.vismol_objects[-1].representations)
+
+            rep  = LinesRepresentation (name = 'lines', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+            self.vismol_objects[-1].representations[rep.name] = rep
+
+            rep  = NonBondedRepresentation (name = 'nonbonded', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+            self.vismol_objects[-1].representations[rep.name] = rep
+            
+            #rep  = SticksRepresentation (name = 'sticks', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+            #self.vismol_objects[-1].representations[rep.name] = rep
+            
+            #rep  = DynamicBonds (name = 'dynamic', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+            #self.vismol_objects[-1].representations[rep.name] = rep
+            
+            #self.vismol_objects[-1]
+            
+            
+            
+            '''Representation of fake spheres using shaders. Each sphere is actually a point'''
+            #rep  = GlumpyRepresentation (name = 'glumpy', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+            #self.vismol_objects[-1].representations[rep.name] = rep
+
+            '''Simple dot representation'''
+            #rep  = DotsRepresentation (name = 'dots', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+            #self.vismol_objects[-1].representations[rep.name] = rep
+            
+            #rep  = SpheresRepresentation (name = 'spheres', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+            #self.vismol_objects[-1].representations[rep.name] = rep
+            
+            #rep =  RibbonsRepresentation(name = 'ribbons', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+            #self.vismol_objects[-1].representations[rep.name] = rep
+            
+            #rep =  SurfaceRepresentation(name = 'surface', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+            #self.vismol_objects[-1].representations[rep.name] = rep
+
+            #rep =  WiresRepresentation(name = 'wires', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+            #self.vismol_objects[-1].representations[rep.name] = rep
+
+            #self.glwidget.queue_draw()
+           
+            #if self.toolkit == 'gtk3':
+            #    self.refresh_gtk(widget)
+            #visObj = vismolSession.vismol_objects[-1]
+            
+            
+            # after opening a new object, center the camera on this new object
+            if autocenter:
+                print(self.vismol_objects[-1].mass_center)
+                self.glwidget.vm_widget.center_on_coordinates(self.vismol_objects[-1], self.vismol_objects[-1].mass_center)
+            
+
+
     
+    
+    def load_xyz_coords_to_vismol_obejct (self, infile, visObj, autocenter = True):
+        """ Function doc """
+        if infile[-3:] == 'gro':
+            frames = self._load_gro_coords_to_vismol_object(infile, visObj)
+                                                                   
+        if infile[-3:] == 'pdb':                                  
+            frames = self._load_pdb_coords_to_vismol_object(infile, visObj)
+        
+        if infile[-4:] == 'mol2':
+            frames = self._load_mol2_coords_to_vismol_object(infile , visObj)
+        
+        if infile[-3:] == 'xyz':
+            frames = self._load_xyz_coords_to_vismol_object(infile , visObj)
+        
+        if infile[-3:] == 'crd':
+            frames = self._load_crd_coords_to_vismol_object(infile , visObj)
+            
+        if infile[-3:] == 'aux':
+            frames = self._load_aux_coords_to_vismol_object(infile , visObj)
+
+        if autocenter:
+            visObj._get_mass_center(frame = 0)
+            print(visObj.mass_center)
+            self.glwidget.vm_widget.center_on_coordinates(visObj, visObj.mass_center)
+
+            rep  = LinesRepresentation (name = 'lines', active = True, _type = 'mol', visObj = visObj, glCore = self.glwidget.vm_widget)
+            visObj.representations[rep.name] = rep
+
+            rep  = NonBondedRepresentation (name = 'nonbonded', active = True, _type = 'mol', visObj = visObj, glCore = self.glwidget.vm_widget)
+            visObj.representations[rep.name] = rep
+
+
+
     
     def append_vismol_object_to_vismol_objects_listStore(self, visObj):
         """ This function adds new structures to "Vismol_Objects_ListStore". 
@@ -979,20 +1028,60 @@ class VisMolSession (ShowHideVisMol):
         
         i = self.vismol_objects.index(visObj)
 
-        data = [visObj.active  , 
-        str(i)                 ,
-        visObj.name            , 
-        str(len(visObj.atoms)) , 
-        str(len(visObj.frames)),
-        ]
+        data = [visObj.active          , 
+                str(i)                 ,
+                visObj.name            , 
+                str(len(visObj.atoms)) , 
+                str(len(visObj.frames)),
+                ]
         #print (data)
         self.Vismol_Objects_ListStore.append(data)
       
+    
+    def _load_gro_coords_to_vismol_object(self, infile , visObj = None):
+        """ Function doc """
+        pass
         
+        
+    def _load_crd_coords_to_vismol_object(self, infile , visObj = None):
+        print( infile , visObj)
+        frames = AMBERFiles.load_amber_crd_file(infile, visObj)
+    
+    
+    def _load_pdb_coords_to_vismol_object(self, infile , visObj = None):
+        """ Function doc """
+        frames = PDBFiles.load_pdb_file (infile = infile, VMSession = self, frames_only = True) 
+        
+        print ('system size: ', len(visObj.atoms),'frame size: ',len(frames[0])/3)
+        for frame in frames:
+            visObj.frames.append(frame)    
+        #print (visObj.mass_center)
+        #if visObj.mass_center == None:
+        
+        #visObj._get_mass_center(visObj.frames[-1])
+        #print (visObj.mass_center)
+
+    def _load_gro_file (self, infile):
+        #print(infile)
+        vismol_object  = GROFiles.load_gro_file (infile = infile, VMSession = self)     
+        vismol_object.set_model_matrix(self.glwidget.vm_widget.model_mat)        
+        self.vismol_objects.append(vismol_object)
+        
+    
+    def _load_amber_top_file (self, infile):
+        #print(infile)
+        vismol_object  = AMBERFiles.load_amber_topology_files (infile = infile, VMSession = self)     
+        vismol_object.set_model_matrix(self.glwidget.vm_widget.model_mat)        
+        self.vismol_objects.append(vismol_object)
+        
+    
     def _load_pdb_file (self, infile):
         """ Function doc """      
         print(infile)
         vismol_object  = PDBFiles.load_pdb_file (infile = infile, VMSession = self)     
+        
+        #self._load_pdb_coords_to_vismol_object(infile , vismol_object)
+        
         vismol_object.set_model_matrix(self.glwidget.vm_widget.model_mat)        
         self.vismol_objects.append(vismol_object)
         
@@ -1105,12 +1194,14 @@ class VisMolSession (ShowHideVisMol):
     
     def center (self, visObj):
         """ Function doc """
+        print ('center', visObj)
+        frame = self.get_frame ()
+        visObj._get_mass_center (frame)
         self.glwidget.vm_widget.center_on_coordinates(visObj, visObj.mass_center)
 
 
     def center_by_index(self, Vobject =  None, index = None):
         """ Function doc """  
-        
         mass_center = self.vismol_objects[index].mass_center
         #self.glwidget.center_on_atom(mass_center)
 

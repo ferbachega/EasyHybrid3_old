@@ -100,6 +100,7 @@ class VismolObject:
                   atoms                          = []   ,
                   VMSession                      = None , 
                   trajectory                     = None ,
+                  bonds_pair_of_indexes          = None , 
                   auto_find_bonded_and_nonbonded = True):
         
         """ Class initialiser """
@@ -143,9 +144,14 @@ class VismolObject:
         self.bonds              = []                        
 
         #-----------------------#
+        #      No H atoms       #
+        #-----------------------#
+        self.noH_atoms = []           
+        
+        #-----------------------#
         #    Calpha  Ribbons    #
         #-----------------------#
-        self.c_alpha_bonds      = []           
+        self.c_alpha_bonds = []           
         
         #-----------------------#
         #       Nonbonded       #
@@ -189,18 +195,32 @@ class VismolObject:
         self.picking_dots_vao      = None
         self.picking_dot_buffers   = None
         #-----------------------------------------------------------------
+        
+        
+        
+        
         if auto_find_bonded_and_nonbonded:
             self.find_bonded_and_nonbonded_atoms(atoms)
+            self._get_mass_center()
+        
+        else:
+            self._generate_atomtree_structure()
+            self._generate_color_vectors()
+            #self._get_mass_center()
+        
+        if bonds_pair_of_indexes:
+            
+            for pair in bonds_pair_of_indexes:
+                self.index_bonds.append(pair[0])
+                self.index_bonds.append(pair[1])
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
+            self.index_bonds = np.array(self.index_bonds, dtype=np.uint32)
+            
+            self.import_bonds(bonds_pair_of_indexes)
+            
+            if self.non_bonded_atoms == []:
+                self.import_non_bonded_atoms_from_bond()
+                    
     
     
     
@@ -237,7 +257,10 @@ class VismolObject:
                            Vobject       = Vobject       ,
                            )
         
-
+        if atom.symbol == 'H':
+            pass
+        else:
+            self.noH_atoms.append(atom)
         
         
         if atom.chain in self.atoms_by_chains.keys():
@@ -422,23 +445,93 @@ class VismolObject:
 	
     def _get_mass_center (self, frame = 0):
         """ Function doc """
+        
+        frame_size = len(self.frames)-1
+        
+        if frame <= frame_size:
+            pass
+        else:
+            frame = frame_size
+        
+
+        #print (self.frames)
+
+        
+        
+        #initial          = time.time()
+        ##type 1
+        #atoms = self.atoms
+        #sum_x = 0.0 
+        #sum_y = 0.0 
+        #sum_z = 0.0 
+        #if len(self.frames) == 0:
+        #    #print ('if len(self.frames) == 0')
+        #    pass
+        #    #for atom in atoms:
+        #    #    sum_x += atom.pos[0]
+        #    #    sum_y += atom.pos[1]
+        #    #    sum_z += atom.pos[2]
+        #    
+        #else:
+        #    #print('for coord in self.frames[frame]')
+        #    n = 0
+        #    
+        #    for coord in self.frames[frame]:
+        #        if n == 0:
+        #            sum_x += coord
+        #        if n == 1:
+        #            sum_y += coord
+        #        if n == 2:
+        #            sum_z += coord
+        #        
+        #        n += 1
+        #
+        #        if n == 3:
+        #            n = 0
+        #final          = time.time()
+        #print('type1', initial -  final)
+        #
+        #total = len(atoms)        
+        #self.mass_center = np.array([sum_x / total,
+        #                             sum_y / total, 
+        #                             sum_z / total])
+        
+        
+        if len(self.noH_atoms) == 0:
+            atoms = self.atoms
+        else:
+            atoms = self.noH_atoms
+        
         sum_x = 0.0 
         sum_y = 0.0 
-        sum_z = 0.0 
+        sum_z = 0.0
         
-        for atom in self.atoms:
-            sum_x += atom.pos[0]
-            sum_y += atom.pos[1]
-            sum_z += atom.pos[2]
-        
-        total = len(self.atoms)        
+        initial          = time.time()
+        #type 2
+        #atoms = self.noH_atoms
+        if len(self.frames) == 0:
+            pass
+            
+        else:
+            for atom in atoms:
+                coord = atom.coords (frame)
+                sum_x += coord[0]
+                sum_y += coord[1]
+                sum_z += coord[2]
+        final          = time.time()
+
+        print('type2', initial -  final)
+
+
+
+        total = len(atoms)        
         self.mass_center = np.array([sum_x / total,
                                      sum_y / total, 
                                      sum_z / total])
-        
+
     
     
-    def _generate_atomtree_structure (self):
+    def _generate_atomtree_structure (self, get_backbone_indexes = False):
         """ Function doc """
         
         print ('\ngenerate_chain_structure starting')
@@ -480,12 +573,18 @@ class VismolObject:
                                        Vobject       =  self
                                         )
             #'''
-
-        self._get_mass_center()
+        
+        
+        #self._get_mass_center()
 
         final = time.time() 
         print ('_generate_atomtree_structure end -  total time: ', final - initial, '\n')
-        self.get_backbone_indexes()
+        
+        if get_backbone_indexes:
+            self.get_backbone_indexes()
+        else:
+            pass
+        
         return True
 
 
@@ -669,11 +768,24 @@ class VismolObject:
 
     def import_bonds (self, bonds_list = [] ):
         """ Function doc """
-        
+        #print (bonds_list)
         for raw_bond in bonds_list:
             index_i = raw_bond[0]
             index_j = raw_bond[1]
+            
+            #try:
+            #    print(raw_bond,  self.atoms[index_i], self.atoms[index_j], len(self.atoms), bonds_list[-1])
+            #except:
+            #    print(raw_bond,  index_i, index_j, len(self.atoms), bonds_list[-1])
 
+            #print(raw_bond, 
+            #      self.atoms[index_i], 
+            #      self.atoms[index_i].index-1,
+            #      self.atoms[index_j],
+            #      self.atoms[index_j].index-1,
+            #)
+            
+            
             bond  =  Bond(atom_i       = self.atoms[index_i], 
                           atom_index_i = self.atoms[index_i].index-1,
                           atom_j       = self.atoms[index_j],
@@ -693,10 +805,19 @@ class VismolObject:
             self.atoms[index_i].bonds.append(bond)
             self.atoms[index_j].bonds.append(bond)
         
-
+    def import_non_bonded_atoms_from_bond(self):
+        """ Function doc """
+            
+        for atom in self.atoms:
+            if atom.bonds == []:
+                self.non_bonded_atoms.append(atom.index)
+            else:
+                pass
+                
 
     def find_bonded_and_nonbonded_atoms(self, atoms):
         """ Function doc """
+        #print(atoms)
         bonds_full_indexes, bonds_pair_of_indexes, NB_indexes_list = cdist.generete_full_NB_and_Bonded_lists(atoms)
         #print (bonds_full_indexes, bonds_pair_of_indexes)
         self.non_bonded_atoms  = NB_indexes_list
