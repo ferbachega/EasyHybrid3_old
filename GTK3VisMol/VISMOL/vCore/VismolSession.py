@@ -40,6 +40,7 @@ from VISMOL.vBabel import XYZFiles
 from VISMOL.vBabel import NewObj
 from VISMOL.vBabel import AUXFiles
 from VISMOL.vBabel import AMBERFiles
+from VISMOL.vBabel import PSFFiles
 
 from VISMOL.vCore.VismolSelections  import VisMolPickingSelection as vPick
 from VISMOL.vCore.VismolSelections  import VisMolViewingSelection as vSele
@@ -347,6 +348,8 @@ class VisMolSession (ShowHideVisMol):
                 
                 
                 self.player = PlayerFrame(self)
+                self.player_frame = self.player.main_frame
+                self.player.show_player_main_window ()
             
             if toolkit == 'qt4':
                 self.glwidget   = VisMolGLWidget.QtGLWidget(self)
@@ -905,9 +908,14 @@ class VisMolSession (ShowHideVisMol):
         if infile[-3:] == 'gro':
             self._load_gro_file(infile = infile)
         
-        if infile[-3:] == 'top' or infile[-3:] == 'prmtop':
+        if infile[-3:] == 'top' or infile[-6:] == 'prmtop':
             self._load_amber_top_file(infile = infile)
             rep = False
+        
+        if infile[-3:] == 'psf':
+            self._load_psf_file(infile = infile)
+            rep = False
+            
         if infile[-3:] == 'pdb':
             self._load_pdb_file(infile = infile)
         
@@ -1003,6 +1011,9 @@ class VisMolSession (ShowHideVisMol):
         
         if infile[-3:] == 'crd':
             frames = self._load_crd_coords_to_vismol_object(infile , visObj)
+        
+        if infile[-3:] == 'net' or infile[-2:] == 'nc' or infile[-6:] == 'netcdf' or infile[-6:] == 'rst7f':
+            frames = self._load_netcdf4_coords_to_vismol_object(infile , visObj)
             
         if infile[-3:] == 'aux':
             frames = self._load_aux_coords_to_vismol_object(infile , visObj)
@@ -1043,10 +1054,19 @@ class VisMolSession (ShowHideVisMol):
         pass
         
         
+    def _load_netcdf4_coords_to_vismol_object(self, infile , visObj = None):
+        print( infile , visObj)
+        frames = AMBERFiles.load_netcdf4_file(infile, visObj)
+        print ('system size: ', len(visObj.atoms),'frame size: ',len(frames[0])/3)
+        for frame in frames:
+            visObj.frames.append(frame) 
+            
     def _load_crd_coords_to_vismol_object(self, infile , visObj = None):
         print( infile , visObj)
         frames = AMBERFiles.load_amber_crd_file(infile, visObj)
-    
+        print ('system size: ', len(visObj.atoms),'frame size: ',len(frames[0])/3)
+        for frame in frames:
+            visObj.frames.append(frame) 
     
     def _load_pdb_coords_to_vismol_object(self, infile , visObj = None):
         """ Function doc """
@@ -1070,10 +1090,15 @@ class VisMolSession (ShowHideVisMol):
     
     def _load_amber_top_file (self, infile):
         #print(infile)
-        vismol_object  = AMBERFiles.load_amber_topology_files (infile = infile, VMSession = self)     
+        vismol_object  = AMBERFiles.load_amber_topology_file (infile = infile, VMSession = self)     
         vismol_object.set_model_matrix(self.glwidget.vm_widget.model_mat)        
         self.vismol_objects.append(vismol_object)
-        
+    
+    def _load_psf_file (self, infile):
+        #print(infile)
+        vismol_object  = PSFFiles.load_PSF_topology_file (infile = infile, VMSession = self)     
+        vismol_object.set_model_matrix(self.glwidget.vm_widget.model_mat)        
+        self.vismol_objects.append(vismol_object)
     
     def _load_pdb_file (self, infile):
         """ Function doc """      

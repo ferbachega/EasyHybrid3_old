@@ -4,8 +4,83 @@ import numpy as np
 import VISMOL.vModel.cDistances as cdist
 from   VISMOL.vModel import VismolObject
 
+import numpy as np
 
-def load_amber_topology_files (infile = None, VMSession =  None, gridsize = 3):
+def load_netcdf4_file (filein = None, visObj = None):
+    """ Function doc """
+    
+    #from netCDF4 import Dataset
+    #f = Dataset(filein)
+    
+    #try:
+    from netCDF4 import MFDataset
+    f = MFDataset(filein)
+    #except:
+    #    import netCDF4 as nc
+    #    f= nc.Dataset(filein)
+    
+    frames = []
+    for netcdf_frame in f.variables["coordinates"][:]:
+        try:
+            frame = []
+            for coords in netcdf_frame:
+                frame.append(coords[0])
+                frame.append(coords[1])
+                frame.append(coords[2])
+                #print (coords)
+            frame  = np.array(frame, dtype=np.float32)
+            frames.append(frame)
+            frame  = []
+        except:
+            print('netcdf error')
+    print ('frames netcdf:',frames[0])
+    return frames
+
+    
+    
+def load_amber_crd_file (filein = None, visObj = None):
+    """ Function doc """
+    
+    size = len(visObj.atoms)*3
+    #size = 158*3
+    filein =  open(filein, 'r')
+    
+    data   = filein.readlines()
+    line1  = data[1].split()
+    print(line1)
+    #print(data)
+    if int(float(line1[0])) == size/3:
+        start = 2
+    else:
+        start = 1
+
+
+    frames = []
+    frame  = []
+    frame_counter = 0
+    counter       = 0
+    for line in data[start:]:
+        
+        line2 = line.split()
+        
+        for coord in line2:
+            #print (coord)
+            frame.append(float(coord))
+            counter +=1
+            
+            if counter == size:
+                frame = np.array(frame, dtype=np.float32)
+                frames.append(frame)
+                
+                #print(len(frames), len(frame))
+                frame   = []
+                counter = 0
+    #for i in range(0 , len(frames[0]), 6):
+    #    print (frames[0][i:i+6])
+    return frames
+
+
+def load_amber_topology_file (infile = None, VMSession =  None, gridsize = 3):
     """ Function doc """
     at  =  VMSession.vConfig.atom_types
     filename = infile
@@ -208,150 +283,6 @@ def load_amber_topology_files (infile = None, VMSession =  None, gridsize = 3):
     return   vismol_object  
     
         
-        
-def load_amber_crd_file (infile, vismol_object):
-    """ Function doc """
-    #at  =  VMSession.vConfig.atom_types
-    #filename = infile
-    
-    text = open(infile, 'r')
-    text = text.read()
-    print(text)
-    
-    #print(text)
-    #text2 = text.split("%FLAG")
+
         
         
-        
-        
-        
-
-
-
-def get_atom_list_from_mol2_frame (raw_atoms, frame = True, gridsize = 3, at =  None):
-    """ Function doc """
-    #nCPUs =  multiprocessing.cpu_count()
-    #pool  = multiprocessing.Pool(nCPUs)
-    #pdb_file_lines  = frame.split('\n')   
-    #atoms = (pool.map(parse_pdb_line, pdb_file_lines))
-    
-    atoms  = []
-    frames = []
-    frame_coordinates = []
-    #print (raw_atoms)
-    for line in raw_atoms:
-        line = line.split()
-        if len(line) > 1:
-            #print (line) 
-            index    = int(line[0])-1
-            
-            at_name  = line[1]
-            
-            at_pos   = np.array([float(line[2]), float(line[3]), float(line[4])])
-            
-            at_resi = int(line[6])
-            
-            at_resn = line[7]
-
-
-            at_ch   = 'X'          
-
-            at_occup   = 0.0     #occupancy
-            at_bfactor = 0.0
-            at_charge  = float(line[8])
-
-
-
-            at_symbol= line[5].split('.')
-            at_symbol= at_symbol[0]
-            cov_rad  = at.get_cov_rad (at_symbol)
-
-
-
-            gridpos  = [int(at_pos[0]/gridsize), int(at_pos[1]/gridsize), int(at_pos[2]/gridsize)]
-            #atoms.append([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge ])
-            atoms.append([index, at_name, cov_rad,  at_pos, at_resi, at_resn, at_ch, at_symbol, [], gridpos, at_occup, at_bfactor, at_charge ])
-
-
-
-            #atoms.append([index, at_name, cov_rad,  at_pos, at_res_i, at_res_n, at_ch])
-            
-            #atom     = Atom(name      =  at_name, 
-            #                index     =  index, 
-            #                pos       =  at_pos, 
-            #                resi      =  at_res_i, 
-            #                resn      =  at_res_n, 
-            #                chain     =  at_ch, 
-            #                )
-            #atoms.append(atom)
-            frame_coordinates.append(float(line[2]))
-            frame_coordinates.append(float(line[3]))
-            frame_coordinates.append(float(line[4]))
-    frame_coordinates = np.array(frame_coordinates, dtype=np.float32)
-    frames.append(frame_coordinates)
-    #print (frames)
-    #print (atoms)
-    return atoms, frames#, coords
-
-def get_bonds (raw_bonds):
-    """ Function doc """
-    index_bonds              = []
-    index_bonds_pairs        = []
-    index_bonds_pairs_orders = []
-    
-    #print (raw_bonds)
-    #print ('Obtain bonds from original MOL2 file')
-    for line in raw_atoms:
-        line = line.split()
-        if len(line) == 4:
-            index    = int(line[0])            
-            atom1    = int(line[1]-1)
-            atom2    = int(line[2]-1)
-            order    = line[3]
-
-            index_bonds      .append(atom1)
-            index_bonds      .append(atom2)
-            index_bonds_pairs.append([atom1,atom2])
-            
-            index_bonds_pairs_orders.append(order)
-
-    return [index_bonds, index_bonds_pairs]
-
-
-'''  	
-def get_trajectory_coordinates_from_pdb_frames (raw_frames = None):
-    """ Function doc """
-    n_processor = multiprocessing.cpu_count()
-    pool        = multiprocessing.Pool(n_processor)
-    frames      = pool.map(get_pdb_frame_coordinates, raw_frames)
-    
-    if None in frames:
-        index = frames.index(None)
-        frames.pop(index)
-    return frames
-
-
-def get_pdb_frame_coordinates (frame):
-    """ Function doc """
-    #print ('\nstarting: parse_pdb - building atom list')
-    #initial          = time.time()
-    pdb_file_lines    = frame.split('\n')
-    frame_coordinates = []
-    for line in pdb_file_lines:
-        if line[:4] == 'ATOM' or line[:6] == 'HETATM':
-            #at_name  = line[12:16].strip()
-            frame_coordinates.append(float(line[30:38]))
-            frame_coordinates.append(float(line[38:46]))
-            frame_coordinates.append(float(line[46:54]))
-            #at_pos   = np.array([float(line[30:38]), float(line[38:46]), float(line[46:54])])
-
-    frame_coordinates = np.array(frame_coordinates, dtype=np.float32)
-    #print ('Frame size: ', len(frame_coordinates)/3)
-    
-    if len(frame_coordinates) == 0:
-        return None
-    
-    return frame_coordinates
-'''
-#load_amber_topology_files (infile = '/home/fernando/Documents/Paola/cas.top', VMSession =  None, gridsize = 3)
-#load_amber_topology_files (infile = '/home/fernando/Documents/Paola/pep.top', VMSession =  None, gridsize = 3)

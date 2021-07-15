@@ -31,6 +31,7 @@ class VismolMainWindow ( ):
         self.window = self.builder.get_object('window1')
         self.window.set_default_size(600, 600)                          
         
+        # Status Bar
         self.statusbar_main = self.builder.get_object('statusbar1')
         self.statusbar_main.push(0,'wellcome to EasyHydrid')
         self.statusbar_main.push(1,'wellcome to EasyHydrid1')
@@ -50,17 +51,17 @@ class VismolMainWindow ( ):
         #-------------------------------------------------------------------      
         #                         notebook_V1
         #-------------------------------------------------------------------
-        self.notebook_V1 = Gtk.Notebook()
+        #self.notebook_V1 = Gtk.Notebook()
         #print (self.notebook_V1.set_tab_pos(Gtk.PositionType.LEFT))
-        self.page1 = Gtk.Box()
+        #self.page1 = Gtk.Box()
         #self.page1.set_border_width(5)
         
-        self.text_view = Gtk.TextView()
-        self.text_view.set_editable(True)
-        self.page1.add( self.text_view)
+        #self.text_view = Gtk.TextView()
+        #self.text_view.set_editable(True)
+        #self.page1.add( self.text_view)
         
         #self.page1.add(Gtk.Label('Here is the content of the first section.'))
-        self.notebook_V1.append_page(self.page1, Gtk.Label('Logs'))
+        #self.notebook_V1.append_page(self.page1, Gtk.Label('Logs'))
         
         #-------------------------------------------------------------------      
         #                         notebook_H1
@@ -73,9 +74,10 @@ class VismolMainWindow ( ):
         
         #self.treeview  = self.gtkTreeViewObj.treeview
         self.ScrolledWindow_notebook_H1.add(self.treeview)
-        self.notebook_H1.append_page(self.ScrolledWindow_notebook_H1, Gtk.Label('Vertical Tab'))
-
+        self.notebook_H1.append_page(self.ScrolledWindow_notebook_H1, Gtk.Label('Objects'))
         
+
+
         # the label we use to show the selection
         self.label = Gtk.Label()
         self.label.set_text("")
@@ -100,23 +102,27 @@ class VismolMainWindow ( ):
 
         
         if self.vismolSession is not None:
+            #player
+
             self.container.pack_start(self.vismolSession.glwidget, True, True, 0)
             
-            self.container.pack_start(self.command_line_entry, False, False, 0)
-            self.paned_H.add(self.notebook_H1)
-            self.paned_H.add(self.notebook_H2)
-            
+            #self.container.pack_start(self.player_frame, True, True, 1)
+            #self.container.pack_start(self.command_line_entry, False, False, 0)
+
             self.notebook_H2.append_page(self.container, Gtk.Label('view'))
             self.notebook_H2.append_page(Gtk.TextView(), Gtk.Label('logs'))
-
+            
+            self.paned_H.add(self.notebook_H1)
+            self.paned_H.add(self.notebook_H2)
 
             self.paned_V.add(self.paned_H)
+        
 
-
+        #self.player_frame = self.vismolSession.player_frame
+        #self.player_frame.show_all()
         
         self.window.connect("delete-event",    Gtk.main_quit)
         self.window.show_all()
-
 
         Gtk.main()
 

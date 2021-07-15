@@ -186,6 +186,7 @@ class PlayerFrame:
         self.builder.connect_signals(self)
         self.value = 0
         self.main  = self.builder.get_object('main_window')
+        self.main_frame = self.builder.get_object('main_frame')
         self.scale = self.builder.get_object('scaler_frame_change')
         self.button_play = self.builder.get_object('button_play')
         self.scale.set_digits(0)
@@ -194,8 +195,7 @@ class PlayerFrame:
         
         self.scale.set_adjustment ( self.adjustment)
         
-        
-
+        #for 
         
         
         # combo box  - using the same Vismol_Objects_ListStore
@@ -205,9 +205,13 @@ class PlayerFrame:
         self.combo_box_objs.pack_start(renderer_text, True)
         self.combo_box_objs.add_attribute(renderer_text, "text", 2)
         
-        print ('print', self.main)
+        #print ('print', self.main)
+    
+    def show_player_main_window (self):
+        """ Function doc """
         self.main.show()
         
+    
         #Gtk.main()
     def on_combobox_change (self, combo):
         """ Function doc """
