@@ -6,6 +6,9 @@ class Chain:
         #self.residues = {}
         self.residues = []
         
+        self.residues_by_index = {}
+        
+        
         self.backbone = []
         self.name     = ''
         #self.label    = None

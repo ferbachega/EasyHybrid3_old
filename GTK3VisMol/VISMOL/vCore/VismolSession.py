@@ -65,6 +65,7 @@ from VISMOL.vModel.Representations   import WiresRepresentation
 from VISMOL.vModel.Representations   import DynamicBonds
 
 
+from GTKGUI.gtkWidgets.VismolTools import VismolGoToAtomWindow2
 from GTKGUI.gtkWidgets.filechooser import FileChooser
 from GTKGUI.gtkWidgets.player import PlayerFrame
 
@@ -350,6 +351,10 @@ class VisMolSession (ShowHideVisMol):
                 self.player = PlayerFrame(self)
                 self.player_frame = self.player.main_frame
                 self.player.show_player_main_window ()
+                
+                self.go_to_atom_window = VismolGoToAtomWindow2( VMSession = self)
+                #self.go_to_atom_window.show_window()
+                
             
             if toolkit == 'qt4':
                 self.glwidget   = VisMolGLWidget.QtGLWidget(self)
@@ -463,7 +468,7 @@ class VisMolSession (ShowHideVisMol):
         #vismol_object.atoms[0].get_color()
         #vismol_object._generate_color_vectors()
         ##self.vismol_objects.append(vismol_object)
-        #vismol_object._get_mass_center()
+        #vismol_object._get_center_of_mass()
         ##-----------------------------------------------------------------------
         ##index_bonds = [0,1, 2,3, 3,4 , 0,4, 1,3]
         #
@@ -540,7 +545,7 @@ class VisMolSession (ShowHideVisMol):
         vismol_object.frames = [frame]
         vismol_object._generate_color_vectors()
         self.vismol_objects.append(vismol_object)
-        vismol_object._get_mass_center()
+        vismol_object._get_center_of_mass()
 
         
         
@@ -903,18 +908,18 @@ class VisMolSession (ShowHideVisMol):
         #Vobject_id = len(self.vismol_objects)
         print ('load')
         
-        rep = True
+        rep1 = True
         
         if infile[-3:] == 'gro':
             self._load_gro_file(infile = infile)
         
         if infile[-3:] == 'top' or infile[-6:] == 'prmtop':
             self._load_amber_top_file(infile = infile)
-            rep = False
+            rep1 = False
         
         if infile[-3:] == 'psf':
             self._load_psf_file(infile = infile)
-            rep = False
+            rep1 = False
             
         if infile[-3:] == 'pdb':
             self._load_pdb_file(infile = infile)
@@ -939,13 +944,16 @@ class VisMolSession (ShowHideVisMol):
         
         
         
-        if rep:
+        if rep1:
             #self.vismol_objects[-1].generate_indexesresentations (reps_list = self.indexes)
             #print (self.vismol_objects[-1].representations)
 
+            #rep =  RibbonsRepresentation(name = 'ribbons', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+            #self.vismol_objects[-1].representations[rep.name] = rep
+            
             rep  = LinesRepresentation (name = 'lines', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
             self.vismol_objects[-1].representations[rep.name] = rep
-
+            #
             rep  = NonBondedRepresentation (name = 'nonbonded', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
             self.vismol_objects[-1].representations[rep.name] = rep
             
@@ -1019,7 +1027,7 @@ class VisMolSession (ShowHideVisMol):
             frames = self._load_aux_coords_to_vismol_object(infile , visObj)
 
         if autocenter:
-            visObj._get_mass_center(frame = 0)
+            visObj._get_center_of_mass(frame = 0)
             print(visObj.mass_center)
             self.glwidget.vm_widget.center_on_coordinates(visObj, visObj.mass_center)
 
@@ -1057,7 +1065,9 @@ class VisMolSession (ShowHideVisMol):
     def _load_netcdf4_coords_to_vismol_object(self, infile , visObj = None):
         print( infile , visObj)
         frames = AMBERFiles.load_netcdf4_file(infile, visObj)
-        print ('system size: ', len(visObj.atoms),'frame size: ',len(frames[0])/3)
+        #visObj.frames+=frames
+        #print ('system size: ', len(visObj.atoms),'frame size: ',len(frames[0])/3)
+        
         for frame in frames:
             visObj.frames.append(frame) 
             
@@ -1078,7 +1088,7 @@ class VisMolSession (ShowHideVisMol):
         #print (visObj.mass_center)
         #if visObj.mass_center == None:
         
-        #visObj._get_mass_center(visObj.frames[-1])
+        #visObj._get_center_of_mass(visObj.frames[-1])
         #print (visObj.mass_center)
 
     def _load_gro_file (self, infile):
@@ -1221,7 +1231,7 @@ class VisMolSession (ShowHideVisMol):
         """ Function doc """
         print ('center', visObj)
         frame = self.get_frame ()
-        visObj._get_mass_center (frame)
+        visObj._get_center_of_mass (frame)
         self.glwidget.vm_widget.center_on_coordinates(visObj, visObj.mass_center)
 
 

@@ -289,8 +289,8 @@ class TreeViewMenu:
         self.treeview.vismolSession.load_xyz_coords_to_vismol_obejct(infile , visObj)
         
         print (infile)
-    
-    
+        
+        
         self.treeview.store .clear()
         for vis_object in self.treeview.vismolSession.vismol_objects:
             print ('\n\n',vis_object.name,'\n\n')
@@ -303,14 +303,15 @@ class TreeViewMenu:
             model.append(data)
         #self.treeview.vismolSession.glwidget.queue_draw()
     
+        #self.treeview.vismolSession.go_to_atom_window.OpenWindow()
     
     
-    
-    def f2 (self):
+    def f2 (self, visObj = None):
         """ Function doc """
         print('f2')
-        self._show_lines(visObj = self.vismol_objects[0], indices = [0,1,2,3,4] )
-    
+        #self._show_lines(visObj = self.vismol_objects[0], indices = [0,1,2,3,4] )
+        self.treeview.vismolSession.go_to_atom_window.OpenWindow()
+
     def f3 (self, visObj = None):
         """ Function doc """
         

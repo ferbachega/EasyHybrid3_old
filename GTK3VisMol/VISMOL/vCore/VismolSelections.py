@@ -143,7 +143,7 @@ class VisMolViewingSelection:
             
         #if selected
         
-        # if the selected atoms is not on the selected list
+        # if the selected atoms is not in the selected list
         if selected_atom not in self.selected_atoms:
             
             for atom in selected_atom.residue.atoms:
@@ -157,7 +157,7 @@ class VisMolViewingSelection:
                 else:
                     pass
     
-        # else: if the selected atoms IS on the selected list
+        # else: if the selected atoms IS in the selected list
         else:
             # So, add all atoms  - selected residue <- selected.resi
             for atom in selected_atom.residue.atoms:
@@ -168,7 +168,7 @@ class VisMolViewingSelection:
                     self.selected_atoms.pop(index)
                     atom.selected = False
 
-                # the atom IS on the list - do nothing 
+                # the atom IS in the list - do nothing 
                 else:
                     pass   
 

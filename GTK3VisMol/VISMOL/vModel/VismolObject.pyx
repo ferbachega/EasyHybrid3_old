@@ -201,12 +201,12 @@ class VismolObject:
         
         if auto_find_bonded_and_nonbonded:
             self.find_bonded_and_nonbonded_atoms(atoms)
-            self._get_mass_center()
+            self._get_center_of_mass()
         
         else:
             self._generate_atomtree_structure()
             self._generate_color_vectors()
-            #self._get_mass_center()
+            #self._get_center_of_mass()
         
         if bonds_pair_of_indexes:
             
@@ -293,7 +293,7 @@ class VismolObject:
             residue.atoms.append(atom)
             self.residues[atom.resi] = residue
             ch.residues.append(residue)
-        
+            ch.residues_by_index[atom.resi] = residue
         elif atom.resi == ch.residues[-1].resi:# and at_res_n == parser_resn:
             
             atom.residue = ch.residues[-1]
@@ -309,7 +309,7 @@ class VismolObject:
             residue.atoms.append(atom)
             self.residues[atom.resi] = residue
             ch.residues.append(residue)
-            
+            ch.residues_by_index[atom.resi] = residue
             
             #'Checks whether RESN belongs to the solvent or protein'
             #---------------------------------------------------------
@@ -443,7 +443,7 @@ class VismolObject:
         '''
     
 	
-    def _get_mass_center (self, frame = 0):
+    def _get_center_of_mass (self, frame = 0):
         """ Function doc """
         
         frame_size = len(self.frames)-1
@@ -575,7 +575,7 @@ class VismolObject:
             #'''
         
         
-        #self._get_mass_center()
+        #self._get_center_of_mass()
 
         final = time.time() 
         print ('_generate_atomtree_structure end -  total time: ', final - initial, '\n')

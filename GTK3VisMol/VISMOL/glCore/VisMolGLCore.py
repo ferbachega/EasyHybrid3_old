@@ -493,12 +493,15 @@ class VisMolGLCore():
                         # if the representation doen't exists , ignore
                         if visObj.representations[rep_name] is None:
                             pass
+                            #print('rep_name',rep_name)
                         
                         else:
                             # only shows the representation if representations[rep_name].active = True
                             if visObj.representations[rep_name].active:
                                 #print(rep_name,visObj.representations[rep_name].active)
                                 visObj.representations[rep_name].draw_representation()
+                                #visObj.representations['ribbons'].draw_representation()
+                                #print('draw_representation',rep_name)
                                 #visObj.representations[rep_name].draw_background_sel_representation()
                             else:
                                 pass
@@ -688,7 +691,7 @@ class VisMolGLCore():
                                                                   linesShaders.shader_type[line_type]['sel_fragment_shader'],
                                                                   linesShaders.shader_type[line_type]['sel_geometry_shader'])
                                                                       
-
+        #print('_create_ribbon_shaders')
 
 
     def _create_nonbonded_shaders (self, _type = 0):

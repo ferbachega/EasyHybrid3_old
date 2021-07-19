@@ -82,7 +82,10 @@ def load_PSF_topology_file (infile = None, VMSession =  None, gridsize = 3):
                     
 
                     at_pos     = np.array([0.0,0.0,0.0])
-                    at_ch      = 'X'          
+                    try:
+                        at_ch      = line2[1][0]
+                    except:
+                        at_ch      = 'X'          
                     
                     #at_symbol  = 'H'
                     

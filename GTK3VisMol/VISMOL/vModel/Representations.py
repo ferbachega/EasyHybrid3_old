@@ -686,8 +686,13 @@ class RibbonsRepresentation (Representation):
         
         
         if self.visObj.c_alpha_bonds == []:
-            self.active  = False
+            self.visObj.get_backbone_indexes ()
+            #self.active  = False
+            
+            print('self.active  = False')
         else:
+            print('self.active  = True')
+
             pass
         
         
@@ -710,7 +715,7 @@ class RibbonsRepresentation (Representation):
         #     S H A D E R S
         self.shader_program     = None
         self.sel_shader_program = None
-
+        #print('opaaaa')
 
     def _make_gl_vao_and_vbos (self, indexes = None):
         """ Function doc """
@@ -829,7 +834,7 @@ class RibbonsRepresentation (Representation):
             #GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.nbytes,
             #                frame, 
             #                GL.GL_STATIC_DRAW)              
-
+            print('aquioh')
             GL.glDrawElements(GL.GL_LINES, int(len(self.visObj.index_bonds)*2), GL.GL_UNSIGNED_INT, None)  
         GL.glBindVertexArray(0)
         GL.glLineWidth(1)

@@ -18,22 +18,31 @@ def load_netcdf4_file (filein = None, visObj = None):
     #except:
     #    import netCDF4 as nc
     #    f= nc.Dataset(filein)
+    size = len(visObj.atoms)*3
     
-    frames = []
-    for netcdf_frame in f.variables["coordinates"][:]:
-        try:
-            frame = []
-            for coords in netcdf_frame:
-                frame.append(coords[0])
-                frame.append(coords[1])
-                frame.append(coords[2])
-                #print (coords)
-            frame  = np.array(frame, dtype=np.float32)
-            frames.append(frame)
-            frame  = []
-        except:
-            print('netcdf error')
-    print ('frames netcdf:',frames[0])
+    frames = np.array(f.variables["coordinates"][:], dtype=np.float32)
+    frames = frames.reshape((frames.shape[0], frames.shape[1]*frames.shape[2]))
+
+
+    #frames = []
+    #
+    ##for netcdf_frame in f.variables["coordinates"]:
+    ##    frames.append(netcdf_frame)
+    #
+    #for netcdf_frame in f.variables["coordinates"][:]:
+    #    try:
+    #        frame = []
+    #        for coords in netcdf_frame:
+    #            frame.append(coords[0])
+    #            frame.append(coords[1])
+    #            frame.append(coords[2])
+    #            #print (coords)
+    #        frame  = np.array(frame, dtype=np.float32)
+    #        frames.append(frame)
+    #        frame  = []
+    #    except:
+    #        print('netcdf error')
+    #print ('frames netcdf:',frames[0])
     return frames
 
     

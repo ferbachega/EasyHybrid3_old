@@ -342,7 +342,7 @@ class VisMolConfig:
                                   'line_color'                 : 0                    ,  # 0 - atom types      1 - black (for white bg)     2 - white (for black bg)
                                                                                                                
                                                                                                                
-                                  'ribbon_width'               : 100                   ,  
+                                  'ribbon_width'               : 1000                   ,  
                                   'ribbon_width_selection'     : 40                   ,  
                                   'ribbon_type'                : 1                    ,  # 0 - no detail       1 - Charlitos'style
                                   'ribbon_color'               : 0                    ,  # 0 - atom types      1 - black (for white bg)     2 - white (for black bg)

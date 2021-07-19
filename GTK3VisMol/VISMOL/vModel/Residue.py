@@ -1,4 +1,5 @@
 import VISMOL.vModel.Vectors as vectors
+import numpy as np
 
 class Residue:
     """ Class doc """
@@ -16,7 +17,7 @@ class Residue:
         self.Vobject   = Vobject
         self.isProtein = False
         self.isSolvent = False
-        
+        self.mass_center = None
         self.is_protein ()
 
 
@@ -25,6 +26,33 @@ class Residue:
                         }
         
         
+    def get_center_of_mass (self, mass = False, frame = 0):
+        """ Function doc """
+        
+        frame_size = len(self.Vobject.frames)-1
+        
+        if frame <= frame_size:
+            pass
+        else:
+            frame = frame_size
+        
+        total = len(self.atoms)
+        
+        #coord = [0,0,0]
+        sum_x = 0.0
+        sum_y = 0.0
+        sum_z = 0.0
+        
+        for atom in self.atoms:
+            coord = atom.coords (frame)
+            sum_x += coord[0]
+            sum_y += coord[1]
+            sum_z += coord[2]
+        
+        self.mass_center = np.array([sum_x / total,
+                                     sum_y / total, 
+                                     sum_z / total])
+
 
     def is_protein (self):
         """ Function doc """
