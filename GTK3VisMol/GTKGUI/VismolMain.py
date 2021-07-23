@@ -106,16 +106,27 @@ class VismolMainWindow ( ):
 
             self.container.pack_start(self.vismolSession.glwidget, True, True, 0)
             
-            #self.container.pack_start(self.player_frame, True, True, 1)
+            self.traj_frame = self.vismolSession.trajectory_frame
+            #self.container.pack_start(self.traj_frame, False, False, 1)
             #self.container.pack_start(self.command_line_entry, False, False, 0)
 
             self.notebook_H2.append_page(self.container, Gtk.Label('view'))
             self.notebook_H2.append_page(Gtk.TextView(), Gtk.Label('logs'))
             
-            self.paned_H.add(self.notebook_H1)
+            
+            #self.HBOX = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 6)
+            self.HBOX = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 0)
+            self.HBOX.pack_start(self.notebook_H1, True, True, 0)
+            self.HBOX.pack_start(self.traj_frame, False, False, 0)
+
+            #self.paned_H.add(self.notebook_H1)
+            self.paned_H.add(self.HBOX)
             self.paned_H.add(self.notebook_H2)
 
             self.paned_V.add(self.paned_H)
+            #self.paned_V.add(Gtk.TextView())
+            
+            #self.paned_V.add(self.traj_frame)
         
 
         #self.player_frame = self.vismolSession.player_frame

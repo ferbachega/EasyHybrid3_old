@@ -66,6 +66,7 @@ from VISMOL.vModel.Representations   import DynamicBonds
 
 
 from GTKGUI.gtkWidgets.VismolTools import VismolGoToAtomWindow2
+from GTKGUI.gtkWidgets.VismolTools import VismolTrajectoryFrame
 from GTKGUI.gtkWidgets.filechooser import FileChooser
 from GTKGUI.gtkWidgets.player import PlayerFrame
 
@@ -353,6 +354,8 @@ class VisMolSession (ShowHideVisMol):
                 self.player.show_player_main_window ()
                 
                 self.go_to_atom_window = VismolGoToAtomWindow2( VMSession = self)
+                TrajectoryFrame = VismolTrajectoryFrame( VMSession = self)
+                self.trajectory_frame = TrajectoryFrame.get_box()
                 #self.go_to_atom_window.show_window()
                 
             

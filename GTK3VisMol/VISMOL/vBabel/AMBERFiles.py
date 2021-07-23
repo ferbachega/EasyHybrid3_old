@@ -14,7 +14,8 @@ def load_netcdf4_file (filein = None, visObj = None):
     
     #try:
     from netCDF4 import MFDataset
-    f = MFDataset(filein)
+    from netCDF4 import Dataset
+    f = Dataset(filein)
     #except:
     #    import netCDF4 as nc
     #    f= nc.Dataset(filein)
@@ -231,7 +232,7 @@ def load_amber_topology_file (infile = None, VMSession =  None, gridsize = 3):
 
 
     #print (len(at_names), len(at_numbers), len(res_names),len(res_indexes))
-    print (at_numbers)
+    #print (at_numbers)
     #print (at_names, at_numbers)
 
     #print (bonds)

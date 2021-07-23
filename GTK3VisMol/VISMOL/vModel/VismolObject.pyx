@@ -128,7 +128,7 @@ class VismolObject:
         #-----------------------------------------------------------------
 
         self.atoms              = []    # this a list  atom objects!
-        self.residues           = {}
+        self.residues           = []
         self.chains             = {}
         self.atoms_by_chains    = {}
         self.frames             = trajectory
@@ -291,7 +291,12 @@ class VismolObject:
                                 
             atom.residue     = residue
             residue.atoms.append(atom)
-            self.residues[atom.resi] = residue
+            
+            #if residue in self.residues:
+            #    pass
+            #else:
+            #    self.residues.append(residue)
+            
             ch.residues.append(residue)
             ch.residues_by_index[atom.resi] = residue
         elif atom.resi == ch.residues[-1].resi:# and at_res_n == parser_resn:
@@ -307,7 +312,9 @@ class VismolObject:
                                 
             atom.residue     = residue
             residue.atoms.append(atom)
-            self.residues[atom.resi] = residue
+            
+            #self.residues.append(residue)
+            
             ch.residues.append(residue)
             ch.residues_by_index[atom.resi] = residue
             
@@ -342,107 +349,8 @@ class VismolObject:
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    def add_new_atom (self, name          ,  
-                            index         ,
-                            pos           ,
-                            resi          ,
-                            resn          ,
-                            chain         ,
-                            atom_id       ,
-                            occupancy     ,
-                            bfactor       ,
-                            charge        ,
-                            bonds_indexes ,
-                            Vobject       ,
-                                        ):
-        """ Function doc """
-        
-        
-        atom        = Atom(name          = name         ,   
-                           index         = index        ,
-                           pos           = pos          ,
-                           resi          = resi         ,
-                           resn          = resn         ,
-                           chain         = chain        ,
-                           atom_id       = atom_id      ,
-                           occupancy     = occupancy    ,
-                           bfactor       = bfactor      ,
-                           charge        = charge       ,
-                           bonds_indexes = bonds_indexes,
-                           Vobject       = Vobject      ,
-                           )
-        
-        
-        
-        
-        
-        self.atoms.append(atom)                   
-        self.vismol_session.atom_dic_id[self.vismol_session.atom_id_counter] = atom
-        #index +=1
-        self.vismol_session.atom_id_counter +=1
-        return atom
-                               
-    def generate_default_representations (self, reps_list = {}) :
-        """ Function doc """
-        pass
-        #rep  = LinesRepresentation (name = 'lines', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
-        #self.representations[rep.name] = rep
-        #
-        #
-        #rep  = NonBondedRepresentation (name = 'nonbonded', active = True, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
-        #self.representations[rep.name] = rep
-        
-        '''
-        rep  = SticksRepresentation (name = 'sticks', active = False, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
-        self.representations[rep.name] = rep
-        
-        rep  = DotsRepresentation (name = 'dots', active = False, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
-        self.representations[rep.name] = rep
-        
+  
 
-        rep  = SpheresRepresentation (name = 'spheres', active = False, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
-        self.representations[rep.name] = rep
-        
-        rep  = GlumpyRepresentation (name = 'glumpy', active = False, _type = 'mol', visObj = self, glCore = self.vismol_session.glwidget.vm_widget)
-        self.representations[rep.name] = rep
-        '''
-        '''
-        for rep_name in reps_list:
-            if reps_list[rep_name]:
-                new_rep = Representation(name = rep_name, 
-                                       visObj = self)
-                                        
-                self.representations[rep_name] = new_rep
-        '''
-    
-	
     def _get_center_of_mass (self, frame = 0):
         """ Function doc """
         
@@ -584,6 +492,11 @@ class VismolObject:
             self.get_backbone_indexes()
         else:
             pass
+        
+        
+        for chain in self.chains.keys():
+            self.residues += self.chains[chain].residues
+        print('total number of residues at self.residues', len(self.residues))
         
         return True
 
