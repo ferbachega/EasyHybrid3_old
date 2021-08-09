@@ -1018,11 +1018,11 @@ class VisMolSession (ShowHideVisMol):
             #rep =  CartoonRepresentation(name = 'cartoon', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
             #self.vismol_objects[-1].representations[rep.name] = rep
             
-            #rep =  LabelRepresentation(name = 'label', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
-            #self.vismol_objects[-1].representations[rep.name] = rep
-            
-            rep =  SurfaceRepresentation(name = 'surface', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+            rep =  LabelRepresentation(name = 'label', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
             self.vismol_objects[-1].representations[rep.name] = rep
+            
+            #rep =  SurfaceRepresentation(name = 'surface', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+            #self.vismol_objects[-1].representations[rep.name] = rep
 
             #rep =  WiresRepresentation(name = 'wires', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
             #self.vismol_objects[-1].representations[rep.name] = rep
