@@ -551,10 +551,12 @@ class VismolTrajectoryFrame(Gtk.Frame):
         self.box.set_margin_left   (3)
         self.box.set_margin_right  (3)
         
-        self.value      = 0
+        self.value      = 1
         self.scale      = Gtk.Scale()
-        self.adjustment = Gtk.Adjustment(self.value, 0, 100, 0, 10, 0)
+        self.adjustment = Gtk.Adjustment(self.value, 1, 1, 0, 1, 0)
         self.scale.set_adjustment ( self.adjustment)
+        self.scale.set_digits(0)
+        self.scale.connect("change_value", self.on_scaler_frame_change_change_value)
         self.box.pack_start(self.scale, True, True, 0)
         
         self.vbox =  Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 6)
@@ -566,14 +568,23 @@ class VismolTrajectoryFrame(Gtk.Frame):
         
         
         #----------------------------------------------------------------------------
-        self.combobox = Gtk.ComboBox()
-        self.box.pack_start(self.combobox, True, True, 0)
+        self.label2 =  Gtk.Label('Obj id:')
+        self.combobox_vobjects = Gtk.ComboBox.new_with_model(self.VMSession.Vismol_Objects_ListStore)
+        self.combobox_vobjects.connect("changed", self.on_combobox_vobjects_changed)
+        self.renderer_text = Gtk.CellRendererText()
+        self.combobox_vobjects.pack_start(self.renderer_text, True)
+        self.combobox_vobjects.add_attribute(self.renderer_text, "text", 1)
+        
+        #self.box.pack_start(self.combobox, True, True, 0)
         #----------------------------------------------------------------------------
         
         #----------------------------------------------------------------------------
         self.vbox2 =  Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 6)
         self.label =  Gtk.Label('FPS')
         self.entry =  Gtk.Entry()
+        self.entry.set_text(str(25))
+        self.vbox2.pack_start(self.label2, False, True, 0)
+        self.vbox2.pack_start(self.combobox_vobjects, True, True, 0)
         self.vbox2.pack_start(self.label, False, True, 0)
         self.vbox2.pack_start(self.entry, True, True, 0)
         self.box.pack_start(self.vbox2, True, True, 0)
@@ -591,6 +602,25 @@ class VismolTrajectoryFrame(Gtk.Frame):
         return self.box
         #return self.frame
         
+    def on_combobox_vobjects_changed (self, widget):
+        """ Function doc """
+        print(widget)
+        print(widget.get_active())
+        #print(widget.get_active_id())
+        #print(widget.get_active_iter())
+        
+        self.VObj = self.VMSession.vismol_objects[widget.get_active()]
+        number_of_frames = len(self.VObj.frames)
+        self.scale.set_range(0, int(number_of_frames)-1)
+        self.scale.set_value(self.VMSession.get_frame())
+
+    def on_scaler_frame_change_change_value (self, hscale, text= None,  data=None):
+        """ Function doc """
+        value = hscale.get_value()
+        
+        self.VMSession.set_frame(int(value)) 
+        #print(value)
+
 
 
 #VismolTrajectoryFrame()

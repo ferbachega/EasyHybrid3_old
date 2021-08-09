@@ -53,6 +53,7 @@ import time
 
 
 
+
 from VISMOL.vModel.Representations   import LinesRepresentation
 from VISMOL.vModel.Representations   import NonBondedRepresentation
 from VISMOL.vModel.Representations   import SticksRepresentation
@@ -62,7 +63,10 @@ from VISMOL.vModel.Representations   import GlumpyRepresentation
 from VISMOL.vModel.Representations   import RibbonsRepresentation
 from VISMOL.vModel.Representations   import SurfaceRepresentation
 from VISMOL.vModel.Representations   import WiresRepresentation
+from VISMOL.vModel.Representations   import LabelRepresentation
+
 from VISMOL.vModel.Representations   import DynamicBonds
+from VISMOL.vModel.Representations   import CartoonRepresentation
 
 
 from GTKGUI.gtkWidgets.VismolTools import VismolGoToAtomWindow2
@@ -648,9 +652,12 @@ class VisMolSession (ShowHideVisMol):
             """ Function doc """
             self.selection_mode(selmode = 'chain')
 
-
-
-
+        def _selection_type_picking(_):
+            self._picking_selection_mode = True
+            self.glwidget.queue_draw()
+        def _selection_type_viewing(_):
+            self._picking_selection_mode = False
+            self.glwidget.queue_draw()
 
         if sele_menu is None:
             ''' Standard Sele Menu '''
@@ -723,6 +730,19 @@ class VisMolSession (ShowHideVisMol):
                     
                     'separator2':['separator', None],
 
+                    
+                    
+                    'Selection type'   : [
+                                'submenu' ,{
+                                            
+                                            'viewing'   :  ['MenuItem', _selection_type_viewing],
+                                            'picking'   :  ['MenuItem', _selection_type_picking],
+                                            #'separator2':['separator', None],
+                                            #'nonbonded' : ['MenuItem', None],
+                    
+                                           }
+                                        ],
+                    
                     'Selection Mode'   : [
                                 'submenu' ,{
                                             
@@ -775,7 +795,18 @@ class VisMolSession (ShowHideVisMol):
                     'funcao teste2': ['MenuItem', self.teste2], 
 
                     'separator1':['separator', None],
+
+
+                    'Selection type'   : [
+                                'submenu' ,{
+                                            
+                                            'viewing'   :  ['MenuItem', _selection_type_viewing],
+                                            'picking'   :  ['MenuItem', _selection_type_picking],
+                                            #'separator2':['separator', None],
+                                            #'nonbonded' : ['MenuItem', None],
                     
+                                           }
+                                        ],
                     
                     'Selection Mode'   : [
                                 'submenu' ,{
@@ -984,6 +1015,12 @@ class VisMolSession (ShowHideVisMol):
             #rep =  RibbonsRepresentation(name = 'ribbons', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
             #self.vismol_objects[-1].representations[rep.name] = rep
             
+            #rep =  CartoonRepresentation(name = 'cartoon', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+            #self.vismol_objects[-1].representations[rep.name] = rep
+            
+            rep =  LabelRepresentation(name = 'label', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
+            self.vismol_objects[-1].representations[rep.name] = rep
+            
             #rep =  SurfaceRepresentation(name = 'surface', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
             #self.vismol_objects[-1].representations[rep.name] = rep
 
@@ -1003,6 +1040,17 @@ class VisMolSession (ShowHideVisMol):
                 self.glwidget.vm_widget.center_on_coordinates(self.vismol_objects[-1], self.vismol_objects[-1].mass_center)
             
 
+            
+            '''
+            print(self.vismol_objects[-1].c_alpha_atoms)
+            self.vismol_objects[-1].get_backbone_indexes()
+            
+            
+            
+            for atom in self.vismol_objects[-1].c_alpha_atoms:
+                print(atom.index, atom.name, atom.resn, atom.resi, atom.coords())
+            '''
+            
 
     
     

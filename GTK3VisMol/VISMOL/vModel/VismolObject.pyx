@@ -152,7 +152,7 @@ class VismolObject:
         #    Calpha  Ribbons    #
         #-----------------------#
         self.c_alpha_bonds = []           
-        
+        self.c_alpha_atoms = []
         #-----------------------#
         #       Nonbonded       #
         #-----------------------#
@@ -636,24 +636,29 @@ class VismolObject:
         
         self.c_alpha_bonds = []
         
-        c_alpha_atoms = []
+        self.c_alpha_atoms = []
         for chain in self.chains:
             for residue in self.chains[chain].residues:
+                
                 #print ('chain', chain ,'name', residue.resn, 'index',residue.resi)
-                for atom in residue.atoms:
-                    if atom.name == 'CA':
-                        #print ('index',atom.index,'name', atom.name,'chain', atom.chain)
-                        c_alpha_atoms.append(atom)
-        
+                if residue.isProtein:
+                    for atom in residue.atoms:
+                        if atom.name == 'CA':
+                            #print ('index',atom.index,'name', atom.name,'chain', atom.chain)
+                            self.c_alpha_atoms.append(atom)
+                        else:
+                            pass
+                else:
+                    pass
         #pprint(self.residues)
         
-        for n  in range(1, len(c_alpha_atoms)):
+        for n  in range(1, len(self.c_alpha_atoms)):
 
-            atom_before  = c_alpha_atoms[n-1]
+            atom_before  = self.c_alpha_atoms[n-1]
             resi_before  = atom_before.resi
             index_before = self.atoms.index(atom_before)
             
-            atom   = c_alpha_atoms[n]
+            atom   = self.c_alpha_atoms[n]
             resi   = atom.resi
             index  = self.atoms.index(atom)
             #print (index_before, 

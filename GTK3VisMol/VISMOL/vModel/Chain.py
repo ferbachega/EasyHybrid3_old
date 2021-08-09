@@ -16,6 +16,28 @@ class Chain:
         self.Vobject  = Vobject
         self.backbone_pair_indexes_full = []
         self.backbone_pair_indexes_show = []
+    
+    def get_CA_list (self):
+        """ Function doc """
+        self.backbone = []
+        
+        for residue in self.residues:
+            if residue.isProtein:
+                for atom in residue.atoms:
+                    if atom.name == 'CA':
+                        self.backbone.append(atom)
+                    else:
+                        pass
+                        
+                        
+        
+        return self.backbone
+    
+    def get_secundary_structure (_):
+        """ Function doc """
+        return None
+    
+    
     def return_name (self):
         """ Function doc """
         return self.name

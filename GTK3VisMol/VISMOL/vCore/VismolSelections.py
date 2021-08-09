@@ -68,7 +68,7 @@ class VisMolPickingSelection:
                 for i in range(len(self.picking_selections_list)):
                     if self.picking_selections_list[i] == selected:
                         self.picking_selections_list[i] = None
-        print(self.picking_selections_list)
+        #print('picking_selections_list' ,self.picking_selections_list)
 
         
         

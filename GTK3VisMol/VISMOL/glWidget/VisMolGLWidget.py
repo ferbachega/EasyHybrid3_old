@@ -320,7 +320,6 @@ class GtkGLAreaWidget(Gtk.GLArea):
         self.glMenu_sele = None
         self.glMenu_bg = None
         self.glMenu_obj = None
-
         #self.glMenu = GLMenu(self)
     
     

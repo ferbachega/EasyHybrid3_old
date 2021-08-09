@@ -37,18 +37,24 @@ import VISMOL.glCore.matrix_operations as mop
 import VISMOL.glCore.selection_box as sb
 import VISMOL.glCore.sphere_representation as sph_r
 
-import VISMOL.glCore.shaders.sticks             as sticksShaders
-#import VISMOL.glCore.shaders.new_lines          as linesShaders
-import VISMOL.glCore.shaders.lines              as linesShaders
-import VISMOL.glCore.shaders.spheres            as spheresShaders
-import VISMOL.glCore.shaders.surface            as surfacesShaders
-import VISMOL.glCore.shaders.wires              as wiresShaders
+import VISMOL.glCore.shaders.sticks                  as sticksShaders
+#import VISMOL.glCore.shaders.new_lines              as linesShaders
+import VISMOL.glCore.shaders.lines                   as linesShaders
+import VISMOL.glCore.shaders.spheres                 as spheresShaders
+import VISMOL.glCore.shaders.surface                 as surfacesShaders
+import VISMOL.glCore.shaders.wires                   as wiresShaders
+                                                     
+import VISMOL.glCore.shaders.dots                    as dotsShaders
+import VISMOL.glCore.shaders.freetype                as freetypeShaders
 
-import VISMOL.glCore.shaders.dots               as dotsShaders
-import VISMOL.glCore.shaders.freetype           as freetypeShaders
-import VISMOL.glCore.shaders.picked_and_picking as pickedShaders
-import VISMOL.glCore.shaders.nonbond            as nonbondShaders
-import VISMOL.glCore.shaders.glumpy             as glumpyShaders
+import VISMOL.glCore.vismol_font as vmf
+
+import VISMOL.glCore.shaders.freetype                as sh
+
+import VISMOL.glCore.shaders.picked_and_picking      as pickedShaders
+import VISMOL.glCore.shaders.nonbond                 as nonbondShaders
+import VISMOL.glCore.shaders.glumpy                  as glumpyShaders
+import VISMOL.glCore.shaders.cartoon_triangle_shader as cartoonShaders
 
 class ShaderConfigObj:
 	""" Class doc """
@@ -87,6 +93,9 @@ class VisMolGLCore():
         self.height = np.float32(height)
         self.sel_lines_buffers = None # this is not permanent - should be removed after some bug fixing 
         self.shader_programs = {}
+        
+        # Remove it later
+        self.vm_font        = vmf.VisMolFont(color    =[1,1,1,0.6])
 
     def initialize(self):
         """ Enables the buffers and other charasteristics of the OpenGL context.
@@ -464,7 +473,39 @@ class VisMolGLCore():
             return True
         return False
         
-    
+
+    '''
+    def _draw_freetype(self, visObj = None):
+        """ Function doc """
+        GL.glDisable(GL.GL_DEPTH_TEST)
+        GL.glEnable(GL.GL_BLEND)
+        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+        GL.glUseProgram(self.freetype_program)
+        visObj.vm_font.load_matrices(self.freetype_program, self.glcamera.view_matrix, self.glcamera.projection_matrix)
+        visObj.vm_font.load_font_params(self.freetype_program)
+        GL.glBindVertexArray(visObj.vm_font.vao)
+        texto = visObj.name
+        point = np.array(visObj.mass_center,np.float32)
+        point = np.array((point[0],point[1],point[2],1),np.float32)
+        point = np.dot(point, visObj.model_mat)
+        GL.glBindTexture(GL.GL_TEXTURE_2D, visObj.vm_font.texture_id)
+        for i,c in enumerate(texto):
+            c_id = ord(c)
+            x = c_id%16
+            y = c_id//16-2
+            xyz_pos = np.array([point[0]+i*visObj.vm_font.char_width, point[1], point[2]],np.float32)
+            uv_coords = np.array([x*visObj.vm_font.text_u, y*visObj.vm_font.text_v, (x+1)*visObj.vm_font.text_u, (y+1)*visObj.vm_font.text_v],np.float32)
+            GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.vm_font.vbos[0])
+            GL.glBufferData(GL.GL_ARRAY_BUFFER, xyz_pos.itemsize*len(xyz_pos), xyz_pos, GL.GL_DYNAMIC_DRAW)
+            GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.vm_font.vbos[1])
+            GL.glBufferData(GL.GL_ARRAY_BUFFER, uv_coords.itemsize*len(uv_coords), uv_coords, GL.GL_DYNAMIC_DRAW)
+            GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
+            GL.glDrawArrays(GL.GL_POINTS, 0, 1)
+        GL.glDisable(GL.GL_BLEND)
+        GL.glBindVertexArray(0)
+        GL.glUseProgram(0)
+    '''
+
     def render(self):
         """ This is the function that will be called everytime the window
             needs to be re-drawed.
@@ -506,127 +547,66 @@ class VisMolGLCore():
                             else:
                                 pass
 
+                    
+                     
+                        
+                        
+                        
+        '''checks if the picking function is active. Viewing and picking selections cannot be displayed at the same time.'''
+        if self.vismolSession._picking_selection_mode:
+            #print('self.vismolSession._picking_selection_mode')
+            self._draw_pickng_label()
 
-        for visObj in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
-            '''
-            Here are represented the blue 
-            dots referring to the atom's selections 
-            '''
-            if visObj.selection_dots_vao is None:
-                shapes._make_gl_selection_dots(self.picking_dots_program, vismol_object = visObj)
-            
-            '''#Extracting the indexes for each vismol_object that was selected'''
-            indexes = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]
-            
-            #print(indexes)
-            #print(type(self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]))
-            #print(self.vismolSession.selections[self.vismolSession.current_selection].selected_objects)
-            
-            size =  self.vConfig.gl_parameters['dot_sel_size']
-            GL.glPointSize(size*self.height/(abs(self.dist_cam_zrp))/2)
-            #print (visObj, visObj.non_bonded_atoms)
-            
-            #print ('line 522')
-            #GL.glPointSize(15)
-            GL.glUseProgram(self.picking_dots_program)
-            GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
-            self.load_matrices(self.picking_dots_program, visObj.model_mat)
-            #print ('line510')
+        else:
+            for visObj in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
+                '''
+                Here are represented the blue 
+                dots referring to the atom's selections 
+                '''
+                if visObj.selection_dots_vao is None:
+                    shapes._make_gl_selection_dots(self.picking_dots_program, vismol_object = visObj)
+                
+                '''#Extracting the indexes for each vismol_object that was selected'''
+                indexes = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]
+                
+                #print(indexes)
+                #print(type(self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]))
+                #print(self.vismolSession.selections[self.vismolSession.current_selection].selected_objects)
+                
+                size =  self.vConfig.gl_parameters['dot_sel_size']
+                GL.glPointSize(size*self.height/(abs(self.dist_cam_zrp))/2)
+                #print (visObj, visObj.non_bonded_atoms)
+                
+                #print ('line 522')
+                #GL.glPointSize(15)
+                GL.glUseProgram(self.picking_dots_program)
+                GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
+                self.load_matrices(self.picking_dots_program, visObj.model_mat)
+                #print ('line510')
 
-            #self._draw_picking_dots(visObj = visObj, indexes = False)
-            GL.glBindVertexArray(visObj.selection_dots_vao)
-            
-            GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.selection_dot_buffers[0])
-            GL.glBufferData(GL.GL_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), 
-                            indexes, GL.GL_STATIC_DRAW)
-            
-            frame = self._safe_frame_exchange(visObj)
-            GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.selection_dot_buffers[1])
-            GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.itemsize*int(len(frame)), 
-                            frame, GL.GL_STATIC_DRAW)
+                #self._draw_picking_dots(visObj = visObj, indexes = False)
+                GL.glBindVertexArray(visObj.selection_dots_vao)
+                
+                GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.selection_dot_buffers[0])
+                GL.glBufferData(GL.GL_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), 
+                                indexes, GL.GL_STATIC_DRAW)
+                
+                frame = self._safe_frame_exchange(visObj)
+                GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.selection_dot_buffers[1])
+                GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.itemsize*int(len(frame)), 
+                                frame, GL.GL_STATIC_DRAW)
 
-            #GL.glDrawElements(GL.GL_POINTS, int(len(indexes)), GL.GL_UNSIGNED_INT, None)
-            GL.glDrawElements(GL.GL_POINTS, int(len(indexes)), GL.GL_UNSIGNED_INT, None)
-            GL.glBindVertexArray(0)
-            
-            GL.glDisable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
-            GL.glPointSize(1)
-            GL.glUseProgram(0)
-            GL.glDisable(GL.GL_DEPTH_TEST)
+                #GL.glDrawElements(GL.GL_POINTS, int(len(indexes)), GL.GL_UNSIGNED_INT, None)
+                GL.glDrawElements(GL.GL_POINTS, int(len(indexes)), GL.GL_UNSIGNED_INT, None)
+                GL.glBindVertexArray(0)
+                
+                GL.glDisable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
+                GL.glPointSize(1)
+                GL.glUseProgram(0)
+                GL.glDisable(GL.GL_DEPTH_TEST)
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        '''
-        indexes = self.vismolSession.picking_selections.picking_selections_list
-        
-        #print(indexes)
-        #print(type(self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]))
-        #print(self.vismolSession.selections[self.vismolSession.current_selection].selected_objects)
-        
-        size =  self.vConfig.gl_parameters['dot_sel_size']
-        GL.glPointSize(size*self.height/(abs(self.dist_cam_zrp))/2)
-        
-        #print ('line 522')
-        #GL.glPointSize(15)
-        GL.glUseProgram(self.picking_dots_program)
-        GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
-        self.load_matrices(self.picking_dots_program, visObj.model_mat)
-        #print ('line510')
 
-        #self._draw_picking_dots(visObj = visObj, indexes = False)
-        GL.glBindVertexArray(visObj.selection_dots_vao)
-        
-        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.selection_dot_buffers[0])
-        GL.glBufferData(GL.GL_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), 
-                        indexes, GL.GL_STATIC_DRAW)
-        
-        frame = self._safe_frame_exchange(visObj)
-        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.selection_dot_buffers[1])
-        GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.itemsize*int(len(frame)), 
-                        frame, GL.GL_STATIC_DRAW)
-
-        #GL.glDrawElements(GL.GL_POINTS, int(len(indexes)), GL.GL_UNSIGNED_INT, None)
-        GL.glDrawElements(GL.GL_POINTS, int(len(indexes)), GL.GL_UNSIGNED_INT, None)
-        GL.glBindVertexArray(0)
-        
-        GL.glDisable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
-        GL.glPointSize(1)
-        GL.glUseProgram(0)
-        GL.glDisable(GL.GL_DEPTH_TEST)
-        '''
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        # picking 1 2 3 4 atoms -  special way to select atoms
-        #for index in self.vismolSession.picking_selections.picking_selections_list:  #selections[self.vismolSession.current_selection].selected_objects:
-        #    if index != None:
-        #        pass
-                #print(visObj.index)
-            #index = visObj
-        
-        
-        
-        #'''
         if self.show_selection_box and self.shift:
             if self.selection_box.vao is None:
                 self.selection_box._make_gl_selection_box()
@@ -637,6 +617,75 @@ class VisMolGLCore():
             self._draw_gizmo_axis(True)
             self._draw_gizmo_axis(False)
         return True
+    
+    def _draw_pickng_label(self):
+        '''This function draws the labels
+         of the atoms selected by the 
+         function picking #1 #2 #3 #4'''
+        if self.vm_font.vao is None:
+            self.vm_font.make_freetype_font()
+            self.vm_font.make_freetype_texture(self.freetype_program)
+
+        number = 1
+        self.chars     = 0
+        self.xyz_pos   = []
+        self.uv_coords = []
+        
+        
+        
+        for atom in  self.vismolSession.picking_selections.picking_selections_list:
+            if atom:
+                #print (number, atom.name)
+                frame = self._get_visObj_frame(atom.Vobject)
+                    
+                texto = '#'+str(number)
+                point = np.array(atom.coords (frame),np.float32)
+                point = np.array((point[0],point[1],point[2],1),np.float32)
+                point = np.dot(point, self.model_mat)
+
+                GL.glBindTexture(GL.GL_TEXTURE_2D, self.vm_font.texture_id)
+                for i,c in enumerate(texto):
+                    self.chars += 1
+                    c_id = ord(c)
+                    x = c_id%16
+                    y = c_id//16-2
+                    self.xyz_pos.append(point[0]+i*self.vm_font.char_width)
+                    self.xyz_pos.append(point[1])
+                    self.xyz_pos.append(point[2])
+
+                    self.uv_coords.append(x*self.vm_font.text_u)
+                    self.uv_coords.append(y*self.vm_font.text_v)
+                    self.uv_coords.append((x+1)*self.vm_font.text_u)
+                    self.uv_coords.append((y+1)*self.vm_font.text_v)
+
+            number+=1
+
+        self.xyz_pos   = np.array(self.xyz_pos  , np.float32)
+        self.uv_coords = np.array(self.uv_coords, np.float32)
+
+        
+        
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.vm_font.vbos[0])
+        GL.glBufferData(GL.GL_ARRAY_BUFFER, self.xyz_pos.itemsize*len(self.xyz_pos), self.xyz_pos, GL.GL_DYNAMIC_DRAW)
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.vm_font.vbos[1])
+        GL.glBufferData(GL.GL_ARRAY_BUFFER, self.uv_coords.itemsize*len(self.uv_coords), self.uv_coords, GL.GL_DYNAMIC_DRAW)
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
+        GL.glDisable(GL.GL_DEPTH_TEST)
+        GL.glEnable(GL.GL_BLEND)
+        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+        GL.glUseProgram(self.freetype_program)
+        
+        self.vm_font.load_matrices(self.freetype_program, self.glcamera.view_matrix, self.glcamera.projection_matrix)
+        self.vm_font.load_font_params(self.freetype_program)
+        
+        GL.glBindVertexArray(self.vm_font.vao)
+        GL.glDrawArrays(GL.GL_POINTS, 0, self.chars)
+        GL.glDisable(GL.GL_BLEND)
+        GL.glBindVertexArray(0)
+        GL.glUseProgram(0)
+
+    
+    
     
     
     
@@ -791,6 +840,20 @@ class VisMolGLCore():
         self.shader_programs['surface_sel'] = self.load_shaders(spheresShaders.vertex_shader_spheres,  
                                                                 spheresShaders.fragment_shader_spheres)
         
+        
+    def _cartoon_dot_shaders (self, _type = 0):
+        self.shader_programs['cartoon']     = self.load_shaders(cartoonShaders.v_shader_triangles,
+                                                                cartoonShaders.f_shader_triangles)
+        
+        #self.shader_programs['cartoon']     = self.load_shaders (surfacesShaders.vertex_shader_surface,
+        #                                                         surfacesShaders.fragment_shader_surface,
+        #                                                         surfacesShaders.geometry_shader_surface)
+                                                                
+                                                                
+                                                                
+        #self.shader_programs['cartoon_sel'] = self.load_shaders(spheresShaders.v_shader_triangles,  
+        #                                                        spheresShaders.f_shader_triangles)
+        
     
 
 
@@ -802,7 +865,26 @@ class VisMolGLCore():
                                                               spheresShaders.fragment_shader_spheres)
                                               
 
-
+    def load_shaders(self, vertex, fragment, geometry=None):
+        """ Here the shaders are loaded and compiled to an OpenGL program. By default
+            the constructor shaders will be used, if you want to change the shaders
+            use this function. The flag is used to create only one OpenGL program.
+            
+            Keyword arguments:
+            vertex -- The vertex shader to be used
+            fragment -- The fragment shader to be used
+        """
+        my_vertex_shader = self.create_shader(vertex, GL.GL_VERTEX_SHADER)
+        my_fragment_shader = self.create_shader(fragment, GL.GL_FRAGMENT_SHADER)
+        if geometry is not None:
+            my_geometry_shader = self.create_shader(geometry, GL.GL_GEOMETRY_SHADER)
+        program = GL.glCreateProgram()
+        GL.glAttachShader(program, my_vertex_shader)
+        GL.glAttachShader(program, my_fragment_shader)
+        if geometry is not None:
+            GL.glAttachShader(program, my_geometry_shader)
+        GL.glLinkProgram(program)
+        return program
 
 
     def create_gl_programs(self):
@@ -836,9 +918,12 @@ class VisMolGLCore():
 
         #-------------------------------------------------------------------------------------
         self._surface_dot_shaders ()
+        self._cartoon_dot_shaders ()
         self._wires_dot_shaders ()
         #-------------------------------------------------------------------------------------
-
+        
+        #  change this line to another place
+        #self.gl_program_freetype = self.load_shaders(sh.v_shader_freetype, sh.f_shader_freetype, sh.g_shader_freetype)
         
         
         ## P I C K 
@@ -852,6 +937,9 @@ class VisMolGLCore():
         self.freetype_program = self.load_shaders(freetypeShaders.vertex_shader_freetype, 
                                                   freetypeShaders.fragment_shader_freetype, 
                                                   freetypeShaders.geometry_shader_freetype)
+        #self.freetype_program = self.load_shaders(freetypeShaders.v_shader_freetype, 
+        #                                          freetypeShaders.f_shader_freetype, 
+        #                                          freetypeShaders.g_shader_freetype)
         
 
         
@@ -866,26 +954,6 @@ class VisMolGLCore():
         self.shader_programs['freetype']         = self.freetype_program
 
         
-    def load_shaders(self, vertex, fragment, geometry=None):
-        """ Here the shaders are loaded and compiled to an OpenGL program. By default
-            the constructor shaders will be used, if you want to change the shaders
-            use this function. The flag is used to create only one OpenGL program.
-            
-            Keyword arguments:
-            vertex -- The vertex shader to be used
-            fragment -- The fragment shader to be used
-        """
-        my_vertex_shader = self.create_shader(vertex, GL.GL_VERTEX_SHADER)
-        my_fragment_shader = self.create_shader(fragment, GL.GL_FRAGMENT_SHADER)
-        if geometry is not None:
-            my_geometry_shader = self.create_shader(geometry, GL.GL_GEOMETRY_SHADER)
-        program = GL.glCreateProgram()
-        GL.glAttachShader(program, my_vertex_shader)
-        GL.glAttachShader(program, my_fragment_shader)
-        if geometry is not None:
-            GL.glAttachShader(program, my_geometry_shader)
-        GL.glLinkProgram(program)
-        return program
         
     def create_shader(self, shader_prog, shader_type):
         """ Creates, links to a source, compiles and returns a shader.
@@ -1099,7 +1167,7 @@ class VisMolGLCore():
         
         if self.frame >= (len (visObj.frames)-1):
             #print (type(self.frame),self.frame,  type(len (visObj.frames)-1),len (visObj.frames)-1)
-            frame = visObj.frames[len (visObj.frames)-2]
+            frame = visObj.frames[len (visObj.frames)-1]
             #position = len (visObj.frames)-1
             #frame2 = visObj.frames[position-1]
             #print (type(frame), type(frame2), position)
@@ -1120,7 +1188,7 @@ class VisMolGLCore():
             pass
         
         if self.frame >= (len (visObj.frames)-1):
-            frame = len (visObj.frames)-2
+            frame = len (visObj.frames)-1
         else:
             frame = self.frame
         return frame
@@ -1179,10 +1247,87 @@ class VisMolGLCore():
         visObj.vm_font.load_matrices(self.freetype_program, self.glcamera.view_matrix, self.glcamera.projection_matrix)
         visObj.vm_font.load_font_params(self.freetype_program)
         GL.glBindVertexArray(visObj.vm_font.vao)
-        texto = visObj.name
-        point = np.array(visObj.mass_center,np.float32)
+        #texto = visObj.name
+        
+        #'''
+
+        xyz_pos   = []
+        uv_coords = []
+        chars     = 0 
+        for atom in visObj.atoms:
+            #GL.glUseProgram(self.freetype_program)
+            #visObj.vm_font.load_matrices(self.freetype_program, self.glcamera.view_matrix, self.glcamera.projection_matrix)
+            #visObj.vm_font.load_font_params(self.freetype_program)
+            #GL.glBindVertexArray(visObj.vm_font.vao)
+
+            texto = atom.name
+            point = np.array(atom.coords (self.frame),np.float32)
+            point = np.array((point[0],point[1],point[2],1),np.float32)
+            point = np.dot(point, visObj.model_mat)
+
+            #print(point)
+            GL.glBindTexture(GL.GL_TEXTURE_2D, visObj.vm_font.texture_id)
+            for i,c in enumerate(texto):
+                chars += 1
+                c_id = ord(c)
+                x = c_id%16
+                y = c_id//16-2
+                
+                
+                xyz_pos.append(point[0]+i*visObj.vm_font.char_width)
+                xyz_pos.append(point[1])
+                xyz_pos.append(point[2])
+                
+                #xyz_pos   = np.array([point[0]+i*visObj.vm_font.char_width, 
+                #                      point[1], 
+                #                      point[2]],
+                #                      np.float32)
+                                      
+                uv_coords.append(x*visObj.vm_font.text_u)
+                uv_coords.append(y*visObj.vm_font.text_v)
+                uv_coords.append((x+1)*visObj.vm_font.text_u)
+                uv_coords.append((y+1)*visObj.vm_font.text_v)
+ 
+                
+                #uv_coords = np.array([x*visObj.vm_font.text_u, 
+                #                      y*visObj.vm_font.text_v, 
+                #                      (x+1)*visObj.vm_font.text_u, 
+                #                      (y+1)*visObj.vm_font.text_v],
+                #                      np.float32)
+        
+        #print('xyz_pos  ',len(xyz_pos))
+        #print('uv_coords',len(uv_coords))
+        #print('atoms    ',len(visObj.atoms))
+        #print('chars    ',chars)
+        
+        xyz_pos   = np.array(xyz_pos  , np.float32)
+        uv_coords = np.array(uv_coords, np.float32)
+        #print (xyz_pos)
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.vm_font.vbos[0])
+        GL.glBufferData(GL.GL_ARRAY_BUFFER, xyz_pos.itemsize*len(xyz_pos), xyz_pos, GL.GL_DYNAMIC_DRAW)
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.vm_font.vbos[1])
+        GL.glBufferData(GL.GL_ARRAY_BUFFER, uv_coords.itemsize*len(uv_coords), uv_coords, GL.GL_DYNAMIC_DRAW)
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
+        
+        # chars is the total number of characters
+        GL.glDrawArrays(GL.GL_POINTS, 0, chars)
+        
+
+        GL.glDisable(GL.GL_BLEND)
+        GL.glBindVertexArray(0)
+        GL.glUseProgram(0)
+        #'''
+        
+        
+        '''
+        texto = visObj.atoms[0].name
+        #print(texto)
+        #point = np.array(visObj.mass_center,np.float32)
+        point = np.array(visObj.atoms[0].coords (self.frame),np.float32)
+        
         point = np.array((point[0],point[1],point[2],1),np.float32)
         point = np.dot(point, visObj.model_mat)
+        #print(point)
         GL.glBindTexture(GL.GL_TEXTURE_2D, visObj.vm_font.texture_id)
         for i,c in enumerate(texto):
             c_id = ord(c)
@@ -1199,8 +1344,44 @@ class VisMolGLCore():
         GL.glDisable(GL.GL_BLEND)
         GL.glBindVertexArray(0)
         GL.glUseProgram(0)
-
-    
+        
+        
+        
+        
+        
+        GL.glUseProgram(self.freetype_program)
+        visObj.vm_font.load_matrices(self.freetype_program, self.glcamera.view_matrix, self.glcamera.projection_matrix)
+        visObj.vm_font.load_font_params(self.freetype_program)
+        GL.glBindVertexArray(visObj.vm_font.vao)
+        texto = visObj.atoms[1].name
+        #print(texto)
+        #point = np.array(visObj.mass_center,np.float32)
+        point = np.array(visObj.atoms[1].coords (self.frame),np.float32)
+        
+        point = np.array((point[0],point[1],point[2],1),np.float32)
+        point = np.dot(point, visObj.model_mat)
+        #print(point)
+        GL.glBindTexture(GL.GL_TEXTURE_2D, visObj.vm_font.texture_id)
+        for i,c in enumerate(texto):
+            c_id = ord(c)
+            x = c_id%16
+            y = c_id//16-2
+            xyz_pos = np.array([point[0]+i*visObj.vm_font.char_width, point[1], point[2]],np.float32)
+            uv_coords = np.array([x*visObj.vm_font.text_u, y*visObj.vm_font.text_v, (x+1)*visObj.vm_font.text_u, (y+1)*visObj.vm_font.text_v],np.float32)
+            GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.vm_font.vbos[0])
+            GL.glBufferData(GL.GL_ARRAY_BUFFER, xyz_pos.itemsize*len(xyz_pos), xyz_pos, GL.GL_DYNAMIC_DRAW)
+            GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.vm_font.vbos[1])
+            GL.glBufferData(GL.GL_ARRAY_BUFFER, uv_coords.itemsize*len(uv_coords), uv_coords, GL.GL_DYNAMIC_DRAW)
+            GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
+            GL.glDrawArrays(GL.GL_POINTS, 0, 1)
+        GL.glDisable(GL.GL_BLEND)
+        GL.glBindVertexArray(0)
+        GL.glUseProgram(0)
+        
+        
+        
+        #'''
+        
     
     
     def _draw_gizmo_axis(self, flag):
