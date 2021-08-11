@@ -22,100 +22,76 @@
 #  
 #  
 
-import gi, sys
+import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
-#import os
 
-from VISMOL.vCore.VismolSession  import VisMolSession
-from GTKGUI  import VismolMain 
+from VISMOL.vCore.VismolSession import VisMolSession
+from GTKGUI import VismolMain
 
 
 def main():
-    
-    vismolSession  =  VisMolSession(glwidget = True, toolkit = 'gtk3')
-    
-    
-    
-    
-    
-    
-    
-    def menu_show_lines (_):
-        """ Function doc """
-        vismolSession.show_or_hide( _type = 'lines', show = True)
+    vismolSession = VisMolSession(glwidget=True, toolkit='gtk3')
 
-    def menu_hide_lines (_):
+    def menu_show_lines(_):
         """ Function doc """
-        vismolSession.show_or_hide( _type = 'lines', show = False)
+        vismolSession.show_or_hide(_type='lines', show=True)
 
-    def menu_show_sticks (_):
+    def menu_hide_lines(_):
         """ Function doc """
-        vismolSession.show_or_hide( _type = 'sticks', show = True)
+        vismolSession.show_or_hide(_type='lines', show=False)
 
-    def menu_hide_sticks (_):
+    def menu_show_sticks(_):
         """ Function doc """
-        vismolSession.show_or_hide( _type = 'sticks', show = False)
+        vismolSession.show_or_hide(_type='sticks', show=True)
 
-    def menu_show_spheres (_):
+    def menu_hide_sticks(_):
         """ Function doc """
-        vismolSession.show_or_hide( _type = 'spheres', show = True)
+        vismolSession.show_or_hide(_type='sticks', show=False)
 
-    def menu_hide_spheres (_):
+    def menu_show_spheres(_):
         """ Function doc """
-        vismolSession.show_or_hide( _type = 'spheres', show = False)
-    menu = { 
-            'Teste Menu from main ' : ['MenuItem', None],
-            
-            
-            'separator1':['separator', None],
-            
-            
-            'show'   : [
-                        'submenu' ,{
-                                    
-                                    'lines'    : ['MenuItem', menu_show_lines],
-                                    'sticks'   : ['MenuItem', menu_show_sticks],
-                                    'spheres'  : ['MenuItem', menu_show_spheres],
-                                    'separator2':['separator', None],
-                                    'nonbonded': ['MenuItem', None],
-            
-                                   }
-                       ],
-            
-            
-            'hide'   : [
-                        'submenu',  {
-                                    'lines'    : ['MenuItem', menu_hide_lines],
-                                    'sticks'   : ['MenuItem', menu_hide_sticks],
-                                    'spheres'  : ['MenuItem', menu_hide_spheres],
-                                    'nonbonded': ['MenuItem', None],
-                                    }
-                        ],
-            
-            
-            'separator2':['separator', None],
+        vismolSession.show_or_hide(_type='spheres', show=True)
+
+    def menu_hide_spheres(_):
+        """ Function doc """
+        vismolSession.show_or_hide(_type='spheres', show=False)
+
+    menu = {
+        'Teste Menu from main ': ['MenuItem', None],
+
+        'separator1': ['separator', None],
+
+        'show': [
+            'submenu', {
+
+                'lines': ['MenuItem', menu_show_lines],
+                'sticks': ['MenuItem', menu_show_sticks],
+                'spheres': ['MenuItem', menu_show_spheres],
+                'separator2': ['separator', None],
+                'nonbonded': ['MenuItem', None],
 
             }
+        ],
 
-    
-    
-    
-    
-    
-    
-    
-    
-    #vismolSession.insert_glmenu(bg_menu = menu)
+        'hide': [
+            'submenu', {
+                'lines': ['MenuItem', menu_hide_lines],
+                'sticks': ['MenuItem', menu_hide_sticks],
+                'spheres': ['MenuItem', menu_hide_spheres],
+                'nonbonded': ['MenuItem', None],
+            }
+        ],
+
+        'separator2': ['separator', None],
+
+    }
+
+    # vismolSession.insert_glmenu(bg_menu = menu)
     vismolSession.insert_glmenu()
-    
-    
-    
-    
-    
-    gui            = VismolMain.VismolMainWindow(vismolSession)
+
+    gui = VismolMain.VismolMainWindow(vismolSession)
     return 0
+
 
 if __name__ == '__main__':
     main()
-

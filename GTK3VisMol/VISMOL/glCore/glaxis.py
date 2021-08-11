@@ -24,9 +24,8 @@
 
 import ctypes
 import numpy as np
-import VISMOL.glCore.matrix_operations as mop
-
 from OpenGL import GL
+
 
 class GLAxis:
     """ This class contains all necessary components for the creation of a
@@ -37,7 +36,7 @@ class GLAxis:
         As this class is intended to be independent, almost all the methods
         receive no arguments.
     """
-    
+
     def __init__ (self, cam_pos=np.array([0,0,0],dtype=np.float32)):
         """ For creating a GLAxis object you only need to supply the position
             of your camera or eye as an numpy array of XYZ components.
@@ -139,9 +138,7 @@ class GLAxis:
         self.lines_vao = None
         self.zrp = np.array([-0.9, -0.9, 0.0],dtype=np.float32)
         self.camera_position = np.array(cam_pos, dtype=np.float32)
-        #self.light_position = np.array([1.5, 1.5, -2.5],dtype=np.float32)
         self.light_position = np.array([0.0, -2.0, 0.0],dtype=np.float32)
-        #self.light_color = np.array([1.0, 1.0, 1.0, 1.0],dtype=np.float32)
         self.light_color = np.array([1.0, 0.0, 0.0, 1.0],dtype=np.float32)
         self.light_ambient_coef = 0.2
         self.light_specular_coef = 0.7
@@ -226,7 +223,7 @@ void main()
     final_color = vec4(frag_color, 1.0);
 }
 """
-    
+
     def initialize_gl(self):
         """ First function, called right after the object creation. Creates the
             OpenGL programs and Vertex Array Objects.
@@ -235,7 +232,7 @@ void main()
         self._make_lines_program()
         self._make_gl_gizmo_axis()
         return True
-    
+
     def _make_gl_gizmo_axis(self):
         """ Creates the Vertex Array Objects for the XYZ axis. Initially creates
             the vaos for the cones of the axis and then for the lines.
@@ -245,7 +242,7 @@ void main()
         self.z_vao = self._get_vao('z_axis')
         self.lines_vao = self._get_vao_lines()
         return True
-    
+
     def _make_axis_program(self):
         """ Compiles the cone shaders. This function compiles only the cones
             of the gizmo axis.
@@ -267,7 +264,7 @@ void main()
             print("Error compiling the shader: ", "GL_FRAGMENT_SHADER")
             raise RuntimeError(GL.glGetShaderInfoLog(f_shader))
         return True
-    
+
     def _make_lines_program(self):
         """ Compiles the lines shaders. This function compiles only the lines
             of the gizmo axis.
@@ -289,7 +286,7 @@ void main()
             print("Error compiling the shader: ", "GL_FRAGMENT_SHADER")
             raise RuntimeError(GL.glGetShaderInfoLog(f_shader))
         return True
-    
+
     def _get_vao(self, axis):
         """ Creates the Vertex Array Object, Vertex Buffer Objects and fill the
             shaders with the data of the corresponding axis. The buffers are not
@@ -305,44 +302,44 @@ void main()
         """
         colors = self.axis_colors[axis] * int(len(self.axis_vertices[axis]))
         colors = np.array(colors, dtype=np.float32)
-        
+
         vao = GL.glGenVertexArrays(1)
         GL.glBindVertexArray(vao)
-        
+
         ind_vbo = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ind_vbo)
         GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self.axis_indices.itemsize*int(len(self.axis_indices)), self.axis_indices, GL.GL_STATIC_DRAW)
-        
+
         vert_vbo = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vert_vbo)
         GL.glBufferData(GL.GL_ARRAY_BUFFER, self.axis_vertices[axis].itemsize*int(len(self.axis_vertices[axis])), self.axis_vertices[axis], GL.GL_STATIC_DRAW)
         att_position = GL.glGetAttribLocation(self.gizmo_axis_program, 'vert_coord')
         GL.glEnableVertexAttribArray(att_position)
         GL.glVertexAttribPointer(att_position, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*self.axis_vertices[axis].itemsize, ctypes.c_void_p(0))
-        
+
         col_vbo = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, col_vbo)
         GL.glBufferData(GL.GL_ARRAY_BUFFER, colors.itemsize*int(len(colors)), colors, GL.GL_STATIC_DRAW)
         att_colors = GL.glGetAttribLocation(self.gizmo_axis_program, 'vert_color')
         GL.glEnableVertexAttribArray(att_colors)
         GL.glVertexAttribPointer(att_colors, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*colors.itemsize, ctypes.c_void_p(0))
-        
+
         norm_vbo = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, norm_vbo)
         GL.glBufferData(GL.GL_ARRAY_BUFFER, self.axis_normals[axis].itemsize*len(self.axis_normals[axis]), self.axis_normals[axis], GL.GL_STATIC_DRAW)
         att_norm = GL.glGetAttribLocation(self.gizmo_axis_program, 'vert_norm')
         GL.glEnableVertexAttribArray(att_norm)
         GL.glVertexAttribPointer(att_norm, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*self.axis_normals[axis].itemsize, ctypes.c_void_p(0))
-        
+
         GL.glBindVertexArray(0)
         GL.glDisableVertexAttribArray(att_position)
         GL.glDisableVertexAttribArray(att_colors)
         GL.glDisableVertexAttribArray(att_norm)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
         GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0)
-        
+
         return vao
-    
+
     def _get_vao_lines(self):
         """ Creates the Vertex Array Object, Vertex Buffer Objects and fill the
             shaders with the data of the gizmo's lines. It takes no arguments
@@ -353,30 +350,30 @@ void main()
         """
         vao = GL.glGenVertexArrays(1)
         GL.glBindVertexArray(vao)
-        
+
         vert_vbo = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vert_vbo)
         GL.glBufferData(GL.GL_ARRAY_BUFFER, self.lines_vertices.itemsize*int(len(self.lines_vertices)), self.lines_vertices, GL.GL_STATIC_DRAW)
-        
+
         att_position = GL.glGetAttribLocation(self.gl_lines_program, 'vert_coord')
         GL.glEnableVertexAttribArray(att_position)
         GL.glVertexAttribPointer(att_position, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*self.lines_vertices.itemsize, ctypes.c_void_p(0))
-        
+
         col_vbo = GL.glGenBuffers(1)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, col_vbo)
         GL.glBufferData(GL.GL_ARRAY_BUFFER, self.lines_colors.itemsize*int(len(self.lines_colors)), self.lines_colors, GL.GL_STATIC_DRAW)
-        
+
         att_colors = GL.glGetAttribLocation(self.gl_lines_program, 'vert_color')
         GL.glEnableVertexAttribArray(att_colors)
         GL.glVertexAttribPointer(att_colors, 3, GL.GL_FLOAT, GL.GL_FALSE, 3*self.lines_colors.itemsize, ctypes.c_void_p(0))
-        
+
         GL.glBindVertexArray(0)
         GL.glDisableVertexAttribArray(att_position)
         GL.glDisableVertexAttribArray(att_colors)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
-        
+
         return vao
-    
+
     def load_params(self):
         """ This function load the model matrix of the gizmo, the camera
             position and the light parameters in the cones OpenGL program.
@@ -396,7 +393,7 @@ void main()
         shiny = GL.glGetUniformLocation(self.gizmo_axis_program, 'my_light.shininess')
         GL.glUniform1fv(shiny, 1, self.light_shininess)
         return True
-    
+
     def load_lines_params(self):
         """ Load the model matrix of the gizmo's lines in the lines OpenGL
             program.
@@ -404,7 +401,7 @@ void main()
         model = GL.glGetUniformLocation(self.gl_lines_program, 'model_mat')
         GL.glUniformMatrix4fv(model, 1, GL.GL_FALSE, self.model_mat)
         return True
-    
+
     def _draw_gizmo_axis(self, flag):
         """ Function called to draw the gizmo axis in an OpenGL window.
             To drawing method is inside the class to make the class completely
@@ -446,4 +443,4 @@ void main()
             GL.glUseProgram(0)
         GL.glDisable(GL.GL_DEPTH_TEST)
         return True
-    
+

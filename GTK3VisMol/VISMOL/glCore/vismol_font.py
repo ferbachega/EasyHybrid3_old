@@ -22,10 +22,11 @@
 #  
 #  
 
+import ctypes
 import numpy as np
 import freetype as ft
-import ctypes
 from OpenGL import GL
+
 
 class VisMolFont():
     """ VisMolFont stores the data created using the freetype python binding
@@ -42,7 +43,7 @@ class VisMolFont():
                             
         """ Class initialiser
         """
-        self.visObj    = visObj
+        self.visObj = visObj
         self.font_file = font_file
         self.char_res = char_res
         self.char_width = c_w

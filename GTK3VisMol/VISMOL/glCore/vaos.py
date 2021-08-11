@@ -23,14 +23,15 @@
 #  
 
 import ctypes
-import numpy as np
 import shapes
-
+import numpy as np
 from OpenGL import GL
+
 
 def _get_normal(vec1, vec2):
     """ Function doc """
     return (vec1 + vec2) / np.linalg.norm(vec1 + vec2)
+
 
 def make_spheres(program, points):
     """ Function doc """
@@ -89,4 +90,3 @@ def make_spheres(program, points):
     GL.glDisableVertexAttribArray(gl_colors)
     GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
     return vertex_array_object, (coord_vbo, centr_vbo, col_vbo), int(len(indices))
-

@@ -22,32 +22,16 @@
 #  
 #  
 
-import math
-import numpy as np
-import ctypes
-import VISMOL.glCore.VisMolGLCore as vismol_widget
-#import VISMOL.glCore.shapes as shapes
-#import VISMOL.glCore.glaxis as glaxis
-#import VISMOL.glCore.glcamera as cam
-#import VISMOL.glCore.operations as op
-#import VISMOL.glCore.sphere_data as sph_d
-#import VISMOL.glCore.vismol_shaders as vm_shader
-#import VISMOL.glCore.matrix_operations as mop
-
 import gi
+import numpy as np
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
-
-import OpenGL
-from OpenGL import GLU
-from OpenGL import GL
-from OpenGL.GL import shaders
+import VISMOL.glCore.VisMolGLCore as vismol_widget
 
 
 class GLMenus2 :
     """ Class doc """
     def __init__ (self, glWidget, menu_items):
-        
         
         #---------------------------------------------------------
         self.menu1 = Gtk.Menu()
@@ -66,14 +50,6 @@ class GLMenus2 :
         self.menu1.append(self.menu1_separator2       )
         self.menu1.append(self.menu1_item_delete_all  )
         self.menu1.append(self.menu1_item_reinitialize)
-        #---------------------------------------------------------
-        
-    
-               
-        
-
-
-
         #---------------------------------------------------------
         self.menu2 = Gtk.Menu()
         self.menu2_item_label         = Gtk.MenuItem('label')
@@ -94,9 +70,6 @@ class GLMenus2 :
         self.menu2.append(self.menu2_item_molecule)
         self.menu2.append(self.menu2_separator3   )
         #---------------------------------------------------------
-
-
-
         self.menu3 = Gtk.Menu()
         self.menu3_item_label = Gtk.MenuItem('label')
         for label in menu_items:
@@ -104,24 +77,16 @@ class GLMenus2 :
             mitem.connect('activate', menu_items[label])
             self.glMenu.append(mitem)
 
-   
-        
-    
     def build_glmenu (self, menu_items = None):
         """ Function doc """
         self.glMenu = Gtk.Menu()
-        
         self.menu_header = Gtk.MenuItem('')
-        #mitem.connect('activate', menu_items[label])
         self.glMenu.append(self.menu_header)
-        
         for label in menu_items:
             mitem = Gtk.MenuItem(label)
             mitem.connect('activate', menu_items[label])
             self.glMenu.append(mitem)
-			
         self.glMenu.show_all()
-     
 
 
 class GLMenu3:
@@ -230,7 +195,6 @@ class GLMenu3:
   </object>
 </interface>
         '''
-
         self.builder = Gtk.Builder()
         self.builder.add_from_string(xml)
         self.builder.connect_signals(self)
@@ -238,20 +202,17 @@ class GLMenu3:
     
     def open_gl_menu(self, event = None):
         """ Function doc """
-        
         # Check if right mouse button was preseed
         if event.button == 3:
-        
         #self.popup.popup(None, None, None, None, event.button, event.time)
         #return True # event has been handled        
             print('clickei no menu')
             widget = self.builder.get_object('menu1')
-            widget.popup(None, None, None, None, event.button, event.time)        
+            widget.popup(None, None, None, None, event.button, event.time)
             pass
     
     def menuItem_function (self, widget, data):
         """ Function doc """
-        #print ('Charlitos, seu lindo')
         if widget == self.builder.get_object('menuitem1'):
             self.glWidget.test_hide()
         
@@ -259,7 +220,6 @@ class GLMenu3:
             self.glWidget.test_show()
         
         if widget == self.builder.get_object('menuitem5'):
-        
             print ('Charlitos, el diablo')
         
         if widget == self.builder.get_object('menuitem6'):
@@ -302,61 +262,37 @@ class GtkGLAreaWidget(Gtk.GLArea):
         self.connect("button-release-event", self.mouse_released)
         self.connect("motion-notify-event", self.mouse_motion)
         self.connect("scroll-event", self.mouse_scroll)
-        #self.set_size_request(600, 600)
         self.grab_focus()
         self.set_events( self.get_events() | Gdk.EventMask.SCROLL_MASK
                        | Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK
                        | Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.POINTER_MOTION_HINT_MASK
                        | Gdk.EventMask.KEY_PRESS_MASK | Gdk.EventMask.KEY_RELEASE_MASK )
-        
-        
+
         self.Vismol_Objects_ListStore         = Gtk.ListStore(bool,str , str ,str, str)
         self.Vismol_selection_modes_ListStore = Gtk.ListStore(str)
-        
         self.vm_widget = vismol_widget.VisMolGLCore(self, vismolSession, np.float32(width), np.float32(height))
         self.vismolSession = vismolSession
-        
-        
         self.glMenu_sele = None
         self.glMenu_bg = None
         self.glMenu_obj = None
-        #self.glMenu = GLMenu(self)
-    
-    
-    
-    def _ (_):
-        """ Function doc """
-        
-    
+
     def build_submenus_from_dicts (self, menu_dict):
         """ Function doc """
         menu = Gtk.Menu()
-        
         for key in menu_dict:
             mitem = Gtk.MenuItem(key)
-            
             if menu_dict[key][0] == 'submenu':
-                #print(key)
                 menu2 = self.build_submenus_from_dicts (menu_dict[key][1])
                 mitem.set_submenu(menu2)
-            
-            
             elif menu_dict[key][0] == 'separator':
                 mitem = Gtk.SeparatorMenuItem()
-                #menu2 = self.build_submenus_from_dicts (menu_dict[key][1])
-                #mitem.set_submenu(menu2)
-                #print(key)
-
-            
             else:
-                if menu_dict[key][1] != None:
+                if menu_dict[key][1] is not None:
                     mitem.connect('activate', menu_dict[key][1])
                 else:
                     pass
             menu.append(mitem)
-        
         return menu
-        #menu.show_all()
 
     def build_glmenu_from_dicts (self, menu_dict, glMenu):
         """ Function doc """
@@ -366,10 +302,8 @@ class GtkGLAreaWidget(Gtk.GLArea):
             if menu_dict[key][0] == 'submenu':
                 menu2 = self.build_submenus_from_dicts (menu_dict[key][1])
                 mitem.set_submenu(menu2)
-            
             elif menu_dict[key][0] == 'separator':
                 mitem = Gtk.SeparatorMenuItem()
-          
             else:
                 if menu_dict[key][1] != None:
                     mitem.connect('activate', menu_dict[key][1])
@@ -379,45 +313,14 @@ class GtkGLAreaWidget(Gtk.GLArea):
 
     def build_glmenu (self,  bg_menu  = None, sele_menu = None, obj_menu = None , pick_menu =  None):
         """ Function doc """
-
-        #self.glMenu = Gtk.Menu()
-        #
-        #self.menu_header = Gtk.MenuItem('')
-        ##mitem.connect('activate', menu_items[label])
-        #self.glMenu.append(self.menu_header)
-        #
-        #for label in menu_items:
-        #    mitem = Gtk.MenuItem(label)
-        #    mitem.connect('activate', menu_items[label])
-        #    self.glMenu.append(mitem)
-		#	
-        #
-        #self.glMenu_show = Gtk.Menu()
-        #self.menu_item1 = Gtk.MenuItem('test')
-        #self.glMenu_show.append(self.menu_item1)
-        #
-        #
-        #
-        #self.menu_show = Gtk.MenuItem('show')
-        #self.menu_show.set_submenu(self.glMenu_show)
-        ##mitem.connect('activate', menu_items[label])
-        #self.glMenu.append(self.menu_show)
-        #    
-        #    
-        #self.glMenu.show_all()
-
-        
         ''' Selection Menu '''
         # --------------------------------------------------------------- #
         if sele_menu:
             self.glMenu_sele           = Gtk.Menu()
             self.glMenu_sele_toplabel =  Gtk.MenuItem(label = 'selection')
             self.glMenu_sele.append (self.glMenu_sele_toplabel)
-            
             self.build_glmenu_from_dicts( sele_menu, self.glMenu_sele)
-           
             self.glMenu_sele.show_all()
-
         else:
             self.glMenu_sele = None
         # --------------------------------------------------------------- #
@@ -428,11 +331,8 @@ class GtkGLAreaWidget(Gtk.GLArea):
             self.glMenu_pick           = Gtk.Menu()
             self.glMenu_pick_toplabel =  Gtk.MenuItem(label = 'picking')
             self.glMenu_pick.append (self.glMenu_pick_toplabel)
-            
             self.build_glmenu_from_dicts( pick_menu, self.glMenu_pick)
-           
             self.glMenu_pick.show_all()
-
         else:
             self.glMenu_pick = None
         # --------------------------------------------------------------- #
@@ -443,33 +343,26 @@ class GtkGLAreaWidget(Gtk.GLArea):
             self.glMenu_bg  = Gtk.Menu()
             self.glMenu_bg_toplabel =  Gtk.MenuItem(label = 'background')
             self.glMenu_bg.append (self.glMenu_bg_toplabel)
-
             self.build_glmenu_from_dicts( bg_menu, self.glMenu_bg)
-            #self.glMenu_bg = self.build_submenus_from_dicts (bg_menu)
             self.glMenu_bg.show_all()
         else:
             self.glMenu_bg = None
-        
-        
+
         if obj_menu:
             self.glMenu_obj  = Gtk.Menu()
             self.glMenu_obj_toplabel =  Gtk.MenuItem(label = 'atom')
             self.glMenu_obj.append (self.glMenu_obj_toplabel)
-
             self.build_glmenu_from_dicts( obj_menu, self.glMenu_obj)
             self.glMenu_obj.show_all()
         else:
             self.glMenu_obj = None
-            
-     
+
     def show_gl_menu (self, signals = None, menu_type = None, info = None):
         """ Function doc """
-        
         if menu_type == 'bg_menu':
             if self.glMenu_bg:
                 self.glMenu_bg.popup(None, None, None, None, 0, 0)
-        
-        
+
         if menu_type == 'sele_menu':
             if self.glMenu_sele:
                 self.glMenu_sele.popup(None, None, None, None, 0, 0)
@@ -478,13 +371,11 @@ class GtkGLAreaWidget(Gtk.GLArea):
             if self.glMenu_pick:
                 self.glMenu_pick.popup(None, None, None, None, 0, 0)
         
-        
         if menu_type == 'obj_menu':
             if self.glMenu_obj:
                 self.glMenu_obj_toplabel.set_label(info)
                 self.glMenu_obj.popup(None, None, None, None, 0, 0)
-        
-            
+
     def initialize(self, widget):
         """ Enables the buffers and other charasteristics of the OpenGL context.
             sets the initial projection and view matrix
@@ -531,226 +422,127 @@ class GtkGLAreaWidget(Gtk.GLArea):
         using Ctrl+Z to undo an action.
         """
         k_name = Gdk.keyval_name(event.keyval)
-
         print(k_name)
-
         self.vm_widget.key_pressed(k_name)
-
         if k_name == 'l':
             filename = self.vismolSession.main_session.filechooser.open()
             self.vismolSession.load(filename)
-            #self.main_treeview.refresh_gtk_main_treeview()
             visObj = self.vismolSession.vismol_objects[-1]
             self.vismolSession.glwidget.vm_widget.center_on_coordinates(visObj, visObj.mass_center)
 
-        #if k_name == 'r':
-        #    #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
-        #    visObj = self.vismolSession.vismol_objects[0]
-        #    #visObj.ribbons_active =  True
-        #    if visObj.ribbons_active:
-        #        visObj.ribbons_active =  False
-        #    else:
-        #        visObj.ribbons_active =  True
-
-
-
-
-
-        #if k_name == 'f':
-        #    #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
-        #    visObj = self.vismolSession.vismol_objects[0]
-        #    
-        #    if visObj.spheres_ON_THE_FLY_active:
-        #        visObj.spheres_ON_THE_FLY_active =  False
-        #    else:
-        #        visObj.spheres_ON_THE_FLY_active =  True
-        #    #self.vismolSession.show (_type = 'lines', Vobjects =  [])
-
-
-
-
-        #if k_name == 't':
-        #    #self.vismolSession.show(_type = 'ball_and_stick', Vobjects =  [self.vismolSession.vismol_objects[-1]])
-        #    for visObj in self.vismolSession.vismol_objects:
-        #        
-        #        if visObj.sticks_active:
-        #            print (visObj.sticks_active)
-        #            print("visObj.representations['sticks'].active =  True")
-        #            visObj.representations['sticks'].active =  False
-        #        else:
-        #            print (visObj.sticks_active)
-        #            indexes = np.array([0,1,0,2,1,2], dtype=np.uint32)
-        #            visObj.representations['sticks'].indexes = indexes
-        #            
-        #            print("visObj.representations['sticks'].active =  False")
-        #            visObj.representations['sticks'].active =  True
-
-        #if k_name == 'd':
-        #    self.vismolSession.show(_type = 'dots', Vobjects =  [self.vismolSession.vismol_objects[-1]])
-        #    #visObj = self.vismolSession.vismol_objects[0]
-        #    #visObj.dots_active =  True
-        
         if k_name == 'v':
-            #self.vismolSession.show(_type = 'dots', Vobjects =  [self.vismolSession.vismol_objects[-1]])
             visObj = self.vismolSession.vismol_objects[0]
             if visObj.dots_surface_active:
                 visObj.dots_surface_active =  False
             else:
                 visObj.dots_surface_active =  True
 
-
         if k_name == 'e':                             
             self.vismolSession.show_or_hide( _type = 'spheres', show = True)
         if k_name == 'd':
             self.vismolSession.show_or_hide( _type = 'spheres', show = False) 
 
-
         if k_name == 'w':                             
             self.vismolSession.show_or_hide( _type = 'sticks', show = True)
         if k_name == 's':
             self.vismolSession.show_or_hide( _type = 'sticks', show = False)     
-        
-        
+
         if k_name == 'q':
             self.vismolSession.show_or_hide( _type = 'lines', show = True)    
         if k_name == 'a':
             self.vismolSession.show_or_hide( _type = 'lines', show = False)
-
 
         if k_name == 'r':
             self.vismolSession.show_or_hide( _type = 'dots', show = True)    
         if k_name == 'f':
             self.vismolSession.show_or_hide( _type = 'dots', show = False)
 
-
-       
         if k_name == 'z':
-            #self.vismolSession.glwidget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  indexes = False)
-
             # Associates selected bonds as false / true
             for atom in self.vismolSession.selections[self.vismolSession.current_selection].selected_atoms:
-                #print (atom.name)
                 for bond in atom.bonds:
                     bond.line_active = False
 
             # Build a list of the connections that are active -> this list will be sent to the openGL buffer
             for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
                 indexes_bonds = []
-                
                 for bonds in vobject.bonds:
                     if bonds.line_active:
                         indexes_bonds.append(bonds.atom_index_i)
                         indexes_bonds.append(bonds.atom_index_j)
                     else:
                         pass
-
                 # When the list is [] we simply have to disable the display of the representation type
                 if indexes_bonds == []:
-                    #print('indexes_bonds == []')
                     vobject.lines_active  = False
                 else:
-                    #print('indexes_bonds ==', indexes_bonds)
                     vobject.representations['lines'].define_new_indexes_to_VBO(indexes_bonds)
-                    #self.vm_widget.set_draw_lines_indexes (visObj = vobject,  show = False, input_indexes = indexes_bonds)
 
         if k_name == 'x':
-            #self.vismolSession.glwidget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  indexes = False)
-            
             # Associates selected bonds as false / true
             for atom in self.vismolSession.selections[self.vismolSession.current_selection].selected_atoms:
-                #print (atom.name)
                 for bond in atom.bonds:
                     bond.stick_active = False
 
             # Build a list of the connections that are active -> this list will be sent to the openGL buffer
             for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
                 indexes_bonds = []
-                
                 for bond in vobject.bonds:
                     if bond.stick_active:
                         indexes_bonds.append(bond.atom_index_i)
                         indexes_bonds.append(bond.atom_index_j)
                     else:
                         pass
-                
                 # When the list is [] we simply have to disable the display of the representation type
                 if indexes_bonds == []:
-                    #print('indexes_bonds == []')
                     vobject.sticks_active  = False
                 else:
-                    #print('indexes_bonds ==', indexes_bonds)
                     vobject.representations['sticks'].define_new_indexes_to_VBO(indexes_bonds)
 
-
-
-
-
         if k_name == 'c':
-            #self.vismolSession.glwidget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  indexes = False)
-            
             # Associates selected bonds as false / true
             for atom in self.vismolSession.selections[self.vismolSession.current_selection].selected_atoms:
                 atom.nonbonded = False
-                #print (atom.name)
-                
+
             for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
                 indexes = []
-                
                 for atom in vobject.atoms:
                     if atom.nonbonded:
                         indexes.append(atom.index-1)
                     else:                   
                         pass
-                
                 # When the list is [] we simply have to disable the display of the representation type
                 if indexes == []:
-                    #print('indexes_bonds == []')
                     vobject.representations['nonbonded'].active = False
                 else:
-                    #print('indexes_bonds ==', indexes_bonds)
                     vobject.representations['nonbonded'].define_new_indexes_to_VBO(indexes)
 
         if k_name == 'b':
-            #self.vismolSession.glwidget._set_draw_dots_indexes (visObj = self.vismolSession.vismol_objects[0],  indexes = False)
-            
             # Associates selected bonds as false / true
             for atom in self.vismolSession.selections[self.vismolSession.current_selection].selected_atoms:
                 atom.spheres = False
-                #print (atom.name)
-                
             for vobject in self.vismolSession.selections[self.vismolSession.current_selection].selected_objects:
                 indexes = []
-                
                 for atom in vobject.atoms:
                     if atom.spheres:
                         indexes.append(atom.index-1)
                     else:                   
                         pass
-                
                 # When the list is [] we simply have to disable the display of the representation type
                 if indexes == []:
-                    #print('indexes_bonds == []')
                     vobject.representations['dots'].active = False
                 else:
-                    #print('indexes_bonds ==', indexes_bonds)
                     vobject.representations['dots'].define_new_indexes_to_VBO(indexes)
                     vobject.representations['spheres'].define_new_indexes_to_VBO(indexes)
 
-
-
-
-
-
-
         if k_name == 'period':
-            #self.vismolSession.get_frame()
             frame = self.vismolSession.get_frame()+1
             self.vismolSession.set_frame(frame)
             print (frame)
         if k_name == 'comma':
             frame = self.vismolSession.get_frame()-1
             self.vismolSession.set_frame(frame)
-            print (frame)	
+            print (frame)
             
     def key_released(self, widget, event):
         """ Used to indicates a key has been released.
@@ -766,7 +558,6 @@ class GtkGLAreaWidget(Gtk.GLArea):
     def mouse_released(self, widget, event):
         """ Function doc
         """
-        #self.vm_widget.mouse_released(int(event.button), event.x, event.y)
         self.vm_widget.mouse_released(event, event.x, event.y)
         
     def mouse_motion(self, widget, event):
@@ -781,4 +572,3 @@ class GtkGLAreaWidget(Gtk.GLArea):
             self.vm_widget.mouse_scroll(1)
         if event.direction == Gdk.ScrollDirection.DOWN:
             self.vm_widget.mouse_scroll(-1)
-    

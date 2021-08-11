@@ -254,5 +254,3 @@ class GLCamera():
         print("<= projection_matrix =>", self.projection_matrix)
         print("######## GLCAMERA MATRICES ########")
         return True
-    
-    

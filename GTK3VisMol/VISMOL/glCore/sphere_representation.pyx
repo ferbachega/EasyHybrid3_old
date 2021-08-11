@@ -30,8 +30,6 @@ from OpenGL import GL
 import VISMOL.glCore.sphere_data as sphd
 
 
-
-
 def _create_frame_sphere_data (frame, atoms ,offset, elems, scale, level, qtty ):
     """ Function doc """
     coords  = sphd.sphere_vertices[level]*qtty
