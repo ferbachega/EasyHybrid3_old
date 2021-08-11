@@ -357,8 +357,8 @@ class VisMolSession (ShowHideVisMol):
                 #self.player_frame = self.player.main_frame
                 #self.player.show_player_main_window ()
                 
-                self.go_to_atom_window = VismolGoToAtomWindow2( VMSession = self)
-                TrajectoryFrame = VismolTrajectoryFrame( VMSession = self)
+                self.go_to_atom_window = VismolGoToAtomWindow2( vismolSession = self)
+                TrajectoryFrame = VismolTrajectoryFrame( vismolSession = self)
                 self.trajectory_frame = TrajectoryFrame.get_box()
                 #self.go_to_atom_window.show_window()
                 
@@ -520,7 +520,7 @@ class VisMolSession (ShowHideVisMol):
         from VISMOL.vModel.Chain             import Chain
         from VISMOL.vModel.Residue           import Residue
         print('  funcao teste   ')
-        vismol_object  = NewObj.create_empty_vismol_obj (infile = None, VMSession = self, gridsize = 3)
+        vismol_object  = NewObj.create_empty_vismol_obj (infile = None, vismolSession = self, gridsize = 3)
         vismol_object.set_model_matrix(self.glwidget.vm_widget.model_mat)        
         vismol_object.active = True
         
@@ -1138,7 +1138,7 @@ class VisMolSession (ShowHideVisMol):
     
     def _load_pdb_coords_to_vismol_object(self, infile , visObj = None):
         """ Function doc """
-        frames = PDBFiles.load_pdb_file (infile = infile, VMSession = self, frames_only = True) 
+        frames = PDBFiles.load_pdb_file (infile = infile, vismolSession = self, frames_only = True) 
         
         print ('system size: ', len(visObj.atoms),'frame size: ',len(frames[0])/3)
         for frame in frames:
@@ -1151,27 +1151,27 @@ class VisMolSession (ShowHideVisMol):
 
     def _load_gro_file (self, infile):
         #print(infile)
-        vismol_object  = GROFiles.load_gro_file (infile = infile, VMSession = self)     
+        vismol_object  = GROFiles.load_gro_file (infile = infile, vismolSession = self)     
         vismol_object.set_model_matrix(self.glwidget.vm_widget.model_mat)        
         self.vismol_objects.append(vismol_object)
         
     
     def _load_amber_top_file (self, infile):
         #print(infile)
-        vismol_object  = AMBERFiles.load_amber_topology_file (infile = infile, VMSession = self)     
+        vismol_object  = AMBERFiles.load_amber_topology_file (infile = infile, vismolSession = self)     
         vismol_object.set_model_matrix(self.glwidget.vm_widget.model_mat)        
         self.vismol_objects.append(vismol_object)
     
     def _load_psf_file (self, infile):
         #print(infile)
-        vismol_object  = PSFFiles.load_PSF_topology_file (infile = infile, VMSession = self)     
+        vismol_object  = PSFFiles.load_PSF_topology_file (infile = infile, vismolSession = self)     
         vismol_object.set_model_matrix(self.glwidget.vm_widget.model_mat)        
         self.vismol_objects.append(vismol_object)
     
     def _load_pdb_file (self, infile):
         """ Function doc """      
         print(infile)
-        vismol_object  = PDBFiles.load_pdb_file (infile = infile, VMSession = self)     
+        vismol_object  = PDBFiles.load_pdb_file (infile = infile, vismolSession = self)     
         
         #self._load_pdb_coords_to_vismol_object(infile , vismol_object)
         
@@ -1220,7 +1220,7 @@ class VisMolSession (ShowHideVisMol):
     def _load_aux_file (self, infile):
         """ Function doc """
         print(infile)
-        vismol_object  = AUXFiles.load_aux_file (infile = infile, VMSession = self)
+        vismol_object  = AUXFiles.load_aux_file (infile = infile, vismolSession = self)
         vismol_object.set_model_matrix(self.glwidget.vm_widget.model_mat)        
         self.vismol_objects.append(vismol_object)
 
@@ -1228,7 +1228,7 @@ class VisMolSession (ShowHideVisMol):
     def _load_mol2_file (self, infile):
         """ Function doc """
         print(infile)
-        vismol_object  = MOL2Files.load_mol2_files (infile = infile, VMSession = self)
+        vismol_object  = MOL2Files.load_mol2_files (infile = infile, vismolSession = self)
         vismol_object.set_model_matrix(self.glwidget.vm_widget.model_mat)        
         self.vismol_objects.append(vismol_object)
         
@@ -1237,7 +1237,7 @@ class VisMolSession (ShowHideVisMol):
         """ Function doc """
         #load_xyz_file
         print(infile)
-        vismol_object  = XYZFiles.load_xyz_file (infile = infile, VMSession = self)
+        vismol_object  = XYZFiles.load_xyz_file (infile = infile, vismolSession = self)
         vismol_object.set_model_matrix(self.glwidget.vm_widget.model_mat)        
         self.vismol_objects.append(vismol_object)
     

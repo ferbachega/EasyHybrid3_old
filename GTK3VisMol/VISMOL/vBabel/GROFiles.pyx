@@ -7,7 +7,7 @@ import numpy as np
 from   VISMOL.vModel import VismolObject
 from pprint import pprint
 
-cpdef load_gro_file (infile = None, gridsize = 3, VMSession =  None):
+cpdef load_gro_file (infile = None, gridsize = 3, vismolSession =  None):
     """ Function doc 
 
     gridsize =
@@ -25,7 +25,7 @@ cpdef load_gro_file (infile = None, gridsize = 3, VMSession =  None):
     #-------------------------------------------------------------------------------------------
     #                                P D B     P A R S E R 
     #-------------------------------------------------------------------------------------------
-    at  =  VMSession.vConfig.atom_types
+    at  =  vismolSession.vConfig.atom_types
     with open(infile, 'r') as gro_file:
         
         grotext = gro_file.readlines()
@@ -46,7 +46,7 @@ cpdef load_gro_file (infile = None, gridsize = 3, VMSession =  None):
     name = os.path.basename(infile)
     vismol_object  = VismolObject.VismolObject(name        = name, 
                                                atoms       = atoms, 
-                                               VMSession   = VMSession, 
+                                               vismolSession   = vismolSession, 
                                                trajectory  = frames,
                                                auto_find_bonded_and_nonbonded = True)
     '''

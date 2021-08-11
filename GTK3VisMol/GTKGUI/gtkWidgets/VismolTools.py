@@ -11,7 +11,7 @@ class VismolGoToAtomWindow2(Gtk.Window):
         """ Function doc """
         if self.Visible  ==  False:
             
-            self.VMSession.Vismol_Objects_ListStore
+            self.vismolSession.Vismol_Objects_ListStore
             
             #------------------------------------------------------------------#
             #                  VISOBJ combobox and Label
@@ -24,7 +24,7 @@ class VismolGoToAtomWindow2(Gtk.Window):
             self.label1.set_text('Object:')
             self.box_horizontal1.pack_start(self.label1, False, False, 0)
 
-            combobox_vobjects = Gtk.ComboBox.new_with_model(self.VMSession.Vismol_Objects_ListStore)
+            combobox_vobjects = Gtk.ComboBox.new_with_model(self.vismolSession.Vismol_Objects_ListStore)
             combobox_vobjects.connect("changed", self.on_combobox_vobjects_changed)
             renderer_text = Gtk.CellRendererText()
             combobox_vobjects.pack_start(renderer_text, True)
@@ -227,9 +227,9 @@ class VismolGoToAtomWindow2(Gtk.Window):
         self.Visible    =  False
         print('self.Visible',self.Visible)
     
-    def __init__(self, VMSession = None):
+    def __init__(self, vismolSession = None):
         """ Class initialiser """
-        self.VMSession = VMSession
+        self.vismolSession = vismolSession
         #if EasyHybridSession != None:
         #    self.project          = EasyHybridSession.project
         #    self.main_builder     = EasyHybridSession.builder
@@ -308,7 +308,7 @@ class VismolGoToAtomWindow2(Gtk.Window):
         print(widget.get_active())
         #print(widget.get_active_id())
         #print(widget.get_active_iter())
-        self.VObj = self.VMSession.vismol_objects[widget.get_active()]
+        self.VObj = self.vismolSession.vismol_objects[widget.get_active()]
         
         
         self.liststore_chains = Gtk.ListStore(str)
@@ -390,7 +390,7 @@ class VismolGoToAtomWindow2(Gtk.Window):
             if iter != None:
                 self.selectedID  = int(model.get_value(iter, 1))-1  # @+
                 atom = self.VObj.atoms[self.selectedID]
-                self.VMSession.glwidget.vm_widget.center_on_atom(atom)
+                self.vismolSession.glwidget.vm_widget.center_on_atom(atom)
        
     
     def on_treeview_row_activated_event(self, tree, rowline , column ):
@@ -450,10 +450,10 @@ class VismolGoToAtomWindow2(Gtk.Window):
                 self.selectedObj = str(model.get_value(iter, 2))
                 self.selectedChn = str(model.get_value(iter, 3))
                 res = self.VObj.chains[self.selectedChn].residues_by_index[self.selectedID]
-                frame = self.VMSession.get_frame ()
+                frame = self.vismolSession.get_frame ()
                 res.get_center_of_mass(frame = frame)
                 
-                self.VMSession.glwidget.vm_widget.center_on_coordinates(res.Vobject, res.mass_center)
+                self.vismolSession.glwidget.vm_widget.center_on_coordinates(res.Vobject, res.mass_center)
         
                 self.atom_liststore.clear()
                 for atom in res.atoms:
@@ -536,9 +536,9 @@ class VismolGoToAtomWindow2(Gtk.Window):
 class VismolTrajectoryFrame(Gtk.Frame):
     """ Class doc """
     
-    def __init__ (self, VMSession = None):
+    def __init__ (self, vismolSession = None):
         """ Class initialiser """
-        self.VMSession = VMSession 
+        self.vismolSession = vismolSession 
         
         self.frame      =Gtk.Frame()
         #self.frame.set_shadow_type(Gtk.SHADOW_IN)
@@ -576,7 +576,7 @@ class VismolTrajectoryFrame(Gtk.Frame):
         
         #----------------------------------------------------------------------------
         self.label2 =  Gtk.Label('Obj id:')
-        self.combobox_vobjects = Gtk.ComboBox.new_with_model(self.VMSession.Vismol_Objects_ListStore)
+        self.combobox_vobjects = Gtk.ComboBox.new_with_model(self.vismolSession.Vismol_Objects_ListStore)
         self.combobox_vobjects.connect("changed", self.on_combobox_vobjects_changed)
         self.renderer_text = Gtk.CellRendererText()
         self.combobox_vobjects.pack_start(self.renderer_text, True)
@@ -603,7 +603,7 @@ class VismolTrajectoryFrame(Gtk.Frame):
         value =  int(self.scale.get_value())
         value = value+1
         self.scale.set_value(int(value))
-        self.VMSession.set_frame(int(value))
+        self.vismolSession.set_frame(int(value))
         print(value)
 
     def reverse (self, button):
@@ -615,7 +615,7 @@ class VismolTrajectoryFrame(Gtk.Frame):
         else:
            value = value-1
         
-        self.VMSession.set_frame(int(value))
+        self.vismolSession.set_frame(int(value))
         self.scale.set_value(value)
         print(value)
     
@@ -630,15 +630,15 @@ class VismolTrajectoryFrame(Gtk.Frame):
         print(widget)
         print(widget.get_active())
         
-        self.VObj = self.VMSession.vismol_objects[widget.get_active()]
+        self.VObj = self.vismolSession.vismol_objects[widget.get_active()]
         number_of_frames = len(self.VObj.frames)
         self.scale.set_range(0, int(number_of_frames)-1)
-        self.scale.set_value(self.VMSession.get_frame())
+        self.scale.set_value(self.vismolSession.get_frame())
 
     def on_scaler_frame_change_change_value (self, hscale, text= None,  data=None):
         """ Function doc """
         value = hscale.get_value()
-        self.VMSession.set_frame(int(value)) 
+        self.vismolSession.set_frame(int(value)) 
         #print(value)
 
 

@@ -28,11 +28,11 @@ import VISMOL.vModel.Vectors as LA
 class VisMolPickingSelection:
     """ Class doc """
     
-    def __init__ (self, VMSession):
+    def __init__ (self, vismolSession):
         """ Class initialiser """
         self.picking_selections_list = [None]*4
         self.picking_selections_list_index = []
-        self.VMSession = VMSession
+        self.vismolSession = vismolSession
         #self.picking_selection_coordinates = []
         #self.selected_atoms_coords   = []
         #self.selected_objects        = {}
@@ -76,7 +76,7 @@ class VisMolPickingSelection:
             for atom2 in self.picking_selections_list[c+1:]:
             
                 if atom1 and atom2:
-                    dist = self.VMSession._get_distance_atom1_atom2 ( atom1, atom2 )
+                    dist = self.vismolSession._get_distance_atom1_atom2 ( atom1, atom2 )
                     name1 = atom1.name
                     name2 = atom2.name
                     print ('atom',name1, 'atom',name2,  dist)
@@ -126,7 +126,7 @@ class VisMolPickingSelection:
 class VisMolViewingSelection:
     """ Class doc """
     
-    def __init__ (self, VMSession):
+    def __init__ (self, vismolSession):
         #---------------------------------------------------------------
         #                S E L E C T I O N S
         #---------------------------------------------------------------
@@ -136,7 +136,7 @@ class VisMolViewingSelection:
         self.selected_objects      = {} #dic of VisMol objects (obj)
         self.selected_atoms        = [] #List of atoms objects (obj)
         self.selected_atoms_coords = [] #coordinate (floats) x y z
-        self.VMSession             = VMSession
+        self.vismolSession             = vismolSession
     
     def get_selection_info (self):
         """ Function doc """
@@ -214,11 +214,11 @@ class VisMolViewingSelection:
 
     def selecting_by_chain (self, selected_atom):
         ''' If the object selection is disabled, all atoms in the system will be set to False '''
-        #VMSession      = selected_atom.Vobject.VMSession
+        #vismolSession      = selected_atom.Vobject.vismolSession
         self._clear_selection_buffer(selected_atom)
         
         '''
-        VMSession      = selected_atom.Vobject.VMSession
+        vismolSession      = selected_atom.Vobject.vismolSession
         
         #------------------------------------------------
         # Clearing the selections buffer
@@ -226,7 +226,7 @@ class VisMolViewingSelection:
         if self.active:
             pass
         else:
-            for Vobject in VMSession.vismol_objects:
+            for Vobject in vismolSession.vismol_objects:
                 for atom in Vobject.atoms:
                     atom.selected = False
         #------------------------------------------------
@@ -267,7 +267,7 @@ class VisMolViewingSelection:
         """ Function doc """
         self.selected_atoms = []
         
-        for Vobject in self.VMSession.vismol_objects:
+        for Vobject in self.vismolSession.vismol_objects:
             for atom in Vobject.atoms:
                 if atom.selected:
                     #print ('',atom )
@@ -286,7 +286,7 @@ class VisMolViewingSelection:
         if self.active:
             pass
         else:
-            for Vobject in self.VMSession.vismol_objects:
+            for Vobject in self.vismolSession.vismol_objects:
                 for atom in Vobject.atoms:
                     atom.selected = False
         #------------------------------------------------""

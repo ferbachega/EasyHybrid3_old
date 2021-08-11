@@ -300,7 +300,7 @@ class LinesRepresentation (Representation):
         self._enable_anti_alis_to_lines()
         GL.glUseProgram(self.shader_program)
         
-        line_width = self.visObj.VMSession.vConfig.gl_parameters['line_width']
+        line_width = self.visObj.vismolSession.vConfig.gl_parameters['line_width']
         line_width = (line_width*200/abs(self.glCore.dist_cam_zrp)/2)**0.5  #40/abs(self.glCore.dist_cam_zrp)
         GL.glLineWidth(line_width)
 
@@ -339,7 +339,7 @@ class LinesRepresentation (Representation):
         #    self._make_gl_vao_and_vbos ()
         #else:
         #    pass
-        line_width = self.visObj.VMSession.vConfig.gl_parameters['line_width_selection'] 
+        line_width = self.visObj.vismolSession.vConfig.gl_parameters['line_width_selection'] 
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glUseProgram(self.sel_shader_program)
         GL.glLineWidth(line_width)
@@ -772,7 +772,7 @@ class RibbonsRepresentation (Representation):
         self._enable_anti_alis_to_lines()
         GL.glUseProgram(self.shader_program)
         
-        ribbon_width = self.visObj.VMSession.vConfig.gl_parameters['ribbon_width']
+        ribbon_width = self.visObj.vismolSession.vConfig.gl_parameters['ribbon_width']
         LineWidth = ((ribbon_width*20)/abs(self.glCore.dist_cam_zrp)/2)  #40/abs(self.glCore.dist_cam_zrp)
         #print(LineWidth)
         GL.glLineWidth(LineWidth)
@@ -810,7 +810,7 @@ class RibbonsRepresentation (Representation):
         #    self._make_gl_vao_and_vbos ()
         #else:
         #    pass
-        line_width = self.visObj.VMSession.vConfig.gl_parameters['line_width_selection'] 
+        line_width = self.visObj.vismolSession.vConfig.gl_parameters['line_width_selection'] 
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glUseProgram(self.sel_shader_program)
         GL.glLineWidth(line_width)
@@ -913,7 +913,7 @@ class NonBondedRepresentation (Representation):
         self._check_VAO_and_VBOs ()
         self._enable_anti_alis_to_lines()
 
-        line_width = self.visObj.VMSession.vConfig.gl_parameters['line_width']
+        line_width = self.visObj.vismolSession.vConfig.gl_parameters['line_width']
         
         GL.glUseProgram(self.shader_program)
         GL.glLineWidth(line_width*20/abs(self.glCore.dist_cam_zrp))
@@ -1054,7 +1054,7 @@ class DotsRepresentation (Representation):
         self._check_VAO_and_VBOs ()
         self._enable_anti_alis_to_lines()
         #print ('DotsRepresentation')
-        height = self.visObj.VMSession.glwidget.vm_widget.height
+        height = self.visObj.vismolSession.glwidget.vm_widget.height
 
         GL.glUseProgram(self.shader_program)
         #1*self.height dot_size
@@ -1133,8 +1133,8 @@ class SpheresRepresentation (Representation):
         
         # --------------------------------
         #self.level              = level
-        self.level              = self.visObj.VMSession.vConfig.gl_parameters['sphere_quality']
-        self.scale              = self.visObj.VMSession.vConfig.gl_parameters['sphere_scale']
+        self.level              = self.visObj.vismolSession.vConfig.gl_parameters['sphere_quality']
+        self.scale              = self.visObj.vismolSession.vConfig.gl_parameters['sphere_scale']
         
         
         if atoms is None:
@@ -1602,8 +1602,8 @@ class GlumpyRepresentation (Representation):
         self._enable_anti_alis_to_lines()
         GL.glUseProgram(self.shader_program)
         #GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
-        height = self.visObj.VMSession.glwidget.vm_widget.height
-        dist_cam_zrp = self.visObj.VMSession.glwidget.vm_widget.dist_cam_zrp
+        height = self.visObj.vismolSession.glwidget.vm_widget.height
+        dist_cam_zrp = self.visObj.vismolSession.glwidget.vm_widget.dist_cam_zrp
         
         #GL.glPointSize((50*height/(abs(dist_cam_zrp)))**0.5)
         #GL.glPointSize(55)
@@ -1834,7 +1834,7 @@ class CartoonRepresentation (Representation):
         
         '''
         #print ('DotsRepresentation')
-        height = self.visObj.VMSession.glwidget.vm_widget.height
+        height = self.visObj.vismolSession.glwidget.vm_widget.height
         
         GL.glUseProgram(self.shader_program)
         #1*self.height dot_size
@@ -2121,7 +2121,7 @@ class SurfaceRepresentation (Representation):
         
         '''
         #print ('DotsRepresentation')
-        height = self.visObj.VMSession.glwidget.vm_widget.height
+        height = self.visObj.vismolSession.glwidget.vm_widget.height
         
         GL.glUseProgram(self.shader_program)
         #1*self.height dot_size

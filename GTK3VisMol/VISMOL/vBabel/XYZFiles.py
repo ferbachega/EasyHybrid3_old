@@ -86,10 +86,10 @@ USER_CHARGES
 @<TRIPOS>SUBSTRUCTURE
 '''
 
-def load_xyz_file (infile = None, VMSession =  None, gridsize = 3):
+def load_xyz_file (infile = None, vismolSession =  None, gridsize = 3):
     """ Function doc """
     print ('\nstarting: parse_mol2')
-    at  =  VMSession.vConfig.atom_types
+    at  =  vismolSession.vConfig.atom_types
 
     #initial = time.time()
 
@@ -152,7 +152,7 @@ def load_xyz_file (infile = None, VMSession =  None, gridsize = 3):
     #print (frames)
     vismol_object  = VismolObject.VismolObject(name        = name, 
                                                atoms       = atoms, 
-                                               VMSession   = VMSession, 
+                                               vismolSession   = vismolSession, 
                                                trajectory  = frames)
     
     

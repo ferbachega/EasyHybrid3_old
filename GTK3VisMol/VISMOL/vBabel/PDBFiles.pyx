@@ -7,7 +7,7 @@ import numpy as np
 from   VISMOL.vModel import VismolObject
 from pprint import pprint
 
-cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None, frames_only = False):
+cpdef load_pdb_file (infile = None, gridsize = 3, vismolSession =  None, frames_only = False):
     """ Function doc 
 
     gridsize =
@@ -25,7 +25,7 @@ cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None, frames_only
     #-------------------------------------------------------------------------------------------
     #                                P D B     P A R S E R 
     #-------------------------------------------------------------------------------------------
-    at  =  VMSession.vConfig.atom_types
+    at  =  vismolSession.vConfig.atom_types
     with open(infile, 'r') as pdb_file:
         pdbtext = pdb_file.read()
         if 'ENDMDL' in pdbtext:
@@ -56,7 +56,7 @@ cpdef load_pdb_file (infile = None, gridsize = 3, VMSession =  None, frames_only
     name = os.path.basename(infile)
     vismol_object  = VismolObject.VismolObject(name        = name, 
                                                atoms       = atoms, 
-                                               VMSession   = VMSession, 
+                                               vismolSession   = vismolSession, 
                                                trajectory  = frames)
     '''
     #-------------------------------------------------------------------------------------------

@@ -48,7 +48,7 @@ class Atom:
         self.charge     = charge   
         
         
-        self.at = Vobject.VMSession.vConfig.atom_types
+        self.at = Vobject.vismolSession.vConfig.atom_types
 
         self.atom_id = atom_id        # An unique number
         #self.color   = at.get_color    (name)
@@ -89,20 +89,20 @@ class Atom:
     def coords (self, frame = None):
         """ Function doc """
         if frame is None:
-            frame  = self.Vobject.VMSession.glwidget.vm_widget.frame
-            #frame  = self.Vobject.VMSession.glwidget.vm_widget._safe_frame_exchange(self.Vobject)
+            frame  = self.Vobject.vismolSession.glwidget.vm_widget.frame
+            #frame  = self.Vobject.vismolSession.glwidget.vm_widget._safe_frame_exchange(self.Vobject)
         
         
         
-        #if self.Vobject.VMSession.glwidget.vm_widget.frame <  0:
-        #    self.Vobject.VMSession.glwidget.vm_widget.frame = 0
+        #if self.Vobject.vismolSession.glwidget.vm_widget.frame <  0:
+        #    self.Vobject.vismolSession.glwidget.vm_widget.frame = 0
         #else:
         #    pass
         #
-        #if self.Vobject.VMSession.glwidget.vm_widget.frame >= (len (self.Vobject.frames)-1):
+        #if self.Vobject.vismolSession.glwidget.vm_widget.frame >= (len (self.Vobject.frames)-1):
         #    frame = self.Vobject.frames[len (self.Vobject.frames)-2]
         #else:
-        #    frame = self.Vobject.frames[self.Vobject.VMSession.glwidget.vm_widget.frame]
+        #    frame = self.Vobject.frames[self.Vobject.vismolSession.glwidget.vm_widget.frame]
         
         
         coords = [self.Vobject.frames[frame][(self.index-1)*3  ],
@@ -160,7 +160,7 @@ class Atom:
     '''
     def get_color (self):
         """ Function doc """
-        #self.at = Vobject.VMSession.vConfig.atom_types
+        #self.at = Vobject.vismolSession.vConfig.atom_types
 
         self.color   = self.at.get_color(self.symbol)
  
@@ -178,7 +178,7 @@ class Atom:
         pickedID = r + g * 256 + b * 256*256
         self.color_id = [r/255.0, g/255.0, b/255.0]
         #print (pickedID)
-        self.Vobject.VMSession.atom_dic_id[pickedID] = self
+        self.Vobject.vismolSession.atom_dic_id[pickedID] = self
     
     
     
