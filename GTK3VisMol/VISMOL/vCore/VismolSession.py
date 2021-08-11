@@ -353,9 +353,9 @@ class VisMolSession (ShowHideVisMol):
                 self.Vismol_Objects_ListStore = self.glwidget.Vismol_Objects_ListStore
                 
                 
-                self.player = PlayerFrame(self)
-                self.player_frame = self.player.main_frame
-                self.player.show_player_main_window ()
+                #self.player = PlayerFrame(self)
+                #self.player_frame = self.player.main_frame
+                #self.player.show_player_main_window ()
                 
                 self.go_to_atom_window = VismolGoToAtomWindow2( VMSession = self)
                 TrajectoryFrame = VismolTrajectoryFrame( VMSession = self)
@@ -569,8 +569,13 @@ class VisMolSession (ShowHideVisMol):
         self.append_vismol_object_to_vismol_objects_listStore(self.vismol_objects[-1])
 
     
-    def _get_distance_atom1_atom2 (self, atom1, atom2, frame):
+    def _get_distance_atom1_atom2 (self, atom1, atom2, frame = None):
         """ Function doc """
+        if frame:
+            pass
+        else:
+            frame = self.get_frame()
+        
         coords1 =  atom1.coords(frame)
         coords2 =  atom2.coords(frame)
         
@@ -642,19 +647,21 @@ class VisMolSession (ShowHideVisMol):
 
 
 
-        def _selection_mode_atom (_):
+        def _viewing_selection_mode_atom (_):
             """ Function doc """
-            self.selection_mode(selmode = 'atom')
-        def _selection_mode_residue (_):
+            self.viewing_selection_mode(selmode = 'atom')
+        def _viewing_selection_mode_residue (_):
             """ Function doc """
-            self.selection_mode(selmode = 'residue')
-        def _selection_mode_chain (_):
+            self.viewing_selection_mode(selmode = 'residue')
+        def _viewing_selection_mode_chain (_):
             """ Function doc """
-            self.selection_mode(selmode = 'chain')
+            self.viewing_selection_mode(selmode = 'chain')
 
         def _selection_type_picking(_):
+            
             self._picking_selection_mode = True
             self.glwidget.queue_draw()
+        
         def _selection_type_viewing(_):
             self._picking_selection_mode = False
             self.glwidget.queue_draw()
@@ -746,9 +753,9 @@ class VisMolSession (ShowHideVisMol):
                     'Selection Mode'   : [
                                 'submenu' ,{
                                             
-                                            'Atoms'     :  ['MenuItem', _selection_mode_atom],
-                                            'Residue'   :  ['MenuItem', _selection_mode_residue],
-                                            'Chain'     :  ['MenuItem', _selection_mode_chain],
+                                            'Atoms'     :  ['MenuItem', _viewing_selection_mode_atom],
+                                            'Residue'   :  ['MenuItem', _viewing_selection_mode_residue],
+                                            'Chain'     :  ['MenuItem', _viewing_selection_mode_chain],
                                             #'separator2':['separator', None],
                                             #'nonbonded' : ['MenuItem', None],
                     
@@ -811,9 +818,9 @@ class VisMolSession (ShowHideVisMol):
                     'Selection Mode'   : [
                                 'submenu' ,{
                                             
-                                            'Atoms'     :  ['MenuItem', _selection_mode_atom],
-                                            'Residue'   :  ['MenuItem', _selection_mode_residue],
-                                            'Chain'     :  ['MenuItem', _selection_mode_chain],
+                                            'Atoms'     :  ['MenuItem', _viewing_selection_mode_atom],
+                                            'Residue'   :  ['MenuItem', _viewing_selection_mode_residue],
+                                            'Chain'     :  ['MenuItem', _viewing_selection_mode_chain],
                                             #'separator2':['separator', None],
                                             #'nonbonded' : ['MenuItem', None],
                     
@@ -1247,6 +1254,7 @@ class VisMolSession (ShowHideVisMol):
         """ Function doc """
         print('select',vismol_object, indexes, sele )
         
+        self.get_distance()
         
         if vismol_object:
             pass
@@ -1314,6 +1322,11 @@ class VisMolSession (ShowHideVisMol):
 
         #self.glwidget.updateGL()
     
+    def get_distance (self):
+        """ Function doc """
+        if self._picking_selection_mode:
+            print(self.picking_selections.picking_selections_list)
+    
     def get_frame (self):
         """ Function doc """
         #""" Function doc """
@@ -1334,13 +1347,16 @@ class VisMolSession (ShowHideVisMol):
         return Vobjects_dic
 
    
-    def selection_mode(self, selmode = 'atom'):
+    def viewing_selection_mode(self, selmode = 'atom'):
         """ Function doc """        
         print(selmode)
         self.selections[self.current_selection]._selection_mode = selmode
     
+    '''
     def selection_function (self, pickedID):
         """ Function doc """
+        print('selection_function')
+
         if pickedID is None:
             selected = None
         else:
@@ -1352,9 +1368,11 @@ class VisMolSession (ShowHideVisMol):
         
         else:
             self.selections[self.current_selection].selection_function_viewing(selected)
-
+    '''
+    
     def _selection_function (self, selected):
         #"""     P I C K I N G     S E L E C T I O N S     """
+        print('_selection_function')
         if self._picking_selection_mode:
             self.picking_selections.selection_function_picking(selected)
         

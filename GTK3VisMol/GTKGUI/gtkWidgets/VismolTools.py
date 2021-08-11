@@ -560,10 +560,17 @@ class VismolTrajectoryFrame(Gtk.Frame):
         self.box.pack_start(self.scale, True, True, 0)
         
         self.vbox =  Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 6)
+        
+        self.functions = [self.reverse,None, None, self.forward ]
+        c = 0
         for label in ['<<','#', '>','>>']:
             button = Gtk.Button(label)
             self.vbox.pack_start(button, True, True, 0)
-        
+            
+            if self.functions[c]:
+                button.connect("clicked", self.functions[c])
+            c += 1 
+            
         self.box.pack_start(self.vbox, True, True, 0)
         
         
@@ -579,9 +586,9 @@ class VismolTrajectoryFrame(Gtk.Frame):
         #----------------------------------------------------------------------------
         
         #----------------------------------------------------------------------------
-        self.vbox2 =  Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 6)
-        self.label =  Gtk.Label('FPS')
-        self.entry =  Gtk.Entry()
+        self.vbox2 = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 6)
+        self.label = Gtk.Label('FPS')
+        self.entry = Gtk.Entry()
         self.entry.set_text(str(25))
         self.vbox2.pack_start(self.label2, False, True, 0)
         self.vbox2.pack_start(self.combobox_vobjects, True, True, 0)
@@ -591,10 +598,26 @@ class VismolTrajectoryFrame(Gtk.Frame):
         #----------------------------------------------------------------------------
 
 
+    def forward (self, button):
+        """ Function doc """
+        value =  int(self.scale.get_value())
+        value = value+1
+        self.scale.set_value(int(value))
+        self.VMSession.set_frame(int(value))
+        print(value)
 
-        #self.frame.add(self.box)
+    def reverse (self, button):
+        """ Function doc """
+        value = int(self.scale.get_value())
         
-        #self.add(self.box)
+        if value == 0:
+            pass
+        else:
+           value = value-1
+        
+        self.VMSession.set_frame(int(value))
+        self.scale.set_value(value)
+        print(value)
     
     def get_box (self):
         """ Function doc """
@@ -606,8 +629,6 @@ class VismolTrajectoryFrame(Gtk.Frame):
         """ Function doc """
         print(widget)
         print(widget.get_active())
-        #print(widget.get_active_id())
-        #print(widget.get_active_iter())
         
         self.VObj = self.VMSession.vismol_objects[widget.get_active()]
         number_of_frames = len(self.VObj.frames)
@@ -617,7 +638,6 @@ class VismolTrajectoryFrame(Gtk.Frame):
     def on_scaler_frame_change_change_value (self, hscale, text= None,  data=None):
         """ Function doc """
         value = hscale.get_value()
-        
         self.VMSession.set_frame(int(value)) 
         #print(value)
 

@@ -303,6 +303,7 @@ class VisMolGLCore():
                         info = None
                 else:
                     print('selection is  active')
+                    print(self.vismolSession.selections[self.vismolSession.current_selection].selected_objects)
                     info = self.vismolSession.selections[self.vismolSession.current_selection].get_selection_info()
                     menu_type = 'sele_menu'
                 #self.parent_widget.glMenu.#open_gl_menu(event = event)

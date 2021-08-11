@@ -60,7 +60,7 @@ class VismolObject:
     name       = string  - Label that describes the object  
     atoms      = list of atoms  - [index, at_name, cov_rad,  at_pos, at_res_i, at_res_n, at_ch]
     VMSession  = Vismol Session - Necessary to build the "atomtree_structure"
-                 VMSession contains the atom_id_counter (self.vismol_session.atom_id_counter)
+                 VMSession contains the atom_id_counter (self.VMSession.atom_id_counter)
     
     trajectory = A list of coordinates - eg [ [x1,y1,z1, x2,y2,z2...], [x1,y1,z1, x2,y2,z2...]...]
                  One frame is is required at last.
@@ -107,7 +107,7 @@ class VismolObject:
         #-----------------------------------------------------------------
         #                V I S M O L   a t t r i b u t e s
         #----------------------------------------------------------------- 
-        self.vismol_session = VMSession     #
+        self.VMSession = VMSession     #
         self.active         = False         # for "show and hide"   enable/disable
         self.editing        = False         # for translate and rotate  xyz coords 
         self.Type           = 'molecule'    # Not used yet
@@ -344,8 +344,8 @@ class VismolObject:
         #sum_y += atom.pos[1]
         #sum_z += atom.pos[2]
         
-        self.vismol_session.atom_dic_id[self.vismol_session.atom_id_counter] = atom
-        self.vismol_session.atom_id_counter +=1
+        self.VMSession.atom_dic_id[self.VMSession.atom_id_counter] = atom
+        self.VMSession.atom_id_counter +=1
     
     
     
@@ -473,7 +473,7 @@ class VismolObject:
                                        resi          =  at_res_i, 
                                        resn          =  at_res_n, 
                                        chain         =  at_ch, 
-                                       atom_id       =  self.vismol_session.atom_id_counter  ,
+                                       atom_id       =  self.VMSession.atom_id_counter  ,
                                        occupancy     = atom2[10],
                                        bfactor       = atom2[11],
                                        charge        = atom2[12],
@@ -564,7 +564,7 @@ class VismolObject:
             pickedID = r + g * 256 + b * 256*256
             atom.color_id = [r/255.0, g/255.0, b/255.0]
             #print (pickedID)
-            self.vismol_session.atom_dic_id[pickedID] = atom
+            self.VMSession.atom_dic_id[pickedID] = atom
             '''
             #-------------------------------------------------------
             # (2)                   Colors

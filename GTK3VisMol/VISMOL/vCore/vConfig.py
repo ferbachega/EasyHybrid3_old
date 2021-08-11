@@ -336,7 +336,7 @@ class VisMolConfig:
                                   'dot_sel_size'               : 1.5                  , 
                                                                                          
                                   'line_width'                 : 2                    ,  
-                                  'line_width_selection'       : 40                   ,  
+                                  'line_width_selection'       : 80                   ,  
 
                                   'line_type'                  : 0                    ,  # 0 - no detail       1 - Charlitos'style
                                   'line_color'                 : 0                    ,  # 0 - atom types      1 - black (for white bg)     2 - white (for black bg)
