@@ -540,6 +540,12 @@ class VismolSelectionTypeBox(Gtk.Box):
         self.set_orientation(Gtk.Orientation.HORIZONTAL)
         
         
+        self.combobox1 = self.builder.get_object('combobox1')
+        self.combobox1.set_model(self.vismolSession.Vismol_selection_modes_ListStore)
+        self.renderer_text = Gtk.CellRendererText()
+        self.combobox1.pack_start(self.renderer_text, True)
+        self.combobox1.add_attribute(self.renderer_text, "text", 0)
+        
         pass
 
 class VismolTrajectoryFrame(Gtk.Frame):
