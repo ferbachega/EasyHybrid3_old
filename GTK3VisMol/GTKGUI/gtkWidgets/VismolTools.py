@@ -531,7 +531,16 @@ class VismolGoToAtomWindow2(Gtk.Window):
     #def on_button2_clicked(self, widget):
     #    print("Goodbye")
 
-
+class VismolSelectionTypeBox(Gtk.Box):
+    """ Class doc """
+    
+    def __init__ (self, vismolSession = None):
+        """ Class initialiser """
+        #self.set_orientation(Gtk.Orientation.VERTICAL)
+        self.set_orientation(Gtk.Orientation.HORIZONTAL)
+        
+        
+        pass
 
 class VismolTrajectoryFrame(Gtk.Frame):
     """ Class doc """

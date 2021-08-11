@@ -239,6 +239,9 @@ class VisMolGLCore():
         """ Function doc
         int(event.button)
         
+        info      = menu header info
+        menu_type = 'pick_menu' / 'bg_menu' / 'sele_menu' / 'ob_menu'
+        
         """
         button_number = int(event.button)
         left   = int(button_number) == 1
@@ -270,45 +273,73 @@ class VisMolGLCore():
                     self.center_on_atom(self.atom_picked)
                     self.atom_picked = None
             if right:
+                '''
+                The right button (button = 3) always opens one of the available menus.
+                '''
                 self.button = 3
                 menu_type = None 
+                
+                
                 # Checks if there is anything in the selection list
                 # If {} means that there are no selection points on the screen
-                if self.vismolSession.selections[self.vismolSession.current_selection].selected_objects == {}:
-                    
-                    print('selection is not active')
-                    # There is no selection (blue dots) but an atom was identified in the click with the right button
-                    if self.atom_picked is not None:
-
-                        # Getting the information about the atom that was identified in the click
-                        print(self.atom_picked.chain,self.atom_picked.resn, self.atom_picked.resi, self.atom_picked.name, self.atom_picked.index, self.atom_picked.bonds_indexes)
-                        label = '{} / {} / {}({}) / {}({} / {})'.format( self.atom_picked.Vobject.name,
-																    self.atom_picked.chain,
-                                                                    self.atom_picked.resn, 
-                                                                    self.atom_picked.resi, 
-                                                                    self.atom_picked.name, 
-                                                                    self.atom_picked.index,
-                                                                    self.atom_picked.symbol)
-                        #for bond in self.atom_picked.bonds:
-                        #    print (bond.atom_index_i, bond.atom_index_j)
-                        self.atom_picked = None
-                        menu_type = 'obj_menu'
-                        info = label
-                    else:
-                        
-                        # When no atom is identified in the click (user clicked on a point in the background)
-                        print ('self.atom_picked is None')
-                        print ('selection is not active')
-                        menu_type = 'bg_menu'
+                # Checks if vismolSession.current_selection has any selection. Also needs to check whether "picking" mode is enabled.
+                if self.vismolSession.selections[self.vismolSession.current_selection].selected_objects == {} or self.vismolSession._picking_selection_mode:
+                    '''
+                    Checks if the list of atoms selected by the picking function has any elements. 
+                    If the list is empty, the pick menu is not shown.
+                    '''
+                    if self.vismolSession._picking_selection_mode and self.vismolSession.picking_selections.picking_selections_list != [None,None,None,None]:
+                        print('Picking is active')
                         info = None
+                        menu_type = 'pick_menu'
+
+                    else:
+                        '''
+                        Here the obj_menu is activated based on the atom that was identified by the picking function
+                        The picking function detects the selected pixel and associates it with the respective object.
+                        '''
+                        print('selection is not active')
+                        
+                        # There is no selection (blue dots) but an atom was identified in the click with the right button
+                        if self.atom_picked is not None:
+
+                            # Getting the info about the atom that was identified in the click
+                            print(self.atom_picked.chain,
+                                  self.atom_picked.resn, 
+                                  self.atom_picked.resi, 
+                                  self.atom_picked.name, 
+                                  self.atom_picked.index, 
+                                  self.atom_picked.bonds_indexes)
+                                  
+                            label = '{} / {} / {}({}) / {}({} / {})'.format( self.atom_picked.Vobject.name,
+                                                                        self.atom_picked.chain,
+                                                                        self.atom_picked.resn, 
+                                                                        self.atom_picked.resi, 
+                                                                        self.atom_picked.name, 
+                                                                        self.atom_picked.index,
+                                                                        self.atom_picked.symbol)
+                            self.atom_picked = None
+                            menu_type = 'obj_menu'
+                            info = label
+                        
+                        else:
+                            '''
+                            When no atom is identified in the click (user clicked on a point in the background)
+                            '''
+                            print ('self.atom_picked is None')
+                            print ('selection is not active')
+                            menu_type = 'bg_menu'
+                            info = None
                 else:
+                    '''
+                    When a selection (viewing selection) is active, the selection menu is passed as an option.
+                    '''
                     print('selection is  active')
                     print(self.vismolSession.selections[self.vismolSession.current_selection].selected_objects)
                     info = self.vismolSession.selections[self.vismolSession.current_selection].get_selection_info()
                     menu_type = 'sele_menu'
-                #self.parent_widget.glMenu.#open_gl_menu(event = event)
-                #self.parent_widget.menu_header.set_label(label)
-                #self.parent_widget.glMenu.popup(None, None, None, None, 0, 0)  
+                
+                '''The right button (button = 3) always opens one of the available menus.'''
                 self.parent_widget.show_gl_menu(menu_type = menu_type, info = info)
         return True
     

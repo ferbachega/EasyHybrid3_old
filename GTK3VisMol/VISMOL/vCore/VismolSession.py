@@ -353,13 +353,22 @@ class VisMolSession (ShowHideVisMol):
                 self.Vismol_Objects_ListStore = self.glwidget.Vismol_Objects_ListStore
                 
                 
+                self.Vismol_selection_modes_ListStore = self.glwidget.Vismol_selection_modes_ListStore
+                data = ['atom'   , 
+                        'residue',
+                        'chain'  , 
+                        'segment' 
+                        ]
+                for i in data:
+                    self.Vismol_selection_modes_ListStore.append([i])
+                
                 #self.player = PlayerFrame(self)
                 #self.player_frame = self.player.main_frame
                 #self.player.show_player_main_window ()
                 
                 self.go_to_atom_window = VismolGoToAtomWindow2( vismolSession = self)
-                TrajectoryFrame = VismolTrajectoryFrame( vismolSession = self)
-                self.trajectory_frame = TrajectoryFrame.get_box()
+                TrajectoryFrame        = VismolTrajectoryFrame( vismolSession = self)
+                self.trajectory_frame  = TrajectoryFrame.get_box()
                 #self.go_to_atom_window.show_window()
                 
             
@@ -641,7 +650,10 @@ class VisMolSession (ShowHideVisMol):
         """ Function doc """
         
     
-    def insert_glmenu (self, bg_menu  = None, sele_menu = None, obj_menu = None):
+    def insert_glmenu (self, bg_menu  = None, 
+                            sele_menu = None, 
+                             obj_menu = None, 
+                            pick_menu = None):
         """ Function doc """
         
 
@@ -914,8 +926,51 @@ class VisMolSession (ShowHideVisMol):
 
 
 
+        if pick_menu is None:
+            ''' Standard Sele Menu '''
+            pick_menu = { 
+                    'header' : ['MenuItem', None],
+                    
+                    
+                    
+                    'separator1':['separator', None],
+                    
+                    
+                    'show'   : [
+                                'submenu' ,{
+                                            
+                                            'lines'         : ['MenuItem', menu_show_lines],
+                                            'sticks'        : ['MenuItem', menu_show_sticks],
+                                            'spheres'       : ['MenuItem', menu_show_spheres],
+                                            'dynamic bonds' : ['MenuItem', dynamic_test],
+                                            'separator2'    : ['separator', None],
+                                            'nonbonded'     : ['MenuItem', None],
+                    
+                                           }
+                               ],
+                    
+                    
+                    'hide'   : [
+                                'submenu',  {
+                                            'lines'    : ['MenuItem', menu_hide_lines],
+                                            'sticks'   : ['MenuItem', menu_hide_sticks],
+                                            'spheres'  : ['MenuItem', menu_hide_spheres],
+                                            'nonbonded': ['MenuItem', None],
+                                            }
+                                ],
+                    
+                    
+                    'separator2':['separator', None],
 
-        self.glwidget.build_glmenu( bg_menu  = bg_menu, sele_menu = sele_menu, obj_menu = obj_menu )
+                    }
+
+
+
+
+        self.glwidget.build_glmenu(bg_menu   = bg_menu, 
+                                   sele_menu = sele_menu, 
+                                   obj_menu  = obj_menu,
+                                   pick_menu = pick_menu )
 
     
     def command_line (self, entry = None):

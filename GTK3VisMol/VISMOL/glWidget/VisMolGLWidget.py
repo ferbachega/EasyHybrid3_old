@@ -310,8 +310,8 @@ class GtkGLAreaWidget(Gtk.GLArea):
                        | Gdk.EventMask.KEY_PRESS_MASK | Gdk.EventMask.KEY_RELEASE_MASK )
         
         
-        self.Vismol_Objects_ListStore = Gtk.ListStore(bool,str , str ,str, str)
-        
+        self.Vismol_Objects_ListStore         = Gtk.ListStore(bool,str , str ,str, str)
+        self.Vismol_selection_modes_ListStore = Gtk.ListStore(str)
         
         self.vm_widget = vismol_widget.VisMolGLCore(self, vismolSession, np.float32(width), np.float32(height))
         self.vismolSession = vismolSession
@@ -377,7 +377,7 @@ class GtkGLAreaWidget(Gtk.GLArea):
                     pass
             glMenu.append(mitem) 
 
-    def build_glmenu (self,  bg_menu  = None, sele_menu = None, obj_menu = None):
+    def build_glmenu (self,  bg_menu  = None, sele_menu = None, obj_menu = None , pick_menu =  None):
         """ Function doc """
 
         #self.glMenu = Gtk.Menu()
@@ -421,6 +421,21 @@ class GtkGLAreaWidget(Gtk.GLArea):
         else:
             self.glMenu_sele = None
         # --------------------------------------------------------------- #
+        
+        ''' Picking Menu '''
+        # --------------------------------------------------------------- #
+        if pick_menu:
+            self.glMenu_pick           = Gtk.Menu()
+            self.glMenu_pick_toplabel =  Gtk.MenuItem(label = 'picking')
+            self.glMenu_pick.append (self.glMenu_pick_toplabel)
+            
+            self.build_glmenu_from_dicts( pick_menu, self.glMenu_pick)
+           
+            self.glMenu_pick.show_all()
+
+        else:
+            self.glMenu_pick = None
+        # --------------------------------------------------------------- #
 
         ''' Background Menu '''
         # --------------------------------------------------------------- #
@@ -458,6 +473,10 @@ class GtkGLAreaWidget(Gtk.GLArea):
         if menu_type == 'sele_menu':
             if self.glMenu_sele:
                 self.glMenu_sele.popup(None, None, None, None, 0, 0)
+        
+        if menu_type == 'pick_menu':
+            if self.glMenu_pick:
+                self.glMenu_pick.popup(None, None, None, None, 0, 0)
         
         
         if menu_type == 'obj_menu':

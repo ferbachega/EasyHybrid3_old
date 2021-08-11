@@ -31,6 +31,10 @@ class VismolMainWindow ( ):
         self.window = self.builder.get_object('window1')
         self.window.set_default_size(600, 600)                          
         
+        # togglebutton 
+        self.togglebutton1 = self.builder.get_object('togglebutton1')
+        self.togglebutton1.connect('clicked', self.menubar_togglebutton1)
+        
         # Status Bar
         self.statusbar_main = self.builder.get_object('statusbar1')
         self.statusbar_main.push(0,'wellcome to EasyHydrid')
@@ -43,6 +47,14 @@ class VismolMainWindow ( ):
         self.vismolSession = vismolSession#( main_session = None)
         self.vismolSession.main_session = self
         
+        
+        
+        #remove this combobox for vismol tools after
+        self.combobox1 = self.builder.get_object('combobox1')
+        self.combobox1.set_model(self.vismolSession.Vismol_selection_modes_ListStore)
+        self.renderer_text = Gtk.CellRendererText()
+        self.combobox1.pack_start(self.renderer_text, True)
+        self.combobox1.add_attribute(self.renderer_text, "text", 0)        
         '''This gtk list is declared in the VismolGLWidget file 
            (it does not depend on the creation of Treeview)'''
         #self.Vismol_Objects_ListStore = self.vismolSession.Vismol_Objects_ListStore
@@ -138,7 +150,20 @@ class VismolMainWindow ( ):
         Gtk.main()
 
 
+    
+    def menubar_togglebutton1 (self, button):
+        """ Function doc """
+        if button.get_active():
+            state = "on"
+            self.vismolSession._picking_selection_mode = True
+            button.set_label('Picking')
+        else:
+            state = "off"
+            self.vismolSession._picking_selection_mode = False
+            button.set_label('Viewing')
 
+        print("was turned", state)            
+    
     def test (self, widget):
         """ Function doc """
         container = Gtk.Box (orientation = Gtk.Orientation.VERTICAL)
