@@ -29,11 +29,14 @@ class VismolMainWindow ( ):
         self.builder.add_from_file('GTK3VisMol/GTKGUI/MainWindow.glade')
         self.builder.connect_signals(self)
         self.window = self.builder.get_object('window1')
-        self.window.set_default_size(600, 600)                          
+        self.window.set_default_size(800, 600)                          
+        
+        
+
         
         # togglebutton 
-        self.togglebutton1 = self.builder.get_object('togglebutton1')
-        self.togglebutton1.connect('clicked', self.menubar_togglebutton1)
+        #self.togglebutton1 = self.builder.get_object('togglebutton1')
+        #self.togglebutton1.connect('clicked', self.menubar_togglebutton1)
         
         # Status Bar
         self.statusbar_main = self.builder.get_object('statusbar1')
@@ -47,14 +50,22 @@ class VismolMainWindow ( ):
         self.vismolSession = vismolSession#( main_session = None)
         self.vismolSession.main_session = self
         
+        self.window.connect("key-press-event",   self.vismolSession.glwidget.key_pressed)
+        self.window.connect("key-release-event", self.vismolSession.glwidget.key_released)
         
+                
         
+        self.menu_box = self.builder.get_object('toolbutton16')
+        self.box2 = self.builder.get_object('box2')
+        self.selection_box = self.vismolSession.selection_box
+        #self.box2.pack_start(self.selection_box, True, True, 0)
+        self.menu_box.add(self.selection_box)
         #remove this combobox for vismol tools after
-        self.combobox1 = self.builder.get_object('combobox1')
-        self.combobox1.set_model(self.vismolSession.Vismol_selection_modes_ListStore)
-        self.renderer_text = Gtk.CellRendererText()
-        self.combobox1.pack_start(self.renderer_text, True)
-        self.combobox1.add_attribute(self.renderer_text, "text", 0)        
+        #self.combobox1 = self.builder.get_object('combobox1')
+        #self.combobox1.set_model(self.vismolSession.Vismol_selection_modes_ListStore)
+        #self.renderer_text = Gtk.CellRendererText()
+        #self.combobox1.pack_start(self.renderer_text, True)
+        #self.combobox1.add_attribute(self.renderer_text, "text", 0)        
         '''This gtk list is declared in the VismolGLWidget file 
            (it does not depend on the creation of Treeview)'''
         #self.Vismol_Objects_ListStore = self.vismolSession.Vismol_Objects_ListStore
@@ -129,7 +140,7 @@ class VismolMainWindow ( ):
             #self.HBOX = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 6)
             self.HBOX = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 0)
             self.HBOX.pack_start(self.notebook_H1, True, True, 0)
-            self.HBOX.pack_start(self.traj_frame, False, False, 0)
+            self.HBOX.pack_start(self.traj_frame, False, False, 1)
 
             #self.paned_H.add(self.notebook_H1)
             self.paned_H.add(self.HBOX)
@@ -361,7 +372,7 @@ class TreeViewMenu:
         
         #visObj = self.treeview.vismolSession.vismol_objects[self.selectedID]
         visObj = self.treeview.vismolSession.vismol_objects.pop(self.selectedID)
-        
+        del visObj
         self.treeview.store .clear()
         #n = 0
         #i = 1

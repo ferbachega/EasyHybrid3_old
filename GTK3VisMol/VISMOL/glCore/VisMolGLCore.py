@@ -1071,6 +1071,43 @@ class VisMolGLCore():
         data = GL.glReadPixels(pos[0], (pos[1]), 1, 1, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE)
         pickedID = data[0] + data[1] * 256 + data[2] * 256*256;
         
+        
+        ''' AREA selection  -  underconstrution 
+        x, y
+            Specify the window coordinates of the first pixel that is read from the frame buffer. This location is the lower left corner of a rectangular block of pixels.
+        width, height
+
+            Specify the dimensions of the pixel rectangle. width and height of one correspond to a single pixel.
+        format
+            Specifies the format of the pixel data. The following symbolic values are accepted: GL_RGBA, and GL_RGBA_INTEGER. An implementation-chosen format will also be accepted. This can be queried with glGet and GL_IMPLEMENTATION_COLOR_READ_FORMAT.
+        type
+            Specifies the data type of the pixel data. Must be one of GL_UNSIGNED_BYTE, GL_UNSIGNED_INT, GL_UNSIGNED_INT_2_10_10_10_REV, GL_INT, or GL_FLOAT. An implementation-chosen type will also be accepted. This can be queried with glGet and GL_IMPLEMENTATION_COLOR_READ_TYPE.
+        data
+            Returns the pixel data.
+        
+        '''
+        # #'''
+        # data2 = GL.glReadPixels(pos[0], (pos[1]), 2, 2, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE)
+        # #print(data)
+        # print(data2)
+        # 
+        # c = 0
+        # a = []
+        # for i in data2:
+        #     #print(i)
+        #     a.append(i) 
+        #     c+=1
+        #     if c >2:
+        #         print(a)           
+        #         a = []
+        #         c = 0
+        #     #print(data2[0] + data2[1] * 256 + data2[2] * 256*256)
+        # #'''
+
+        '''
+        pickedID == 16777215
+        means the selected point belongs to the background
+        '''
         if pickedID == 16777215:
             self.atom_picked = None
             if self.button ==1:
@@ -1272,6 +1309,8 @@ class VisMolGLCore():
     
     def _draw_freetype(self, visObj = None):
         """ Function doc """
+        pass
+        '''
         GL.glDisable(GL.GL_DEPTH_TEST)
         GL.glEnable(GL.GL_BLEND)
         GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
@@ -1281,7 +1320,7 @@ class VisMolGLCore():
         GL.glBindVertexArray(visObj.vm_font.vao)
         #texto = visObj.name
         
-        #'''
+
 
         xyz_pos   = []
         uv_coords = []
@@ -1535,276 +1574,3 @@ class VisMolGLCore():
 
 
 
-
-
-#    def _draw_dots(self, visObj = None,  color_indexes = False):
-#        """ Function doc"""
-#        #indexes  = np.array(indexes, dtype=np.uint32)
-#
-#
-#
-#        GL.glPointSize(200/abs(self.dist_cam_zrp))
-#
-#        GL.glEnable(GL.GL_DEPTH_TEST)
-#        GL.glUseProgram(self.dots_program)
-#        GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
-#        self.load_matrices(self.dots_program, visObj.model_mat)
-#        self.load_fog(self.dots_program)
-#        self.load_dot_params(self.dots_program)
-#        
-#        
-#        if visObj.dots_vao is not None:
-#            GL.glBindVertexArray(visObj.dots_vao)
-#            if self.modified_view:
-#                pass
-#            #    GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, visObj.dot_buffers[0])
-#            #    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, visObj.dot_indexes.itemsize*int(len(visObj.dot_indexes)), visObj.dot_indexes, GL.GL_DYNAMIC_DRAW)
-#            #    GL.glDrawElements(GL.GL_POINTS, int(len(visObj.dot_indexes)), GL.GL_UNSIGNED_INT, None)
-#            #    GL.glBindVertexArray(0)
-#            #    GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0)
-#            #    self.modified_view = False
-#            else:
-#                frame = self._safe_frame_exchange(visObj)
-#
-#                GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.dots_buffers[1])
-#                GL.glBufferData(GL.GL_ARRAY_BUFFER,
-#                    frame.nbytes,
-#                    frame,
-#                    GL.GL_STATIC_DRAW)
-#
-#                if  color_indexes:
-#                    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.dots_buffers[2])
-#                    GL.glBufferData(GL.GL_ARRAY_BUFFER, 
-#                            visObj.color_indexes.itemsize*int(len(visObj.color_indexes)), 
-#                            visObj.color_indexes, 
-#                            GL.GL_STATIC_DRAW)
-#            
-#        GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
-#        GL.glBindVertexArray(0)
-#        GL.glDisable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
-#        GL.glUseProgram(0)
-#        GL.glDisable(GL.GL_DEPTH_TEST)
-#
-#    def _draw_sphere_dots (self, visObj = None, indexes = False):
-#        """ Function doc """
-#        GL.glEnable(GL.GL_DEPTH_TEST)
-#        GL.glUseProgram(self.spheres_dots_program)
-#        #GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
-#        self.load_matrices(self.spheres_dots_program, visObj.model_mat)
-#        #self.load_fog(self.spheres_dots_program)
-#        #self.load_dot_params(self.dots_program)
-#        #print('linha1070')
-#        
-#        if visObj.sphere_dots_vao is not None:
-#            GL.glBindVertexArray(visObj.sphere_dots_vao)
-#            if self.modified_view:
-#                pass
-#            #    GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, visObj.dot_buffers[0])
-#            #    GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, visObj.dot_indexes.itemsize*int(len(visObj.dot_indexes)), visObj.dot_indexes, GL.GL_DYNAMIC_DRAW)
-#            #    GL.glDrawElements(GL.GL_POINTS, int(len(visObj.dot_indexes)), GL.GL_UNSIGNED_INT, None)
-#            #    GL.glBindVertexArray(0)
-#            #    GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, 0)
-#            #    self.modified_view = False
-#            else:
-#                frame = self._safe_frame_exchange(visObj)
-#                print ('linha 1083')
-#                GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.sphere_dots_buffers[1])
-#                GL.glBufferData(GL.GL_ARRAY_BUFFER,
-#                    frame.nbytes,
-#                    frame,
-#                    GL.GL_STATIC_DRAW)
-#                    
-#                GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_dots)), GL.GL_UNSIGNED_INT, None)
-#                #GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
-#                #if  color_indexes:
-#                #    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, sphere_dots_buffers.dot_buffers[2])
-#                #    GL.glBufferData(GL.GL_ARRAY_BUFFER, 
-#                #            visObj.color_indexes.itemsize*int(len(visObj.color_indexes)), 
-#                #            visObj.color_indexes, 
-#                #            GL.GL_STATIC_DRAW)
-#            
-#        #GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
-#        #GL.glBindVertexArray(0)
-#        #GL.glDisable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
-#        GL.glUseProgram(0)
-#        GL.glDisable(GL.GL_DEPTH_TEST)
-
-
-    
-#    def _draw_sel_dots(self, visObj = None,  indexes = False):
-#        """ Function doc
-#        """
-#        GL.glEnable(GL.GL_DEPTH_TEST)
-#        GL.glUseProgram(self.sel_dots_program)
-#        GL.glEnable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
-#        self.load_matrices(self.sel_dots_program, visObj.model_mat)
-#        self.load_dot_params(self.sel_dots_program)
-#        if visObj.sel_dots_vao is not None:
-#            GL.glBindVertexArray(visObj.sel_dots_vao)
-#            if self.modified_view:
-#                pass
-#            else:
-#                frame = self._safe_frame_exchange(visObj)
-#                GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.sel_dots_buffers[1])
-#                GL.glBufferData(GL.GL_ARRAY_BUFFER,
-#                    frame.nbytes,
-#                    frame,
-#                    GL.GL_STATIC_DRAW)
-#
-#                GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
-#        GL.glBindVertexArray(0)
-#        GL.glDisable(GL.GL_VERTEX_PROGRAM_POINT_SIZE)
-#        GL.glUseProgram(0)
-#        GL.glDisable(GL.GL_DEPTH_TEST)
-#    
-#   def _draw_sel_dots_surface(self, visObj = None,  indexes = False):
-#       """ Function doc
-#       """
-#       GL.glEnable(GL.GL_DEPTH_TEST)
-#       GL.glUseProgram(self.sel_dots_surface_program)
-#       self.load_matrices(self.sel_dots_surface_program, visObj.model_mat)
-#       GL.glPointSize(15)
-#       if visObj.sel_dots_surface_vao is not None:
-#           GL.glBindVertexArray(visObj.sel_dots_surface_vao)
-#           if self.modified_view:
-#               pass
-#           else:
-#               frame = self._safe_frame_exchange(visObj)
-#               GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.sel_dots_surface_buffers[1])
-#               GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.nbytes, 
-#                                                   frame, GL.GL_STATIC_DRAW)
-#               GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
-#       GL.glPointSize(1)
-#       GL.glBindVertexArray(0)
-#       GL.glUseProgram(0)
-#       GL.glDisable(GL.GL_DEPTH_TEST)
-#   
-#   def _draw_sel_spheres(self, visObj = None,  indexes = False):
-#       """ Function doc
-#       """
-#       GL.glEnable(GL.GL_DEPTH_TEST)
-#       GL.glUseProgram(self.sel_spheres_program)
-#       self.load_matrices(self.sel_spheres_program, visObj.model_mat)
-#       if visObj.sphere_rep.sel_spheres_vao is not None:
-#           GL.glBindVertexArray(visObj.sphere_rep.sel_spheres_vao)
-#           if self.modified_view:
-#               pass
-#           
-#           else:
-#               frame = self._safe_frame_exchange(visObj)
-#               GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.sphere_rep.sel_spheres_buffers[1])
-#               GL.glBufferData(GL.GL_ARRAY_BUFFER, visObj.sphere_rep.sel_coords.itemsize*int(len(visObj.sphere_rep.sel_coords)), 
-#                                                   visObj.sphere_rep.sel_coords, GL.GL_STATIC_DRAW)
-#               GL.glDrawElements(GL.GL_TRIANGLES, visObj.sphere_rep.sel_triangles, GL.GL_UNSIGNED_INT, None)
-#       GL.glBindVertexArray(0)
-#       GL.glUseProgram(0)
-#       GL.glDisable(GL.GL_DEPTH_TEST)
-#   
-#   
-
-#   def _draw_spheres(self, visObj = None,  indexes = False):
-#       """ Function doc
-#       """
-#       GL.glEnable(GL.GL_DEPTH_TEST)
-#       GL.glEnable(GL.GL_CULL_FACE)
-#       GL.glCullFace(GL.GL_BACK)
-#       GL.glUseProgram(self.spheres_program)
-#       self.load_matrices(self.spheres_program, visObj.model_mat)
-#       self.load_lights(self.spheres_program)
-#       self.load_fog(self.spheres_program)
-#       if visObj.sphere_rep.spheres_vao is not None:
-#           GL.glBindVertexArray(visObj.sphere_rep.spheres_vao)
-#           if self.modified_view:
-#               pass
-#           
-#           else:
-#               frame = self._safe_frame_exchange(visObj)
-#
-#               GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.sphere_rep.spheres_buffers[1])
-#               GL.glBufferData(GL.GL_ARRAY_BUFFER, visObj.sphere_rep.coords.itemsize*int(len(visObj.sphere_rep.coords)), 
-#                                                   visObj.sphere_rep.coords, GL.GL_STATIC_DRAW)
-#               
-#               #if  indexes:
-#               #    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.spheres_buffers[2])
-#               #    GL.glBufferData(GL.GL_ARRAY_BUFFER, visObj.color_indexes.itemsize*int(len(visObj.color_indexes)), visObj.color_indexes, GL.GL_STATIC_DRAW)
-#               
-#               GL.glDrawElements(GL.GL_TRIANGLES, visObj.sphere_rep.triangles, GL.GL_UNSIGNED_INT, None)
-#       GL.glBindVertexArray(0)
-#       GL.glUseProgram(0)
-#       GL.glDisable(GL.GL_DEPTH_TEST)
-#   
-#   def _draw_dots_surface(self, visObj = None,  indexes = False):
-#       """ Function doc
-#       """
-#       #'''
-#       GL.glEnable(GL.GL_DEPTH_TEST)
-#       GL.glUseProgram(self.dots_surface_program)
-#       self.load_matrices(self.dots_surface_program, visObj.model_mat)
-#       self.load_fog(self.dots_surface_program)
-#       #self.load_lights(self.dots_surface_program)
-#       GL.glPointSize(1)
-#       if visObj.dots_surface_vao is not None:
-#           GL.glBindVertexArray(visObj.dots_surface_vao)
-#           if self.modified_view:
-#               pass
-#           else:
-#               frame = self._safe_frame_exchange(visObj)
-#               GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.dots_surface_buffers[1])
-#               GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.itemsize*int(len(frame)), 
-#                                                   frame, GL.GL_STATIC_DRAW)
-#               if  indexes:
-#                   GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.dots_surface_buffers[2])
-#                   GL.glBufferData(GL.GL_ARRAY_BUFFER, visObj.color_indexes.itemsize*int(len(visObj.color_indexes)), visObj.color_indexes, GL.GL_STATIC_DRAW)
-#               GL.glDrawElements(GL.GL_POINTS, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
-#               #GL.glDrawElements(GL.GL_LINES, int(len(visObj.index_bonds)), GL.GL_UNSIGNED_INT, None)
-#       GL.glPointSize(1)
-#       GL.glBindVertexArray(0)
-#       GL.glUseProgram(0)
-#       GL.glDisable(GL.GL_DEPTH_TEST)
-#
-#
-#
-#    def _draw_ribbons(self, visObj = None):
-#        """ Function doc
-#        """
-#        GL.glEnable(GL.GL_DEPTH_TEST)
-#        #GL.glEnable(GL.GL_BLEND)
-#        #GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-#        #GL.glEnable(GL.GL_LINE_SMOOTH)
-#        #GL.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_NICEST)
-#        GL.glUseProgram(self.lines_program)
-#        
-#        
-#        #GL.glLineWidth(self.vismolSession.gl_parameters['line_width']*80/abs(self.dist_cam_zrp))
-#        GL.glLineWidth(800/abs(self.dist_cam_zrp))
-#
-#        
-#        self.load_matrices(self.lines_program, visObj.model_mat)
-#        self.load_fog(self.lines_program)
-#        #self.load_antialias_params(self.lines_program)
-#        if visObj.lines_vao is not None:
-#            GL.glBindVertexArray(visObj.ribbons_vao)
-#            if self.modified_view:
-#                pass
-#       
-#            else:
-#                #coord_vbo = GL.glGenBuffers(1)
-#                frame = self._safe_frame_exchange(visObj)
-#
-#                GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.ribbons_buffers[1])
-#                GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.itemsize*int(len(frame)), 
-#                                frame, 
-#                                GL.GL_STATIC_DRAW)              
-#                #GL.glDrawElements(GL.GL_LINES, int(len(visObj.index_bonds)*2), GL.GL_UNSIGNED_INT, None)
-#                GL.glDrawElements(GL.GL_LINES, int(len(visObj.ribbons_Calpha_indexes_rep)*2), GL.GL_UNSIGNED_INT, None)
-#        GL.glBindVertexArray(0)
-#        GL.glLineWidth(1)
-#        GL.glUseProgram(0)
-#
-#        GL.glDisable(GL.GL_DEPTH_TEST)#
-#
-#
-#
-#
-#
-#

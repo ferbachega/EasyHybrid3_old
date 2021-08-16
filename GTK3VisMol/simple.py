@@ -28,7 +28,7 @@ from gi.repository import Gtk, Gdk
 #import os
 
 from VISMOL.vCore.VismolSession  import VisMolSession
-from GTKGUI  import gtkgui
+#from GTKGUI  import gtkgui
 
 
 def main():
@@ -38,7 +38,8 @@ def main():
     window = Gtk.Window(title="VisMol window")                                   #
     container = Gtk.Box (orientation = Gtk.Orientation.VERTICAL)                 #
     #--------------------------------------------------------------------------- #
-    vismolSession  =  VisMolSession(glwidget = True, backend = 'gtk3')           #
+    vismolSession  =  VisMolSession(glwidget = True, toolkit = 'gtk3')           #
+    vismolSession.insert_glmenu()
     container.pack_start(vismolSession.glwidget, True, True, 0)                  #
     window.connect("key-press-event"  , vismolSession.glwidget.key_pressed)      #
     window.connect("key-release-event", vismolSession.glwidget.key_released)     #

@@ -291,13 +291,37 @@ class VisMolViewingSelection:
                     atom.selected = False
         #------------------------------------------------""
 
-    def selection_function_viewing (self, selected):
+    def selection_function_viewing (self, selected, _type = None):
         #print (selected)
+        
+        if _type:
+            selection_mode2 = _type
+        else:
+            selection_mode2 = self._selection_mode
+        
         if selected is None:
             self.selected_atoms = []
             self.selected_residues  = []
             self.active = False
         
+        else:
+            if selection_mode2 == 'atom':
+                self.selecting_by_atom (selected)
+            
+            elif selection_mode2 == 'residue':
+                self.selecting_by_residue (selected)
+
+            elif selection_mode2 == 'chain':
+                self.selecting_by_chain (selected)
+            else:
+                pass
+            
+            self.active = True
+        
+        
+        
+        
+        '''
         else:
             if self._selection_mode == 'atom':
                 self.selecting_by_atom (selected)
@@ -311,7 +335,7 @@ class VisMolViewingSelection:
                 pass
             
             self.active = True
-        
+        '''
         self.build_selected_atoms_coords_and_selected_objects_from_selected_atoms ()
     
     def build_selected_atoms_coords_and_selected_objects_from_selected_atoms (self):

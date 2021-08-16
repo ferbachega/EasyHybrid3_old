@@ -35,6 +35,7 @@ class VisMolFont():
     
     def __init__ (self, visObj   = None, 
                         font_file= 'GTK3VisMol/VISMOL/glCore/Fonts/VeraMono.ttf', 
+                        #font_file= 'VISMOL/glCore/Fonts/VeraMono.ttf', 
                         char_res = 64, 
                         c_w      = 0.25, 
                         c_h      = 0.3, 

@@ -71,6 +71,8 @@ from VISMOL.vModel.Representations   import CartoonRepresentation
 
 from GTKGUI.gtkWidgets.VismolTools import VismolGoToAtomWindow2
 from GTKGUI.gtkWidgets.VismolTools import VismolTrajectoryFrame
+from GTKGUI.gtkWidgets.VismolTools import VismolSelectionTypeBox
+
 from GTKGUI.gtkWidgets.filechooser import FileChooser
 from GTKGUI.gtkWidgets.player import PlayerFrame
 
@@ -320,68 +322,6 @@ class VisMolSession (ShowHideVisMol):
                                 # atom_id : obj_atom 
                                  }
         
-
-        #---------------------------------------------------------------------------
-        # gl stuffs
-        #---------------------------------------------------------------------------
-        
-        self.vConfig =  VisMolConfig(self)
-        '''
-        self.gl_parameters      =     {
-                                      
-                                      'dot_size'                   : 5        ,
-                                      'line_width'                 : 1        ,
-                                      'sphere_scale'               : 0.85     ,
-                                      'stick_scale'                : 1.5      ,
-                                      'ball_and_sick_sphere_scale' : 1        ,
-                                      'antialias'                  : False    ,
-                                      'bg_color'                   : [255,255,255,1],
-                                      'center_on_coord_sleep_time' : 0.001    ,
-                      }
-        '''
-        
-        self.toolkit = toolkit
-        if glwidget:
-            if toolkit == 'gtk3':
-                #from VISMOL.glWidget import gtk3 as VisMolGLWidget
-                from VISMOL.glWidget import VisMolGLWidget
-                self.glwidget   = VisMolGLWidget.GtkGLAreaWidget(self)
-                self.glwidget.vm_widget.queue_draw()
-                
-                '''This gtk list is declared in the VismolGLWidget file 
-                   (it does not depend on the creation of Treeview)'''
-                self.Vismol_Objects_ListStore = self.glwidget.Vismol_Objects_ListStore
-                
-                
-                self.Vismol_selection_modes_ListStore = self.glwidget.Vismol_selection_modes_ListStore
-                data = ['atom'   , 
-                        'residue',
-                        'chain'  , 
-                        'segment' 
-                        ]
-                for i in data:
-                    self.Vismol_selection_modes_ListStore.append([i])
-                
-                #self.player = PlayerFrame(self)
-                #self.player_frame = self.player.main_frame
-                #self.player.show_player_main_window ()
-                
-                self.go_to_atom_window = VismolGoToAtomWindow2( vismolSession = self)
-                TrajectoryFrame        = VismolTrajectoryFrame( vismolSession = self)
-                self.trajectory_frame  = TrajectoryFrame.get_box()
-                #self.go_to_atom_window.show_window()
-                
-            
-            if toolkit == 'qt4':
-                self.glwidget   = VisMolGLWidget.QtGLWidget(self)
-        else:
-            self.glwidget = None
-        #---------------------------------------------------------------------------
-        
-        # GTK WIDGETS 
-
-        
-        
         
         
         
@@ -405,46 +345,92 @@ class VisMolSession (ShowHideVisMol):
         #---------------------------------------------------------------
         self.picking_selections =  vPick(self)
         
+        
+
+        #---------------------------------------------------------------------------
+        # gl stuffs
+        #---------------------------------------------------------------------------
+        
+        self.vConfig =  VisMolConfig(self)
+        '''
+        self.gl_parameters      =     {
+                                      
+                                      'dot_size'                   : 5        ,
+                                      'line_width'                 : 1        ,
+                                      'sphere_scale'               : 0.85     ,
+                                      'stick_scale'                : 1.5      ,
+                                      'ball_and_sick_sphere_scale' : 1        ,
+                                      'antialias'                  : False    ,
+                                      'bg_color'                   : [255,255,255,1],
+                                      'center_on_coord_sleep_time' : 0.001    ,
+                      }
+        '''
+        
+        self.toolkit = toolkit
+        if glwidget:
+            if toolkit == 'gtk3':
+                self.selection_box_frane = None
+                #from VISMOL.glWidget import gtk3 as VisMolGLWidget
+                from VISMOL.glWidget import VisMolGLWidget
+                self.glwidget   = VisMolGLWidget.GtkGLAreaWidget(self)
+                self.glwidget.vm_widget.queue_draw()
+                
+                self.gtk_widgets_update_list = []
+                
+                '''This gtk list is declared in the VismolGLWidget file 
+                   (it does not depend on the creation of Treeview)'''
+                self.Vismol_Objects_ListStore = self.glwidget.Vismol_Objects_ListStore
+                
+                
+                self.Vismol_selection_modes_ListStore = self.glwidget.Vismol_selection_modes_ListStore
+                data = ['atom'   , 
+                        'residue',
+                        'chain'  , 
+                        'segment' 
+                        ]
+                for i in data:
+                    self.Vismol_selection_modes_ListStore.append([i])
+                
+                #self.player = PlayerFrame(self)
+                #self.player_frame = self.player.main_frame
+                #self.player.show_player_main_window ()
+                
+                self.go_to_atom_window = VismolGoToAtomWindow2( vismolSession = self)
+                TrajectoryFrame        = VismolTrajectoryFrame( vismolSession = self)
+                self.trajectory_frame  = TrajectoryFrame.get_box()
+                
+                self.selection_box_frane = VismolSelectionTypeBox( vismolSession = self)
+                self.selection_box       = self.selection_box_frane.box
+                #self.go_to_atom_window.show_window()
+                
+                self.gtk_widgets_update_list.append(self.go_to_atom_window)
+                self.gtk_widgets_update_list.append(TrajectoryFrame)
+                self.gtk_widgets_update_list.append(self.selection_box_frane)
+                
+            if toolkit == 'qt4':
+                self.glwidget   = VisMolGLWidget.QtGLWidget(self)
+        else:
+            self.glwidget = None
+        #---------------------------------------------------------------------------
+        
+        # GTK WIDGETS 
+
     
-    
-    
-    
-    
-    
-
-        #self.insert_glmenu()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        # not used yet
         self.indexes = {'nonbonded' : False,
-                              'lines'   : True,
-                              'spheres' : False,
-                              'sticks'  : False,
-                              'ribbons' : True,
-                              'surface' : False,
-                              }
+                        'lines'     : True,
+                        'spheres'   : False,
+                        'sticks'    : False,
+                        'ribbons'   : True,
+                        'surface'   : False,
+                        }
+
+
+    def gtk_widgets_update (self):
+        """ Function doc """
+        for widget in self.gtk_widgets_update_list:
+            widget.update()
+            
+            
 
     def teste2 (self, teste = None):
         """ Function doc """
@@ -661,21 +647,27 @@ class VisMolSession (ShowHideVisMol):
 
         def _viewing_selection_mode_atom (_):
             """ Function doc """
-            self.viewing_selection_mode(selmode = 'atom')
+            self.viewing_selection_mode(sel_type = 'atom')
         def _viewing_selection_mode_residue (_):
             """ Function doc """
-            self.viewing_selection_mode(selmode = 'residue')
+            self.viewing_selection_mode(sel_type = 'residue')
         def _viewing_selection_mode_chain (_):
             """ Function doc """
-            self.viewing_selection_mode(selmode = 'chain')
+            self.viewing_selection_mode(sel_type = 'chain')
 
         def _selection_type_picking(_):
             
-            self._picking_selection_mode = True
+            if self.selection_box_frane:
+                self.selection_box_frane.change_toggle_button_selecting_mode_status(True)
+            else:
+                self._picking_selection_mode = True
             self.glwidget.queue_draw()
         
         def _selection_type_viewing(_):
-            self._picking_selection_mode = False
+            if self.selection_box_frane:
+                self.selection_box_frane.change_toggle_button_selecting_mode_status(False)
+            else:
+                self._picking_selection_mode = False
             self.glwidget.queue_draw()
 
         if sele_menu is None:
@@ -830,9 +822,9 @@ class VisMolSession (ShowHideVisMol):
                     'Selection Mode'   : [
                                 'submenu' ,{
                                             
-                                            'Atoms'     :  ['MenuItem', _viewing_selection_mode_atom],
-                                            'Residue'   :  ['MenuItem', _viewing_selection_mode_residue],
-                                            'Chain'     :  ['MenuItem', _viewing_selection_mode_chain],
+                                            'atoms'     :  ['MenuItem', _viewing_selection_mode_atom],
+                                            'residue'   :  ['MenuItem', _viewing_selection_mode_residue],
+                                            'chain'     :  ['MenuItem', _viewing_selection_mode_chain],
                                             #'separator2':['separator', None],
                                             #'nonbonded' : ['MenuItem', None],
                     
@@ -917,7 +909,7 @@ class VisMolSession (ShowHideVisMol):
                                                                            }
                                                               ],
                                             
-                                            'Atom index'   : ['MenuItem', None],
+                                            'atomic index' : ['MenuItem', None],
                                             'residue name' : ['MenuItem', None],
                                             'residue_index': ['MenuItem', None],
                                            },
@@ -1080,9 +1072,10 @@ class VisMolSession (ShowHideVisMol):
             #rep =  CartoonRepresentation(name = 'cartoon', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
             #self.vismol_objects[-1].representations[rep.name] = rep
             
+            '''
             rep =  LabelRepresentation(name = 'label', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
             self.vismol_objects[-1].representations[rep.name] = rep
-            
+            '''
             #rep =  SurfaceRepresentation(name = 'surface', active = True, _type = 'mol', visObj = self.vismol_objects[-1], glCore = self.glwidget.vm_widget)
             #self.vismol_objects[-1].representations[rep.name] = rep
 
@@ -1100,7 +1093,7 @@ class VisMolSession (ShowHideVisMol):
             if autocenter:
                 print(self.vismol_objects[-1].mass_center)
                 self.glwidget.vm_widget.center_on_coordinates(self.vismol_objects[-1], self.vismol_objects[-1].mass_center)
-            
+            self.gtk_widgets_update ()
 
             
             '''
@@ -1402,10 +1395,14 @@ class VisMolSession (ShowHideVisMol):
         return Vobjects_dic
 
    
-    def viewing_selection_mode(self, selmode = 'atom'):
+    def viewing_selection_mode(self, sel_type = 'atom'):
         """ Function doc """        
-        print(selmode)
-        self.selections[self.current_selection]._selection_mode = selmode
+        
+        if self.selection_box_frane:
+            self.selection_box_frane.change_sel_type_in_combobox(sel_type)
+            
+        print(sel_type)
+        self.selections[self.current_selection]._selection_mode = sel_type
     
     '''
     def selection_function (self, pickedID):
@@ -1425,7 +1422,7 @@ class VisMolSession (ShowHideVisMol):
             self.selections[self.current_selection].selection_function_viewing(selected)
     '''
     
-    def _selection_function (self, selected):
+    def _selection_function (self, selected, _type = None):
         #"""     P I C K I N G     S E L E C T I O N S     """
         print('_selection_function')
         if self._picking_selection_mode:
@@ -1433,7 +1430,7 @@ class VisMolSession (ShowHideVisMol):
         
         #"""     V I E W I N G     S E L E C T I O N S     """
         else:
-            self.selections[self.current_selection].selection_function_viewing(selected)
+            self.selections[self.current_selection].selection_function_viewing(selected, _type)
 
        
 

@@ -2283,7 +2283,7 @@ class LabelRepresentation:
         """ Class initialiser """
         self.visObj = visObj
         self.name   = name
-        self.active = False
+        self.active = True
         self.glCore = glCore
         
         self.chars     = 0 
@@ -2295,9 +2295,9 @@ class LabelRepresentation:
             self.visObj.vm_font.make_freetype_font()
             self.visObj.vm_font.make_freetype_texture(self.glCore.freetype_program)
         
-        #if self.chars == 0:
-        print('self._build_buffer()')
-        self._build_buffer()
+        if self.chars == 0:
+            print('self._build_buffer()')
+            self._build_buffer()
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.visObj.vm_font.vbos[0])
         GL.glBufferData(GL.GL_ARRAY_BUFFER, self.xyz_pos.itemsize*len(self.xyz_pos), self.xyz_pos, GL.GL_DYNAMIC_DRAW)
         GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self.visObj.vm_font.vbos[1])
@@ -2330,7 +2330,7 @@ class LabelRepresentation:
                 self.uv_coords.append(y*self.visObj.vm_font.text_v)
                 self.uv_coords.append((x+1)*self.visObj.vm_font.text_u)
                 self.uv_coords.append((y+1)*self.visObj.vm_font.text_v)
-        
+            #print(texto)
         #print('xyz_pos  ',len(self.xyz_pos))
         #print('uv_coords',len(self.uv_coords))
         #print('atoms    ',len(self.visObj.atoms))
