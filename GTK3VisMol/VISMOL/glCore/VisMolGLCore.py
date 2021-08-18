@@ -47,7 +47,7 @@ import VISMOL.glCore.shaders.cartoon_triangle_shader as cartoonShaders
 
 
 class VisMolGLCore():
-    
+
     def __init__(self, widget, vismolSession = None, width=640.0, height=420.0):
         """ Constructor of the class.
             
@@ -59,9 +59,9 @@ class VisMolGLCore():
         self.vConfig = self.vismolSession.vConfig
         self.width = np.float32(width)
         self.height = np.float32(height)
-        self.sel_lines_buffers = None # this is not permanent - should be removed after some bug fixing 
+        self.sel_lines_buffers = None # this is not permanent - should be removed after some bug fixing
         self.shader_programs = {}
-        
+
         # Remove it later
         self.vm_font        = vmf.VisMolFont(color    =[1,1,1,0.6])
 
@@ -76,14 +76,14 @@ class VisMolGLCore():
         self.model_mat = np.identity(4, dtype=np.float32)
         self.normal_mat = np.identity(3, dtype=np.float32)
         self.zero_reference_point = np.array([0.0, 0.0, 0.0],dtype=np.float32)
-        
+
         self.glcamera = cam.GLCamera(self.vConfig.gl_parameters['field_of_view'],  # int
-                                     self.width/self.height                     , 
-                                     np.array([0,0,10],dtype=np.float32)        , 
+                                     self.width/self.height                     ,
+                                     np.array([0,0,10],dtype=np.float32)        ,
                                      self.zero_reference_point)
-        
-        
-        
+
+
+
         self.axis = glaxis.GLAxis()
         self.parent_widget.set_has_depth_buffer(True)
         self.parent_widget.set_has_alpha(True)
@@ -98,19 +98,19 @@ class VisMolGLCore():
         self.mouse_y = 0.0
         self.selection_box = sb.SelectionBox()
         self.bckgrnd_color = self.vConfig.gl_parameters['background_color'] # list of floats = [1.0,1.0,1.0,1.0]#[78/255, 78/255, 78/255, 1.0]#[0.0,0.0,0.0,1.0]#[0.5,0.5,0.5,1.0] #[0.0,0.0,0.0,1.0] #[1.0,1.0,1.0,1.0] or [0.0,0.0,0.0,1.0]
-        
+
         #light
         self.light_position       =np.array(self.vConfig.gl_parameters['light_position'] ,dtype=np.float32)        #np.array([-2.5,2.5,3.0]   ,dtype=np.float32)
         self.light_color          =np.array(self.vConfig.gl_parameters['light_color']    ,dtype=np.float32)        #np.array([1.0,1.0,1.0,1.0],dtype=np.float32)
-        
+
         self.light_ambient_coef   = self.vConfig.gl_parameters['light_ambient_coef']                               #0.4
         self.light_shininess      = self.vConfig.gl_parameters['light_shininess']                                  #5.5
-        
+
         self.light_intensity      =np.array(self.vConfig.gl_parameters['light_intensity']      ,dtype=np.float32)  #np.array([0.6,0.6,0.6],dtype=np.float32)
         self.light_specular_color =np.array(self.vConfig.gl_parameters['light_specular_color'] ,dtype=np.float32)  #np.array([1.0,1.0,1.0],dtype=np.float32)
-        
-        
-        
+
+
+
         self.dist_cam_zrp = np.linalg.norm(self.glcamera.get_position()-self.zero_reference_point)
         self.shader_flag = True
         self.modified_data = False
@@ -127,7 +127,7 @@ class VisMolGLCore():
         self.picking = False
         self.show_selection_box = False
         return True
-    
+
     def resize_window(self, width, height):
         """ Resizing function, takes the widht and height of the widget
             and modifies the view in the camera acording to the new values
@@ -148,7 +148,7 @@ class VisMolGLCore():
         self.glcamera.set_projection_matrix(mop.my_glPerspectivef(self.glcamera.field_of_view,
              self.glcamera.viewport_aspect_ratio, self.glcamera.z_near, self.glcamera.z_far))
         return True
-    
+
     def key_pressed(self, k_name):
         """ The key_pressed function serves, as the names states, to catch
             events in the keyboard, e.g. letter 'l' pressed, 'backslash'
@@ -162,7 +162,7 @@ class VisMolGLCore():
         if func:
             func()
         return True
-    
+
     def key_released(self, k_name):
         """ Used to indicates a key has been released.
         """
@@ -170,7 +170,7 @@ class VisMolGLCore():
         if func:
             func()
         return True
-    
+
     def mouse_pressed(self, button_number, mouse_x, mouse_y):
         """ Function doc
         """
@@ -202,7 +202,7 @@ class VisMolGLCore():
             self.queue_draw()
             pass
         return True
-    
+
     def mouse_released(self, event, mouse_x, mouse_y):
         """ Function doc
         int(event.button)
@@ -242,9 +242,9 @@ class VisMolGLCore():
                 The right button (button = 3) always opens one of the available menus.
                 '''
                 self.button = 3
-                menu_type = None 
-                
-                
+                menu_type = None
+
+
                 # Checks if there is anything in the selection list
                 # If {} means that there are no selection points on the screen
                 # Checks if vismolSession.current_selection has any selection. Also needs to check whether "picking" mode is enabled.
@@ -264,29 +264,29 @@ class VisMolGLCore():
                         The picking function detects the selected pixel and associates it with the respective object.
                         '''
                         print('selection is not active')
-                        
+
                         # There is no selection (blue dots) but an atom was identified in the click with the right button
                         if self.atom_picked is not None:
 
                             # Getting the info about the atom that was identified in the click
                             print(self.atom_picked.chain,
-                                  self.atom_picked.resn, 
-                                  self.atom_picked.resi, 
-                                  self.atom_picked.name, 
-                                  self.atom_picked.index, 
+                                  self.atom_picked.resn,
+                                  self.atom_picked.resi,
+                                  self.atom_picked.name,
+                                  self.atom_picked.index,
                                   self.atom_picked.bonds_indexes)
-                                  
+
                             label = '{} / {} / {}({}) / {}({} / {})'.format( self.atom_picked.Vobject.name,
                                                                         self.atom_picked.chain,
-                                                                        self.atom_picked.resn, 
-                                                                        self.atom_picked.resi, 
-                                                                        self.atom_picked.name, 
+                                                                        self.atom_picked.resn,
+                                                                        self.atom_picked.resi,
+                                                                        self.atom_picked.name,
                                                                         self.atom_picked.index,
                                                                         self.atom_picked.symbol)
                             self.atom_picked = None
                             menu_type = 'obj_menu'
                             info = label
-                        
+
                         else:
                             '''
                             When no atom is identified in the click (user clicked on a point in the background)
@@ -303,11 +303,11 @@ class VisMolGLCore():
                     print(self.vismolSession.selections[self.vismolSession.current_selection].selected_objects)
                     info = self.vismolSession.selections[self.vismolSession.current_selection].get_selection_info()
                     menu_type = 'sele_menu'
-                
+
                 '''The right button (button = 3) always opens one of the available menus.'''
                 self.parent_widget.show_gl_menu(menu_type = menu_type, info = info)
         return True
-    
+
     def mouse_motion(self, mouse_x, mouse_y):
         """ Function doc
         """
@@ -329,7 +329,7 @@ class VisMolGLCore():
             self.dragging = True
             self.queue_draw()
         return True
-    
+
     def mouse_scroll(self, direction):
         """ Function doc
         """
@@ -359,23 +359,23 @@ class VisMolGLCore():
                 self.glcamera.z_near -= self.scroll
                 self.glcamera.z_far += self.scroll
             if down:
-                if (self.glcamera.z_far-self.scroll) >= (self.glcamera.min_zfar):
+                if (self.glcamera.z_far-self.scroll) >= self.glcamera.min_zfar:
                     if (self.glcamera.z_far-self.scroll) > (self.glcamera.z_near+self.scroll+0.005):
                         self.glcamera.z_near += self.scroll
                         self.glcamera.z_far -= self.scroll
-            if (self.glcamera.z_near >= self.glcamera.min_znear):
-                self.glcamera.set_projection_matrix(mop.my_glPerspectivef(self.glcamera.field_of_view, 
+            if self.glcamera.z_near >= self.glcamera.min_znear:
+                self.glcamera.set_projection_matrix(mop.my_glPerspectivef(self.glcamera.field_of_view,
                         self.glcamera.viewport_aspect_ratio, self.glcamera.z_near, self.glcamera.z_far))
             else:
                 if self.glcamera.z_far < (self.glcamera.min_zfar+self.glcamera.min_znear):
                     self.glcamera.z_near -= self.scroll
                     self.glcamera.z_far = self.glcamera.min_clip+self.glcamera.min_znear
-                self.glcamera.set_projection_matrix(mop.my_glPerspectivef(self.glcamera.field_of_view, 
+                self.glcamera.set_projection_matrix(mop.my_glPerspectivef(self.glcamera.field_of_view,
                         self.glcamera.viewport_aspect_ratio, self.glcamera.min_znear, self.glcamera.z_far))
             self.glcamera.update_fog()
         self.queue_draw()
         return True
-    
+
     def _rotate_view(self, dx, dy, x, y):
         """ Function doc """
         angle = math.sqrt(dx**2+dy**2)/float(self.width+1)*180.0
@@ -423,13 +423,13 @@ class VisMolGLCore():
                 self.axis.model_mat = mop.my_glTranslatef(self.axis.model_mat, self.axis.zrp)
             # Axis operations, this code only affects the gizmo axis
         return True
-    
+
     def _pan_view(self, x, y):
         """ Function doc """
         px, py, pz = self.pos(x, y)
         pan_mat = mop.my_glTranslatef(np.identity(4, dtype=np.float32),np.array(
-            [(px-self.drag_pos_x)*self.glcamera.z_far/10.0, 
-             (py-self.drag_pos_y)*self.glcamera.z_far/10.0, 
+            [(px-self.drag_pos_x)*self.glcamera.z_far/10.0,
+             (py-self.drag_pos_y)*self.glcamera.z_far/10.0,
              (pz-self.drag_pos_z)*self.glcamera.z_far/10.0]))
         if not self.editing_mols:
             self.model_mat = mop.my_glMultiplyMatricesf(self.model_mat, pan_mat)
@@ -444,7 +444,7 @@ class VisMolGLCore():
         self.drag_pos_y = py
         self.drag_pos_z = pz
         return True
-    
+
     def _zoom_view(self, dy):
         """ Function doc """
         delta = (((self.glcamera.z_far-self.glcamera.z_near)/2.0)+self.glcamera.z_near)/200.0
@@ -456,13 +456,13 @@ class VisMolGLCore():
             self.glcamera.z_near -= move_z
             self.glcamera.z_far -= move_z
             if self.glcamera.z_near >= self.glcamera.min_znear:
-                self.glcamera.set_projection_matrix(mop.my_glPerspectivef(self.glcamera.field_of_view, 
+                self.glcamera.set_projection_matrix(mop.my_glPerspectivef(self.glcamera.field_of_view,
                         self.glcamera.viewport_aspect_ratio, self.glcamera.z_near, self.glcamera.z_far))
             else:
                 if self.glcamera.z_far < (self.glcamera.min_zfar+self.glcamera.min_znear):
                     self.glcamera.z_near += move_z
                     self.glcamera.z_far = self.glcamera.min_zfar+self.glcamera.min_znear
-                self.glcamera.set_projection_matrix(mop.my_glPerspectivef(self.glcamera.field_of_view, 
+                self.glcamera.set_projection_matrix(mop.my_glPerspectivef(self.glcamera.field_of_view,
                         self.glcamera.viewport_aspect_ratio, self.glcamera.min_znear, self.glcamera.z_far))
             self.glcamera.update_fog()
             self.dist_cam_zrp += -move_z
@@ -479,13 +479,13 @@ class VisMolGLCore():
             self.selection_box.initialize_gl()
             self.axis.initialize_gl()
             self.shader_flag = False
-        
+
         if self.picking:
             self._pick2()
-        
+
         GL.glClearColor(self.bckgrnd_color[0],self.bckgrnd_color[1], self.bckgrnd_color[2],self.bckgrnd_color[3])
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-        
+
         for visObj in self.vismolSession.vismol_objects:
             # for all the visObj in all created visObjs  
 
@@ -497,7 +497,7 @@ class VisMolGLCore():
                         if visObj.representations[rep_name] is None:
                             pass
                             #print('rep_name',rep_name)
-                        
+
                         else:
                             # only shows the representation if representations[rep_name].active = True
                             if visObj.representations[rep_name].active:
@@ -516,7 +516,7 @@ class VisMolGLCore():
                 '''
                 if visObj.selection_dots_vao is None:
                     shapes._make_gl_selection_dots(self.picking_dots_program, vismol_object = visObj)
-                
+
                 '''#Extracting the indexes for each vismol_object that was selected'''
                 indexes = self.vismolSession.selections[self.vismolSession.current_selection].selected_objects[visObj]
                 size = self.vConfig.gl_parameters['dot_sel_size']
@@ -527,11 +527,11 @@ class VisMolGLCore():
                 self.load_matrices(self.picking_dots_program, visObj.model_mat)
                 GL.glBindVertexArray(visObj.selection_dots_vao)
                 GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.selection_dot_buffers[0])
-                GL.glBufferData(GL.GL_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)), 
+                GL.glBufferData(GL.GL_ARRAY_BUFFER, indexes.itemsize*int(len(indexes)),
                                 indexes, GL.GL_STATIC_DRAW)
                 frame = self._safe_frame_exchange(visObj)
                 GL.glBindBuffer(GL.GL_ARRAY_BUFFER, visObj.selection_dot_buffers[1])
-                GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.itemsize*int(len(frame)), 
+                GL.glBufferData(GL.GL_ARRAY_BUFFER, frame.itemsize*int(len(frame)),
                                 frame, GL.GL_STATIC_DRAW)
                 GL.glDrawElements(GL.GL_POINTS, int(len(indexes)), GL.GL_UNSIGNED_INT, None)
                 GL.glBindVertexArray(0)
@@ -545,12 +545,12 @@ class VisMolGLCore():
                 self.selection_box._make_gl_selection_box()
             else:
                 self._draw_selection_box()
-        
+
         if self.show_axis:
             self._draw_gizmo_axis(True)
             self._draw_gizmo_axis(False)
         return True
-    
+
     def _draw_pickng_label(self):
         '''This function draws the labels
          of the atoms selected by the 
@@ -568,7 +568,7 @@ class VisMolGLCore():
             if atom:
                 #print (number, atom.name)
                 frame = self._get_visObj_frame(atom.Vobject)
-                    
+
                 texto = '#'+str(number)
                 point = np.array(atom.coords (frame),np.float32)
                 point = np.array((point[0],point[1],point[2],1),np.float32)
@@ -603,10 +603,10 @@ class VisMolGLCore():
         GL.glEnable(GL.GL_BLEND)
         GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
         GL.glUseProgram(self.freetype_program)
-        
+
         self.vm_font.load_matrices(self.freetype_program, self.glcamera.view_matrix, self.glcamera.projection_matrix)
         self.vm_font.load_font_params(self.freetype_program)
-        
+
         GL.glBindVertexArray(self.vm_font.vao)
         GL.glDrawArrays(GL.GL_POINTS, 0, self.chars)
         GL.glDisable(GL.GL_BLEND)
@@ -625,10 +625,10 @@ class VisMolGLCore():
 
     def _create_line_shaders (self, _type = 0):
         # L I N E S 
-        
+
         line_type = self.vConfig.gl_parameters['line_type']
         self.shader_programs['lines']      = self.load_shaders(linesShaders.shader_type[line_type]['vertex_shader'  ],
-                                                               linesShaders.shader_type[line_type]['fragment_shader'], 
+                                                               linesShaders.shader_type[line_type]['fragment_shader'],
                                                                linesShaders.shader_type[line_type]['geometry_shader'])
         self.shader_programs['lines_sel']  = self.load_shaders( linesShaders.shader_type[line_type]['sel_vertex_shader'  ],
                                                                 linesShaders.shader_type[line_type]['sel_fragment_shader'],
@@ -636,10 +636,10 @@ class VisMolGLCore():
 
     def _create_ribbon_shaders (self, _type = 0):
         # L I N E S 
-        
+
         line_type = self.vConfig.gl_parameters['ribbon_type']
         self.shader_programs['ribbons']      = self.load_shaders(linesShaders.shader_type[line_type]['vertex_shader'  ],
-                                                                 linesShaders.shader_type[line_type]['fragment_shader'], 
+                                                                 linesShaders.shader_type[line_type]['fragment_shader'],
                                                                  linesShaders.shader_type[line_type]['geometry_shader'])
         self.shader_programs['ribbons_sel']  = self.load_shaders( linesShaders.shader_type[line_type]['sel_vertex_shader'  ],
                                                                   linesShaders.shader_type[line_type]['sel_fragment_shader'],
@@ -647,33 +647,33 @@ class VisMolGLCore():
 
     def _create_nonbonded_shaders (self, _type = 0):
         # N O N  B O N D E D
-        self.shader_programs['nonbonded']     = self.load_shaders(nonbondShaders.vertex_shader_non_bonded, 
-                                                          nonbondShaders.fragment_shader_non_bonded, 
+        self.shader_programs['nonbonded']     = self.load_shaders(nonbondShaders.vertex_shader_non_bonded,
+                                                          nonbondShaders.fragment_shader_non_bonded,
                                                           nonbondShaders.geometry_shader_non_bonded)
         self.shader_programs['nonbonded_sel'] = self.load_shaders(nonbondShaders.sel_vertex_shader_non_bonded,
-                                                          nonbondShaders.sel_fragment_shader_non_bonded, 
+                                                          nonbondShaders.sel_fragment_shader_non_bonded,
                                                           nonbondShaders.sel_geometry_shader_non_bonded)
 
     def _create_stick_shaders (self, _type = 0):
         # S T I C K S
-        self.shader_programs['sticks']     = self.load_shaders(sticksShaders.vertex_shader_sticks, 
-                                                               sticksShaders.fragment_shader_sticks, 
+        self.shader_programs['sticks']     = self.load_shaders(sticksShaders.vertex_shader_sticks,
+                                                               sticksShaders.fragment_shader_sticks,
                                                                sticksShaders.geometry_shader_sticks)
         self.shader_programs['sticks_sel'] = self.load_shaders(sticksShaders.sel_vertex_shader_sticks,
-                                                               sticksShaders.sel_fragment_shader_sticks, 
+                                                               sticksShaders.sel_fragment_shader_sticks,
                                                                sticksShaders.sel_geometry_shader_sticks)
 
     def _create_dynamic_bonds_shaders (self, _type = 0):
         # S T I C K S
-        self.shader_programs['dynamic']     = self.load_shaders(sticksShaders.vertex_shader_sticks, 
-                                                               sticksShaders.fragment_shader_sticks, 
+        self.shader_programs['dynamic']     = self.load_shaders(sticksShaders.vertex_shader_sticks,
+                                                               sticksShaders.fragment_shader_sticks,
                                                                sticksShaders.geometry_shader_sticks)
         self.shader_programs['dynamic_sel'] = self.load_shaders(sticksShaders.sel_vertex_shader_sticks,
-                                                               sticksShaders.sel_fragment_shader_sticks, 
+                                                               sticksShaders.sel_fragment_shader_sticks,
                                                                sticksShaders.sel_geometry_shader_sticks)
 
     def _create_sphere_shaders (self, _type = 0):
-        self.shader_programs['spheres']     = self.load_shaders(spheresShaders.vertex_shader_spheres, 
+        self.shader_programs['spheres']     = self.load_shaders(spheresShaders.vertex_shader_spheres,
                                                                 spheresShaders.fragment_shader_spheres)
         self.shader_programs['spheres_sel'] = self.load_shaders(spheresShaders.vertex_shader_spheres,
                                                                 spheresShaders.fragment_shader_spheres)
@@ -692,7 +692,7 @@ class VisMolGLCore():
         self.shader_programs['surface']     = self.load_shaders(surfacesShaders.vertex_shader_surface,
                                                                 surfacesShaders.fragment_shader_surface,
                                                                 surfacesShaders.geometry_shader_surface)
-        self.shader_programs['surface_sel'] = self.load_shaders(spheresShaders.vertex_shader_spheres,  
+        self.shader_programs['surface_sel'] = self.load_shaders(spheresShaders.vertex_shader_spheres,
                                                                 spheresShaders.fragment_shader_spheres)
 
     def _cartoon_dot_shaders (self, _type = 0):
@@ -703,7 +703,7 @@ class VisMolGLCore():
         self.shader_programs['wires']     = self.load_shaders(wiresShaders.vertex_shader_wires,
                                                               wiresShaders.fragment_shader_wires,
                                                               wiresShaders.geometry_shader_wires)
-        self.shader_programs['wires_sel'] = self.load_shaders(spheresShaders.vertex_shader_spheres,  
+        self.shader_programs['wires_sel'] = self.load_shaders(spheresShaders.vertex_shader_spheres,
                                                               spheresShaders.fragment_shader_spheres)
 
     def load_shaders(self, vertex, fragment, geometry=None):
@@ -757,7 +757,7 @@ class VisMolGLCore():
 
         # F R E E  T Y P E
         self.freetype_program = self.load_shaders(freetypeShaders.vertex_shader_freetype,
-                                                  freetypeShaders.fragment_shader_freetype, 
+                                                  freetypeShaders.fragment_shader_freetype,
                                                   freetypeShaders.geometry_shader_freetype)
         self.shader_programs['freetype']         = self.freetype_program
 
@@ -802,7 +802,7 @@ class VisMolGLCore():
         pos = [self.picking_x, self.height - self.picking_y]
         data = GL.glReadPixels(pos[0], (pos[1]), 1, 1, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE)
         pickedID = data[0] + data[1] * 256 + data[2] * 256*256;
-        
+
         if pickedID == 16777215:
             self.atom_picked = None
             if self.button ==1:
@@ -824,7 +824,7 @@ class VisMolGLCore():
                 self.button = None
         self.picking = False
         return True
-    
+
     def load_fog(self, program):
         """ Load the fog parameters in the specified program
             
@@ -841,7 +841,7 @@ class VisMolGLCore():
         fog_c = GL.glGetUniformLocation(program, 'fog_color')
         GL.glUniform4fv(fog_c, 1, self.bckgrnd_color)
         return True
-        
+
     def load_matrices(self, program = None, model_mat = None, normal = None):
         """ Load the matrices to OpenGL.
             
@@ -855,13 +855,13 @@ class VisMolGLCore():
         GL.glUniformMatrix4fv(view, 1, GL.GL_FALSE, self.glcamera.view_matrix)
         proj = GL.glGetUniformLocation(program, 'proj_mat')
         GL.glUniformMatrix4fv(proj, 1, GL.GL_FALSE, self.glcamera.projection_matrix)
-       
+
         # not sure if is necessary
         norm = GL.glGetUniformLocation(program, 'normal_mat')
         GL.glUniformMatrix3fv(norm, 1, GL.GL_FALSE, self.normal_mat)
-        
+
         return True
-    
+
     def load_dot_params(self, program):
         """ Function doc
         """
@@ -884,7 +884,7 @@ class VisMolGLCore():
         uni_dot_size = GL.glGetUniformLocation(program, 'vert_dot_factor')
         GL.glUniform1fv(uni_dot_size, 1, dot_factor)
         return True
-    
+
     def load_lights(self, program):
         """ Function doc
         """
@@ -901,14 +901,14 @@ class VisMolGLCore():
         #spec_col = GL.glGetUniformLocation(program, 'my_light.specular_color')
         #GL.glUniform3fv(spec_col, 1, self.light_specular_color)
         return True
-    
+
     def load_antialias_params(self, program):
         """ Function doc """
         a_length = GL.glGetUniformLocation(program, 'antialias_length')
         GL.glUniform1fv(a_length, 1, 0.05)
         bck_col = GL.glGetUniformLocation(program, 'alias_color')
         GL.glUniform3fv(bck_col, 1, self.bckgrnd_color[:3])
-    
+
     def _safe_frame_exchange (self, visObj):
         """ Function doc 
         
@@ -922,7 +922,7 @@ class VisMolGLCore():
             self.frame = 0
         else:
             pass
-        
+
         if self.frame >= (len (visObj.frames)-1):
             frame = visObj.frames[len (visObj.frames)-1]
         else:
@@ -935,7 +935,7 @@ class VisMolGLCore():
             self.frame = 0
         else:
             pass
-        
+
         if self.frame >= (len (visObj.frames)-1):
             frame = len (visObj.frames)-1
         else:
@@ -947,7 +947,7 @@ class VisMolGLCore():
             for more details about this function.
         """
         self.axis._draw_gizmo_axis(flag)
-    
+
     def _draw_selection_box(self):
         """ Drawing method for the selection box, see the selection_box.py
             documentation for more details about this function.
@@ -959,7 +959,7 @@ class VisMolGLCore():
         px = (2.0*x - self.width)/self.width
         py = (2.0*y - self.height)/self.height
         return [px, -py]
-    
+
     def pos(self, x, y):
         """
         Use the ortho projection and viewport information
@@ -972,14 +972,14 @@ class VisMolGLCore():
         py = self.top + py*(self.bottom-self.top)
         pz = self.glcamera.z_near
         return px, py, pz
-    
+
     def center_on_atom(self, atom):
         """ Function doc
         """
         frame_index  =  self._get_visObj_frame(atom.Vobject)
         self.center_on_coordinates(atom.Vobject, atom.coords(frame_index))
         return True
-    
+
     def center_on_coordinates(self, vismol_object, atom_pos):
         """ Takes the coordinates of an atom in absolute coordinates and first
             transforms them in 4D world coordinates, then takes the unit vector
@@ -1017,7 +1017,7 @@ class VisMolGLCore():
                 visObj.model_mat = mop.my_glTranslatef(visObj.model_mat, -model_pos)
             self.queue_draw()
         return True
-    
+
     def _print_matrices(self):
         """ Function doc
         """
@@ -1025,7 +1025,7 @@ class VisMolGLCore():
         for visObj in self.vismolSession.vismol_objects:
             print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
             print(visObj.model_mat,"<== visObj model_mat")
-    
+
     def queue_draw(self):
         """ Function doc """
         self.parent_widget.queue_draw()

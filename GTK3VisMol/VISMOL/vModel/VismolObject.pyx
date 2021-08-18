@@ -45,8 +45,6 @@ from VISMOL.vModel.Representations   import WiresRepresentation
 import VISMOL.vModel.cDistances as cdist
 
 
-
-
 class VismolObject:
     """ Class doc 
     
@@ -95,13 +93,8 @@ class VismolObject:
     self.non_bonded_atoms   = None    
     """
     
-    def __init__ (self, 
-                  name                           = 'UNK', 
-                  atoms                          = []   ,
-                  vismolSession                      = None , 
-                  trajectory                     = None ,
-                  bonds_pair_of_indexes          = None , 
-                  auto_find_bonded_and_nonbonded = True):
+    def __init__(self, name='UNK', atoms=None, vismolSession=None, trajectory=None,
+                 bonds_pair_of_indexes=None, auto_find_bonded_and_nonbonded=True):
         
         """ Class initialiser """
         #-----------------------------------------------------------------
@@ -118,11 +111,10 @@ class VismolObject:
         self.mass_center = None
         #-----------------------------------------------------------------
 
-		
-		#-------------------------#
-		#    R A W    L I S T     #
-		#-------------------------#
-		
+        #-------------------------#
+        #    R A W    L I S T     #
+        #-------------------------#
+
         #-----------------------------------------------------------------
         self.atoms2             = atoms # this is a raw list : [0, 'C5', 0.77, array([ 0.295,  2.928, -0.407]), 1, 'GLC', ' ', 'C ', [1, 12, 8, 10], [0, 0, 0]]
         #-----------------------------------------------------------------
@@ -133,7 +125,6 @@ class VismolObject:
         self.atoms_by_chains    = {}
         self.frames             = trajectory
         self.atom_unique_id_dic = {}
-
         self.vobj_selected_atoms= []
 
         #-----------------------#
@@ -153,19 +144,16 @@ class VismolObject:
         #-----------------------#
         self.c_alpha_bonds = []           
         self.c_alpha_atoms = []
+
         #-----------------------#
         #       Nonbonded       #
         #-----------------------#
         self.non_bonded_atoms   = []
-        
         self.residues_in_protein = []
         self.residues_in_solvent = []
         self.residues_ligands    = []
-        
         self.atoms_in_protein = [] # a list of atoms belonging to a protein
         self.atoms_in_solvent = []
-        
-        
 
 		#-----------------------------------------#
 		#      R E P R E S E N T A T I O N S      #

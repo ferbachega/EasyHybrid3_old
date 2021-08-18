@@ -124,8 +124,10 @@ class VisMolFont():
         self.vbos = (coord_vbo, tex_vbo)
         return True
     
-    def load_matrices(self, program, view_mat, proj_mat):
+    def load_matrices(self, program, model_mat, view_mat, proj_mat):
         """ Function doc """
+        model = GL.glGetUniformLocation(program, 'model_mat')
+        GL.glUniformMatrix4fv(model, 1, GL.GL_FALSE, model_mat)
         view = GL.glGetUniformLocation(program, 'view_mat')
         GL.glUniformMatrix4fv(view, 1, GL.GL_FALSE, view_mat)
         proj = GL.glGetUniformLocation(program, 'proj_mat')
