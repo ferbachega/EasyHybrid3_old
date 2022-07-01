@@ -1,0 +1,41 @@
+Log File for Simulation project on pDynamo make by EasyHybrid3.0!
+Starting at: 19/04/2022 13:13:12
+===================================================
+===================================================
+None Current System Found. Creating one from a coordinate files!
+New System loaded!
+===================================================
+Defining Semiempirical method and QC atoms regions!
+	Hamiltonian am1
+Single Point Energy calculation chosen!
+Total Energy of the System: -47747.229291664866
+===================================================
+Defining Semiempirical method and QC atoms regions!
+	Hamiltonian am1dphot
+Single Point Energy calculation chosen!
+Total Energy of the System: -47616.67750810549
+===================================================
+Defining Semiempirical method and QC atoms regions!
+	Hamiltonian pddgpm3
+Single Point Energy calculation chosen!
+Total Energy of the System: -47648.739615702965
+===================================================
+Defining Semiempirical method and QC atoms regions!
+	Hamiltonian pm3
+Single Point Energy calculation chosen!
+Total Energy of the System: -47604.24503452467
+===================================================
+Defining Semiempirical method and QC atoms regions!
+	Hamiltonian rm1
+Single Point Energy calculation chosen!
+Total Energy of the System: -47777.641097412874
+===================================================
+Defining Semiempirical method and QC atoms regions!
+	Hamiltonian pm6
+Single Point Energy calculation chosen!
+Total Energy of the System: -47926.20700993432
+Finishing simulation project using pDynamo3 methods!
+===================================================
+Finishing at: 19/04/2022 13:13:16
+Elapsed time: 4.184146643001441
+===================================================

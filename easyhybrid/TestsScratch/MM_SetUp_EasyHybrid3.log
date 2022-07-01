@@ -1,0 +1,24 @@
+Log File for Simulation project on pDynamo make by EasyHybrid3.0!
+Starting at: 04/04/2022 11:35:14
+===================================================
+===================================================
+None Current System Found. Creating one from topologies and coordinate files!
+Energy Model loaded: AMBER MM Model
+New System loaded!
+===================================================
+Setting Simulation Protocol:
+	Geometry_Optimization
+===================================================
+Starting Spherical pruning!
+BackOffing onld System!
+===================================================
+Setting fixed atoms!
+BackOffing onld System!
+===================================================
+Setting Simulation Protocol:
+	Geometry_Optimization
+Finishing simulation project using pDynamo3 methods!
+===================================================
+Finishing at: 04/04/2022 11:38:32
+Elapsed time: 198.3280043599998
+===================================================
